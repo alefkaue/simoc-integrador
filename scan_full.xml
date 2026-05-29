@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///usr/share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.95 scan initiated Fri May 29 01:07:42 2026 as: /usr/lib/nmap/nmap -sS -sV -O -&#45;open -p- -oX /tmp/scan_full.xml -oN /tmp/scan_full.txt 10.10.100.2 10.10.100.3 10.10.100.4 10.10.100.5 -->
+<nmaprun scanner="nmap" args="/usr/lib/nmap/nmap -sS -sV -O -&#45;open -p- -oX /tmp/scan_full.xml -oN /tmp/scan_full.txt 10.10.100.2 10.10.100.3 10.10.100.4 10.10.100.5" start="1780027662" startstr="Fri May 29 01:07:42 2026" version="7.95" xmloutputversion="1.05">
+<scaninfo type="syn" protocol="tcp" numservices="65535" services="1-65535"/>
+<verbose level="0"/>
+<debugging level="0"/>
+<hosthint><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="10.10.100.3" addrtype="ipv4"/>
+<address addr="BC:24:11:DD:1E:60" addrtype="mac" vendor="Proxmox Server Solutions GmbH"/>
+<hostnames>
+</hostnames>
+</hosthint>
+<hosthint><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="10.10.100.5" addrtype="ipv4"/>
+<address addr="BC:24:11:3C:BF:F4" addrtype="mac" vendor="Proxmox Server Solutions GmbH"/>
+<hostnames>
+</hostnames>
+</hosthint>
+<hosthint><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="10.10.100.2" addrtype="ipv4"/>
+<address addr="BC:24:11:DD:65:B3" addrtype="mac" vendor="Proxmox Server Solutions GmbH"/>
+<hostnames>
+</hostnames>
+</hosthint>
+<hosthint><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="10.10.100.4" addrtype="ipv4"/>
+<address addr="BC:24:11:FC:E0:BA" addrtype="mac" vendor="Proxmox Server Solutions GmbH"/>
+<hostnames>
+</hostnames>
+</hosthint>
+<host starttime="1780027662" endtime="1780027939"><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="10.10.100.2" addrtype="ipv4"/>
+<address addr="BC:24:11:DD:65:B3" addrtype="mac" vendor="Proxmox Server Solutions GmbH"/>
+<hostnames>
+</hostnames>
+<ports><extraports state="filtered" count="65530">
+<extrareasons reason="no-response" count="65530" proto="tcp" ports="1-134,136-138,140-444,446-5039,5041-49667,49669-65535"/>
+</extraports>
+<port protocol="tcp" portid="135"><state state="open" reason="syn-ack" reason_ttl="128"/><service name="msrpc" product="Microsoft Windows RPC" ostype="Windows" method="probed" conf="10"><cpe>cpe:/o:microsoft:windows</cpe></service></port>
+<port protocol="tcp" portid="139"><state state="open" reason="syn-ack" reason_ttl="128"/><service name="netbios-ssn" product="Microsoft Windows netbios-ssn" ostype="Windows" method="probed" conf="10"><cpe>cpe:/o:microsoft:windows</cpe></service></port>
+<port protocol="tcp" portid="445"><state state="open" reason="syn-ack" reason_ttl="128"/><service name="microsoft-ds" method="table" conf="3"/></port>
+<port protocol="tcp" portid="5040"><state state="open" reason="syn-ack" reason_ttl="128"/></port>
+<port protocol="tcp" portid="49668"><state state="open" reason="syn-ack" reason_ttl="128"/><service name="msrpc" product="Microsoft Windows RPC" ostype="Windows" method="probed" conf="10"><cpe>cpe:/o:microsoft:windows</cpe></service></port>
+</ports>
+<os><portused state="open" proto="tcp" portid="135"/>
+<osmatch name="Microsoft Windows 10 1803" accuracy="97" line="75008">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="10" accuracy="97"><cpe>cpe:/o:microsoft:windows_10</cpe></osclass>
+</osmatch>
+<osmatch name="Microsoft Windows 10 1903 - 21H1" accuracy="97" line="75123">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="10" accuracy="97"><cpe>cpe:/o:microsoft:windows_10</cpe></osclass>
+</osmatch>
+<osmatch name="Microsoft Windows 11" accuracy="92" line="75461">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="11" accuracy="92"><cpe>cpe:/o:microsoft:windows_11</cpe></osclass>
+</osmatch>
+<osmatch name="Microsoft Windows 10 1909" accuracy="91" line="75159">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="10" accuracy="91"><cpe>cpe:/o:microsoft:windows_10</cpe></osclass>
+</osmatch>
+<osmatch name="Microsoft Windows 10 1909 - 2004" accuracy="91" line="75196">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="10" accuracy="91"><cpe>cpe:/o:microsoft:windows_10</cpe></osclass>
+</osmatch>
+<osmatch name="Windows Server 2019" accuracy="91" line="82021">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="2019" accuracy="91"><cpe>cpe:/o:microsoft:windows_server_2019</cpe></osclass>
+</osmatch>
+<osmatch name="Microsoft Windows 10 1809" accuracy="91" line="75044">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="10" accuracy="91"><cpe>cpe:/o:microsoft:windows_10</cpe></osclass>
+</osmatch>
+<osmatch name="Microsoft Windows 10 20H2" accuracy="88" line="75292">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="10" accuracy="88"><cpe>cpe:/o:microsoft:windows_10</cpe></osclass>
+</osmatch>
+</os>
+<distance value="1"/>
+<tcpsequence index="263" difficulty="Good luck!" values="4F46617A,B2FA2AF9,1D064741,1E54742E,8E1F026F,640B59FE"/>
+<ipidsequence class="Incremental" values="4C8,4C9,4CA,4CB,4CC,4CD"/>
+<tcptssequence class="none returned (unsupported)"/>
+<times srtt="1280" rttvar="271" to="100000"/>
+</host>
+<host starttime="1780027662" endtime="1780027939"><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="10.10.100.3" addrtype="ipv4"/>
+<address addr="BC:24:11:DD:1E:60" addrtype="mac" vendor="Proxmox Server Solutions GmbH"/>
+<hostnames>
+</hostnames>
+<ports><extraports state="filtered" count="65533">
+<extrareasons reason="no-response" count="65533" proto="tcp" ports="1-134,136-5039,5041-65535"/>
+</extraports>
+<port protocol="tcp" portid="135"><state state="open" reason="syn-ack" reason_ttl="128"/><service name="msrpc" product="Microsoft Windows RPC" ostype="Windows" method="probed" conf="10"><cpe>cpe:/o:microsoft:windows</cpe></service></port>
+<port protocol="tcp" portid="5040"><state state="open" reason="syn-ack" reason_ttl="128"/></port>
+</ports>
+<os><portused state="open" proto="tcp" portid="135"/>
+<osmatch name="Microsoft Windows 10 1803" accuracy="92" line="75008">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="10" accuracy="92"><cpe>cpe:/o:microsoft:windows_10</cpe></osclass>
+</osmatch>
+<osmatch name="Microsoft Windows 10 1903 - 21H1" accuracy="92" line="75123">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="10" accuracy="92"><cpe>cpe:/o:microsoft:windows_10</cpe></osclass>
+</osmatch>
+<osmatch name="Microsoft Windows 11" accuracy="87" line="75461">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="11" accuracy="87"><cpe>cpe:/o:microsoft:windows_11</cpe></osclass>
+</osmatch>
+<osmatch name="Microsoft Windows 10 1909" accuracy="85" line="75159">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="10" accuracy="85"><cpe>cpe:/o:microsoft:windows_10</cpe></osclass>
+</osmatch>
+<osmatch name="Microsoft Windows 10 1909 - 2004" accuracy="85" line="75196">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="10" accuracy="85"><cpe>cpe:/o:microsoft:windows_10</cpe></osclass>
+</osmatch>
+<osmatch name="Windows Server 2019" accuracy="85" line="82021">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="2019" accuracy="85"><cpe>cpe:/o:microsoft:windows_server_2019</cpe></osclass>
+</osmatch>
+<osmatch name="Microsoft Windows 10 1809" accuracy="85" line="75044">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="10" accuracy="85"><cpe>cpe:/o:microsoft:windows_10</cpe></osclass>
+</osmatch>
+</os>
+<distance value="1"/>
+<tcpsequence index="242" difficulty="Good luck!" values="944F58FD,55D3792F,8FEB2C68,D5C3A72E,A3FADCF3,E2841386"/>
+<ipidsequence class="Incremental" values="5FA8,5FA9,5FAA,5FAB,5FAC,5FAD"/>
+<tcptssequence class="none returned (unsupported)"/>
+<times srtt="978" rttvar="101" to="100000"/>
+</host>
+<runstats><finished time="1780027939" timestr="Fri May 29 01:12:19 2026" summary="Nmap done at Fri May 29 01:12:19 2026; 4 IP addresses (4 hosts up) scanned in 277.41 seconds" elapsed="277.41" exit="success"/><hosts up="4" down="0" total="4"/>
+</runstats>
+</nmaprun>
