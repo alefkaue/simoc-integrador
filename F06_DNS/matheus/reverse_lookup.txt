@@ -1,0 +1,11 @@
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-06-03 20:18 -03
+Nmap scan report for 10.10.100.2
+Host is up (0.0014s latency).
+MAC Address: BC:24:11:DD:65:B3 (Proxmox Server Solutions GmbH)
+Nmap scan report for 10.10.100.3
+Host is up (0.0015s latency).
+MAC Address: BC:24:11:DD:1E:60 (Proxmox Server Solutions GmbH)
+Nmap scan report for 10.10.100.100
+Host is up (0.0019s latency).
+MAC Address: BC:24:11:8A:2A:83 (Proxmox Server Solutions GmbH)
+Nmap done: 3 IP addresses (3 hosts up) scanned in 6.70 seconds

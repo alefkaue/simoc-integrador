@@ -1,0 +1,8 @@
+;; communications error to 10.10.100.2#53: timed out
+;; communications error to 10.10.100.2#53: timed out
+;; communications error to 10.10.100.2#53: timed out
+
+; <<>> DiG 9.20.15-2-Debian <<>> @10.10.100.2 _ldap.tcp.corp.local SRV
+; (1 server found)
+;; global options: +cmd
+;; no servers could be reached

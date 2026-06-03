@@ -1,0 +1,6 @@
+;; Connection to 10.10.100.2#53(10.10.100.2) for corp.local failed: timed out.
+;; no servers could be reached
+;; Connection to 10.10.100.2#53(10.10.100.2) for corp.local failed: timed out.
+;; no servers could be reached
+;; Connection to 10.10.100.2#53(10.10.100.2) for corp.local failed: timed out.
+;; no servers could be reached
