@@ -1,0 +1,7 @@
+administrator
+admin
+guest
+krbtgt
+svc_sql
+svc_iis
+svc_backup
