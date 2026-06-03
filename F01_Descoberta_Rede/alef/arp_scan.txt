@@ -10,4 +10,4 @@ Starting arp-scan 1.10.0 with 256 hosts (https://github.com/royhills/arp-scan)
 10.10.100.100	bc:24:11:8a:2a:83	(Unknown)
 
 8 packets received by filter, 0 packets dropped by kernel
-Ending arp-scan 1.10.0: 256 hosts scanned in 1.863 seconds (137.41 hosts/sec). 8 responded
+Ending arp-scan 1.10.0: 256 hosts scanned in 2.244 seconds (114.08 hosts/sec). 8 responded

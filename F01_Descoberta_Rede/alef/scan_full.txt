@@ -1,0 +1,99 @@
+# Nmap 7.95 scan initiated Tue Jun  2 23:54:27 2026 as: /usr/lib/nmap/nmap -sS -sV -O --open -p- -T3 -oX F01_Descoberta_Rede/alef/scan_alvos.xml -oN F01_Descoberta_Rede/alef/scan_full.txt 10.10.100.2 10.10.100.3 10.10.100.100
+Nmap scan report for 10.10.100.2
+Host is up (0.0011s latency).
+Not shown: 65530 filtered tcp ports (no-response)
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT      STATE SERVICE       VERSION
+135/tcp   open  msrpc         Microsoft Windows RPC
+139/tcp   open  netbios-ssn   Microsoft Windows netbios-ssn
+445/tcp   open  microsoft-ds?
+5040/tcp  open  unknown
+49668/tcp open  msrpc         Microsoft Windows RPC
+MAC Address: BC:24:11:DD:65:B3 (Proxmox Server Solutions GmbH)
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: general purpose
+Running (JUST GUESSING): Microsoft Windows 10|11|2019 (97%)
+OS CPE: cpe:/o:microsoft:windows_10 cpe:/o:microsoft:windows_11 cpe:/o:microsoft:windows_server_2019
+Aggressive OS guesses: Microsoft Windows 10 1803 (97%), Microsoft Windows 10 1903 - 21H1 (97%), Microsoft Windows 11 (94%), Microsoft Windows 10 1809 (92%), Microsoft Windows 10 1909 (91%), Microsoft Windows 10 1909 - 2004 (90%), Windows Server 2019 (90%)
+No exact OS matches for host (test conditions non-ideal).
+Network Distance: 1 hop
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Nmap scan report for 10.10.100.3
+Host is up (0.0012s latency).
+Not shown: 65533 filtered tcp ports (no-response)
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT     STATE SERVICE VERSION
+135/tcp  open  msrpc   Microsoft Windows RPC
+5040/tcp open  unknown
+MAC Address: BC:24:11:DD:1E:60 (Proxmox Server Solutions GmbH)
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: general purpose
+Running (JUST GUESSING): Microsoft Windows 10|11|2019 (92%)
+OS CPE: cpe:/o:microsoft:windows_10 cpe:/o:microsoft:windows_11 cpe:/o:microsoft:windows_server_2019
+Aggressive OS guesses: Microsoft Windows 10 1803 (92%), Microsoft Windows 10 1903 - 21H1 (92%), Microsoft Windows 11 (87%), Microsoft Windows 10 1909 (85%), Microsoft Windows 10 1909 - 2004 (85%), Windows Server 2019 (85%), Microsoft Windows 10 1809 (85%)
+No exact OS matches for host (test conditions non-ideal).
+Network Distance: 1 hop
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Nmap scan report for 10.10.100.100
+Host is up (0.0012s latency).
+Not shown: 65530 closed tcp ports (reset)
+PORT     STATE SERVICE       VERSION
+22/tcp   open  ssh           OpenSSH 9.6p1 Ubuntu 3ubuntu13.16 (Ubuntu Linux; protocol 2.0)
+80/tcp   open  http          nginx 1.24.0
+1880/tcp open  vsat-control?
+1883/tcp open  mqtt
+3307/tcp open  mysql         MySQL 5.5.62
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port1880-TCP:V=7.95%I=7%D=6/2%Time=6A1F97DA%P=x86_64-pc-linux-gnu%r(Get
+SF:Request,7B4,"HTTP/1\.1\x20200\x20OK\r\nAccess-Control-Allow-Origin:\x20
+SF:\*\r\nContent-Type:\x20text/html;\x20charset=utf-8\r\nContent-Length:\x
+SF:201760\r\nETag:\x20W/\"6e0-nUMt1XQMrWpRHhRW\+zH7pxE0PIs\"\r\nDate:\x20W
+SF:ed,\x2003\x20Jun\x202026\x2002:56:26\x20GMT\r\nConnection:\x20close\r\n
+SF:\r\n<!DOCTYPE\x20html>\n<html>\n<head>\n<meta\x20charset=\"utf-8\">\n<m
+SF:eta\x20http-equiv=\"X-UA-Compatible\"\x20content=\"IE=edge\">\n<meta\x2
+SF:0name=\"viewport\"\x20content=\"width=device-width,\x20initial-scale=1,
+SF:\x20maximum-scale=1,\x20user-scalable=0\">\n<meta\x20name=\"apple-mobil
+SF:e-web-app-capable\"\x20content=\"yes\">\n<meta\x20name=\"mobile-web-app
+SF:-capable\"\x20content=\"yes\">\n<!--\n\x20\x20Copyright\x20OpenJS\x20Fo
+SF:undation\x20and\x20other\x20contributors,\x20https://openjsf\.org/\n\n\
+SF:x20\x20Licensed\x20under\x20the\x20Apache\x20License,\x20Version\x202\.
+SF:0\x20\(the\x20\"License\"\);\n\x20\x20you\x20may\x20not\x20use\x20this\
+SF:x20file\x20except\x20in\x20compliance\x20with\x20the\x20License\.\n\x20
+SF:\x20You\x20may\x20obtain\x20a\x20copy\x20of\x20the\x20License\x20at\n\n
+SF:\x20\x20http://www\.apache\.org/licenses/LICENSE-2\.0\n\n\x20\x20Unless
+SF:\x20required\x20by\x20applicable\x20law\x20or\x20agreed\x20to\x20in\x20
+SF:writing,\x20softwa")%r(HTTPOptions,DF,"HTTP/1\.1\x20204\x20No\x20Conten
+SF:t\r\nAccess-Control-Allow-Origin:\x20\*\r\nAccess-Control-Allow-Methods
+SF::\x20GET,PUT,POST,DELETE\r\nVary:\x20Access-Control-Request-Headers\r\n
+SF:Content-Length:\x200\r\nDate:\x20Wed,\x2003\x20Jun\x202026\x2002:56:26\
+SF:x20GMT\r\nConnection:\x20close\r\n\r\n")%r(RTSPRequest,DF,"HTTP/1\.1\x2
+SF:0204\x20No\x20Content\r\nAccess-Control-Allow-Origin:\x20\*\r\nAccess-C
+SF:ontrol-Allow-Methods:\x20GET,PUT,POST,DELETE\r\nVary:\x20Access-Control
+SF:-Request-Headers\r\nContent-Length:\x200\r\nDate:\x20Wed,\x2003\x20Jun\
+SF:x202026\x2002:56:26\x20GMT\r\nConnection:\x20close\r\n\r\n")%r(RPCCheck
+SF:,2F,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nConnection:\x20close\r\n\r\n
+SF:")%r(DNSVersionBindReqTCP,2F,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nCon
+SF:nection:\x20close\r\n\r\n");
+MAC Address: BC:24:11:8A:2A:83 (Proxmox Server Solutions GmbH)
+No exact OS matches for host (If you know what OS is running on it, see https://nmap.org/submit/ ).
+TCP/IP fingerprint:
+OS:SCAN(V=7.95%E=4%D=6/2%OT=22%CT=1%CU=40023%PV=Y%DS=1%DC=D%G=Y%M=BC2411%TM
+OS:=6A1F987F%P=x86_64-pc-linux-gnu)SEQ(SP=103%GCD=1%ISR=10C%TI=Z%CI=Z%II=I%
+OS:TS=A)SEQ(SP=106%GCD=1%ISR=109%TI=Z%CI=Z%II=I%TS=A)SEQ(SP=107%GCD=1%ISR=1
+OS:0D%TI=Z%CI=Z%II=I%TS=A)SEQ(SP=F8%GCD=1%ISR=109%TI=Z%CI=Z%II=I%TS=A)SEQ(S
+OS:P=F9%GCD=1%ISR=100%TI=Z%CI=Z%II=I%TS=A)OPS(O1=M5B4ST11NW7%O2=M5B4ST11NW7
+OS:%O3=M5B4NNT11NW7%O4=M5B4ST11NW7%O5=M5B4ST11NW7%O6=M5B4ST11)WIN(W1=7C70%W
+OS:2=7C70%W3=7C70%W4=7C70%W5=7C70%W6=7C70)ECN(R=Y%DF=Y%T=40%W=7D78%O=M5B4NN
+OS:SNW7%CC=Y%Q=)T1(R=Y%DF=Y%T=40%S=O%A=S+%F=AS%RD=0%Q=)T2(R=N)T3(R=N)T4(R=Y
+OS:%DF=Y%T=40%W=0%S=A%A=Z%F=R%O=%RD=0%Q=)T5(R=Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR
+OS:%O=%RD=0%Q=)T6(R=Y%DF=Y%T=40%W=0%S=A%A=Z%F=R%O=%RD=0%Q=)T7(R=Y%DF=Y%T=40
+OS:%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)U1(R=Y%DF=N%T=40%IPL=164%UN=0%RIPL=G%RID=G
+OS:%RIPCK=G%RUCK=G%RUD=G)IE(R=Y%DFI=N%T=40%CD=S)
+
+Network Distance: 1 hop
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Tue Jun  2 23:59:11 2026 -- 3 IP addresses (3 hosts up) scanned in 285.08 seconds

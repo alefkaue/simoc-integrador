@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///usr/share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.95 scan initiated Tue Jun  2 23:54:27 2026 as: /usr/lib/nmap/nmap -sS -sV -O -&#45;open -p- -T3 -oX F01_Descoberta_Rede/alef/scan_alvos.xml -oN F01_Descoberta_Rede/alef/scan_full.txt 10.10.100.2 10.10.100.3 10.10.100.100 -->
+<nmaprun scanner="nmap" args="/usr/lib/nmap/nmap -sS -sV -O -&#45;open -p- -T3 -oX F01_Descoberta_Rede/alef/scan_alvos.xml -oN F01_Descoberta_Rede/alef/scan_full.txt 10.10.100.2 10.10.100.3 10.10.100.100" start="1780455267" startstr="Tue Jun  2 23:54:27 2026" version="7.95" xmloutputversion="1.05">
+<scaninfo type="syn" protocol="tcp" numservices="65535" services="1-65535"/>
+<verbose level="0"/>
+<debugging level="0"/>
+<hosthint><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="10.10.100.3" addrtype="ipv4"/>
+<address addr="BC:24:11:DD:1E:60" addrtype="mac" vendor="Proxmox Server Solutions GmbH"/>
+<hostnames>
+</hostnames>
+</hosthint>
+<hosthint><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="10.10.100.100" addrtype="ipv4"/>
+<address addr="BC:24:11:8A:2A:83" addrtype="mac" vendor="Proxmox Server Solutions GmbH"/>
+<hostnames>
+</hostnames>
+</hosthint>
+<hosthint><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="10.10.100.2" addrtype="ipv4"/>
+<address addr="BC:24:11:DD:65:B3" addrtype="mac" vendor="Proxmox Server Solutions GmbH"/>
+<hostnames>
+</hostnames>
+</hosthint>
+<host starttime="1780455267" endtime="1780455551"><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="10.10.100.2" addrtype="ipv4"/>
+<address addr="BC:24:11:DD:65:B3" addrtype="mac" vendor="Proxmox Server Solutions GmbH"/>
+<hostnames>
+</hostnames>
+<ports><extraports state="filtered" count="65530">
+<extrareasons reason="no-response" count="65530" proto="tcp" ports="1-134,136-138,140-444,446-5039,5041-49667,49669-65535"/>
+</extraports>
+<port protocol="tcp" portid="135"><state state="open" reason="syn-ack" reason_ttl="128"/><service name="msrpc" product="Microsoft Windows RPC" ostype="Windows" method="probed" conf="10"><cpe>cpe:/o:microsoft:windows</cpe></service></port>
+<port protocol="tcp" portid="139"><state state="open" reason="syn-ack" reason_ttl="128"/><service name="netbios-ssn" product="Microsoft Windows netbios-ssn" ostype="Windows" method="probed" conf="10"><cpe>cpe:/o:microsoft:windows</cpe></service></port>
+<port protocol="tcp" portid="445"><state state="open" reason="syn-ack" reason_ttl="128"/><service name="microsoft-ds" method="table" conf="3"/></port>
+<port protocol="tcp" portid="5040"><state state="open" reason="syn-ack" reason_ttl="128"/></port>
+<port protocol="tcp" portid="49668"><state state="open" reason="syn-ack" reason_ttl="128"/><service name="msrpc" product="Microsoft Windows RPC" ostype="Windows" method="probed" conf="10"><cpe>cpe:/o:microsoft:windows</cpe></service></port>
+</ports>
+<os><portused state="open" proto="tcp" portid="135"/>
+<osmatch name="Microsoft Windows 10 1803" accuracy="97" line="75008">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="10" accuracy="97"><cpe>cpe:/o:microsoft:windows_10</cpe></osclass>
+</osmatch>
+<osmatch name="Microsoft Windows 10 1903 - 21H1" accuracy="97" line="75123">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="10" accuracy="97"><cpe>cpe:/o:microsoft:windows_10</cpe></osclass>
+</osmatch>
+<osmatch name="Microsoft Windows 11" accuracy="94" line="75461">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="11" accuracy="94"><cpe>cpe:/o:microsoft:windows_11</cpe></osclass>
+</osmatch>
+<osmatch name="Microsoft Windows 10 1809" accuracy="92" line="75044">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="10" accuracy="92"><cpe>cpe:/o:microsoft:windows_10</cpe></osclass>
+</osmatch>
+<osmatch name="Microsoft Windows 10 1909" accuracy="91" line="75159">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="10" accuracy="91"><cpe>cpe:/o:microsoft:windows_10</cpe></osclass>
+</osmatch>
+<osmatch name="Microsoft Windows 10 1909 - 2004" accuracy="90" line="75196">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="10" accuracy="90"><cpe>cpe:/o:microsoft:windows_10</cpe></osclass>
+</osmatch>
+<osmatch name="Windows Server 2019" accuracy="90" line="82021">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="2019" accuracy="90"><cpe>cpe:/o:microsoft:windows_server_2019</cpe></osclass>
+</osmatch>
+</os>
+<distance value="1"/>
+<tcpsequence index="254" difficulty="Good luck!" values="DEF5362C,DF8A0A8E,A2CC691C,BA90E556,962E95A7,6E91983B"/>
+<ipidsequence class="Incremental" values="6D7,6D8,6D9,6DA,6DB,6DC"/>
+<tcptssequence class="none returned (unsupported)"/>
+<times srtt="1075" rttvar="147" to="100000"/>
+</host>
+<host starttime="1780455267" endtime="1780455551"><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="10.10.100.3" addrtype="ipv4"/>
+<address addr="BC:24:11:DD:1E:60" addrtype="mac" vendor="Proxmox Server Solutions GmbH"/>
+<hostnames>
+</hostnames>
+<ports><extraports state="filtered" count="65533">
+<extrareasons reason="no-response" count="65533" proto="tcp" ports="1-134,136-5039,5041-65535"/>
+</extraports>
+<port protocol="tcp" portid="135"><state state="open" reason="syn-ack" reason_ttl="128"/><service name="msrpc" product="Microsoft Windows RPC" ostype="Windows" method="probed" conf="10"><cpe>cpe:/o:microsoft:windows</cpe></service></port>
+<port protocol="tcp" portid="5040"><state state="open" reason="syn-ack" reason_ttl="128"/></port>
+</ports>
+<os><portused state="open" proto="tcp" portid="135"/>
+<osmatch name="Microsoft Windows 10 1803" accuracy="92" line="75008">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="10" accuracy="92"><cpe>cpe:/o:microsoft:windows_10</cpe></osclass>
+</osmatch>
+<osmatch name="Microsoft Windows 10 1903 - 21H1" accuracy="92" line="75123">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="10" accuracy="92"><cpe>cpe:/o:microsoft:windows_10</cpe></osclass>
+</osmatch>
+<osmatch name="Microsoft Windows 11" accuracy="87" line="75461">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="11" accuracy="87"><cpe>cpe:/o:microsoft:windows_11</cpe></osclass>
+</osmatch>
+<osmatch name="Microsoft Windows 10 1909" accuracy="85" line="75159">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="10" accuracy="85"><cpe>cpe:/o:microsoft:windows_10</cpe></osclass>
+</osmatch>
+<osmatch name="Microsoft Windows 10 1909 - 2004" accuracy="85" line="75196">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="10" accuracy="85"><cpe>cpe:/o:microsoft:windows_10</cpe></osclass>
+</osmatch>
+<osmatch name="Windows Server 2019" accuracy="85" line="82021">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="2019" accuracy="85"><cpe>cpe:/o:microsoft:windows_server_2019</cpe></osclass>
+</osmatch>
+<osmatch name="Microsoft Windows 10 1809" accuracy="85" line="75044">
+<osclass type="general purpose" vendor="Microsoft" osfamily="Windows" osgen="10" accuracy="85"><cpe>cpe:/o:microsoft:windows_10</cpe></osclass>
+</osmatch>
+</os>
+<distance value="1"/>
+<tcpsequence index="261" difficulty="Good luck!" values="2089644F,CF51FEE0,A60CFD53,91CCDE12,1FFBC548,3561094"/>
+<ipidsequence class="Incremental" values="6075,6076,6077,6078,6079,607A"/>
+<tcptssequence class="none returned (unsupported)"/>
+<times srtt="1241" rttvar="325" to="100000"/>
+</host>
+<host starttime="1780455267" endtime="1780455550"><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="10.10.100.100" addrtype="ipv4"/>
+<address addr="BC:24:11:8A:2A:83" addrtype="mac" vendor="Proxmox Server Solutions GmbH"/>
+<hostnames>
+</hostnames>
+<ports><extraports state="closed" count="65530">
+<extrareasons reason="reset" count="65530" proto="tcp" ports="1-21,23-79,81-1879,1881-1882,1884-3306,3308-65535"/>
+</extraports>
+<port protocol="tcp" portid="22"><state state="open" reason="syn-ack" reason_ttl="64"/><service name="ssh" product="OpenSSH" version="9.6p1 Ubuntu 3ubuntu13.16" extrainfo="Ubuntu Linux; protocol 2.0" ostype="Linux" method="probed" conf="10"><cpe>cpe:/a:openbsd:openssh:9.6p1</cpe><cpe>cpe:/o:linux:linux_kernel</cpe></service></port>
+<port protocol="tcp" portid="80"><state state="open" reason="syn-ack" reason_ttl="63"/><service name="http" product="nginx" version="1.24.0" method="probed" conf="10"><cpe>cpe:/a:igor_sysoev:nginx:1.24.0</cpe></service></port>
+<port protocol="tcp" portid="1880"><state state="open" reason="syn-ack" reason_ttl="63"/><service name="vsat-control" servicefp="SF-Port1880-TCP:V=7.95%I=7%D=6/2%Time=6A1F97DA%P=x86_64-pc-linux-gnu%r(GetRequest,7B4,&quot;HTTP/1\.1\x20200\x20OK\r\nAccess-Control-Allow-Origin:\x20\*\r\nContent-Type:\x20text/html;\x20charset=utf-8\r\nContent-Length:\x201760\r\nETag:\x20W/\&quot;6e0-nUMt1XQMrWpRHhRW\+zH7pxE0PIs\&quot;\r\nDate:\x20Wed,\x2003\x20Jun\x202026\x2002:56:26\x20GMT\r\nConnection:\x20close\r\n\r\n&lt;!DOCTYPE\x20html&gt;\n&lt;html&gt;\n&lt;head&gt;\n&lt;meta\x20charset=\&quot;utf-8\&quot;&gt;\n&lt;meta\x20http-equiv=\&quot;X-UA-Compatible\&quot;\x20content=\&quot;IE=edge\&quot;&gt;\n&lt;meta\x20name=\&quot;viewport\&quot;\x20content=\&quot;width=device-width,\x20initial-scale=1,\x20maximum-scale=1,\x20user-scalable=0\&quot;&gt;\n&lt;meta\x20name=\&quot;apple-mobile-web-app-capable\&quot;\x20content=\&quot;yes\&quot;&gt;\n&lt;meta\x20name=\&quot;mobile-web-app-capable\&quot;\x20content=\&quot;yes\&quot;&gt;\n&lt;!-&#45;\n\x20\x20Copyright\x20OpenJS\x20Foundation\x20and\x20other\x20contributors,\x20https://openjsf\.org/\n\n\x20\x20Licensed\x20under\x20the\x20Apache\x20License,\x20Version\x202\.0\x20\(the\x20\&quot;License\&quot;\);\n\x20\x20you\x20may\x20not\x20use\x20this\x20file\x20except\x20in\x20compliance\x20with\x20the\x20License\.\n\x20\x20You\x20may\x20obtain\x20a\x20copy\x20of\x20the\x20License\x20at\n\n\x20\x20http://www\.apache\.org/licenses/LICENSE-2\.0\n\n\x20\x20Unless\x20required\x20by\x20applicable\x20law\x20or\x20agreed\x20to\x20in\x20writing,\x20softwa&quot;)%r(HTTPOptions,DF,&quot;HTTP/1\.1\x20204\x20No\x20Content\r\nAccess-Control-Allow-Origin:\x20\*\r\nAccess-Control-Allow-Methods:\x20GET,PUT,POST,DELETE\r\nVary:\x20Access-Control-Request-Headers\r\nContent-Length:\x200\r\nDate:\x20Wed,\x2003\x20Jun\x202026\x2002:56:26\x20GMT\r\nConnection:\x20close\r\n\r\n&quot;)%r(RTSPRequest,DF,&quot;HTTP/1\.1\x20204\x20No\x20Content\r\nAccess-Control-Allow-Origin:\x20\*\r\nAccess-Control-Allow-Methods:\x20GET,PUT,POST,DELETE\r\nVary:\x20Access-Control-Request-Headers\r\nContent-Length:\x200\r\nDate:\x20Wed,\x2003\x20Jun\x202026\x2002:56:26\x20GMT\r\nConnection:\x20close\r\n\r\n&quot;)%r(RPCCheck,2F,&quot;HTTP/1\.1\x20400\x20Bad\x20Request\r\nConnection:\x20close\r\n\r\n&quot;)%r(DNSVersionBindReqTCP,2F,&quot;HTTP/1\.1\x20400\x20Bad\x20Request\r\nConnection:\x20close\r\n\r\n&quot;);" method="table" conf="3"/></port>
+<port protocol="tcp" portid="1883"><state state="open" reason="syn-ack" reason_ttl="63"/><service name="mqtt" method="probed" conf="10"/></port>
+<port protocol="tcp" portid="3307"><state state="open" reason="syn-ack" reason_ttl="63"/><service name="mysql" product="MySQL" version="5.5.62" method="probed" conf="10"><cpe>cpe:/a:mysql:mysql:5.5.62</cpe></service></port>
+</ports>
+<os><portused state="open" proto="tcp" portid="22"/>
+<portused state="closed" proto="tcp" portid="1"/>
+<portused state="closed" proto="udp" portid="40023"/>
+<osmatch name="Linux 2.6.32" accuracy="96" line="58659">
+<osclass type="general purpose" vendor="Linux" osfamily="Linux" osgen="2.6.X" accuracy="96"><cpe>cpe:/o:linux:linux_kernel:2.6.32</cpe></osclass>
+</osmatch>
+<osmatch name="Linux 4.15" accuracy="96" line="70405">
+<osclass type="general purpose" vendor="Linux" osfamily="Linux" osgen="4.X" accuracy="96"><cpe>cpe:/o:linux:linux_kernel:4.15</cpe></osclass>
+</osmatch>
+<osmatch name="OpenWrt 21.02 (Linux 5.4)" accuracy="96" line="72530">
+<osclass type="general purpose" vendor="Linux" osfamily="Linux" osgen="5.X" accuracy="96"><cpe>cpe:/o:linux:linux_kernel:5.4</cpe></osclass>
+</osmatch>
+<osmatch name="MikroTik RouterOS 7.2 - 7.5 (Linux 5.6.3)" accuracy="96" line="91792">
+<osclass type="router" vendor="MikroTik" osfamily="RouterOS" osgen="7.X" accuracy="96"><cpe>cpe:/o:mikrotik:routeros:7</cpe></osclass>
+<osclass type="router" vendor="Linux" osfamily="Linux" osgen="5.X" accuracy="96"><cpe>cpe:/o:linux:linux_kernel:5.6.3</cpe></osclass>
+</osmatch>
+<osmatch name="Linux 3.2 - 4.14" accuracy="96" line="68432">
+<osclass type="general purpose" vendor="Linux" osfamily="Linux" osgen="3.X" accuracy="96"><cpe>cpe:/o:linux:linux_kernel:3</cpe></osclass>
+<osclass type="general purpose" vendor="Linux" osfamily="Linux" osgen="4.X" accuracy="96"><cpe>cpe:/o:linux:linux_kernel:4</cpe></osclass>
+</osmatch>
+<osmatch name="Linux 4.15 - 5.19" accuracy="96" line="70534">
+<osclass type="general purpose" vendor="Linux" osfamily="Linux" osgen="4.X" accuracy="96"><cpe>cpe:/o:linux:linux_kernel:4</cpe></osclass>
+<osclass type="general purpose" vendor="Linux" osfamily="Linux" osgen="5.X" accuracy="96"><cpe>cpe:/o:linux:linux_kernel:5</cpe></osclass>
+</osmatch>
+<osmatch name="Linux 2.6.32 - 3.10" accuracy="96" line="59874">
+<osclass type="general purpose" vendor="Linux" osfamily="Linux" osgen="2.6.X" accuracy="96"><cpe>cpe:/o:linux:linux_kernel:2.6</cpe></osclass>
+<osclass type="general purpose" vendor="Linux" osfamily="Linux" osgen="3.X" accuracy="96"><cpe>cpe:/o:linux:linux_kernel:3</cpe></osclass>
+</osmatch>
+<osmatch name="Linux 4.19" accuracy="96" line="70590">
+<osclass type="general purpose" vendor="Linux" osfamily="Linux" osgen="4.X" accuracy="96"><cpe>cpe:/o:linux:linux_kernel:4.19</cpe></osclass>
+</osmatch>
+<osmatch name="Linux 6.0" accuracy="96" line="72657">
+<osclass type="general purpose" vendor="Linux" osfamily="Linux" osgen="6.X" accuracy="96"><cpe>cpe:/o:linux:linux_kernel:6.0</cpe></osclass>
+</osmatch>
+<osmatch name="Linux 3.4 - 3.10" accuracy="95" line="68694">
+<osclass type="general purpose" vendor="Linux" osfamily="Linux" osgen="3.X" accuracy="95"><cpe>cpe:/o:linux:linux_kernel:3</cpe></osclass>
+</osmatch>
+<osfingerprint fingerprint="OS:SCAN(V=7.95%E=4%D=6/2%OT=22%CT=1%CU=40023%PV=Y%DS=1%DC=D%G=Y%M=BC2411%TM&#xa;OS:=6A1F987F%P=x86_64-pc-linux-gnu)SEQ(SP=103%GCD=1%ISR=10C%TI=Z%CI=Z%II=I%&#xa;OS:TS=A)SEQ(SP=106%GCD=1%ISR=109%TI=Z%CI=Z%II=I%TS=A)SEQ(SP=107%GCD=1%ISR=1&#xa;OS:0D%TI=Z%CI=Z%II=I%TS=A)SEQ(SP=F8%GCD=1%ISR=109%TI=Z%CI=Z%II=I%TS=A)SEQ(S&#xa;OS:P=F9%GCD=1%ISR=100%TI=Z%CI=Z%II=I%TS=A)OPS(O1=M5B4ST11NW7%O2=M5B4ST11NW7&#xa;OS:%O3=M5B4NNT11NW7%O4=M5B4ST11NW7%O5=M5B4ST11NW7%O6=M5B4ST11)WIN(W1=7C70%W&#xa;OS:2=7C70%W3=7C70%W4=7C70%W5=7C70%W6=7C70)ECN(R=Y%DF=Y%T=40%W=7D78%O=M5B4NN&#xa;OS:SNW7%CC=Y%Q=)T1(R=Y%DF=Y%T=40%S=O%A=S+%F=AS%RD=0%Q=)T2(R=N)T3(R=N)T4(R=Y&#xa;OS:%DF=Y%T=40%W=0%S=A%A=Z%F=R%O=%RD=0%Q=)T5(R=Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR&#xa;OS:%O=%RD=0%Q=)T6(R=Y%DF=Y%T=40%W=0%S=A%A=Z%F=R%O=%RD=0%Q=)T7(R=Y%DF=Y%T=40&#xa;OS:%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)U1(R=Y%DF=N%T=40%IPL=164%UN=0%RIPL=G%RID=G&#xa;OS:%RIPCK=G%RUCK=G%RUD=G)IE(R=Y%DFI=N%T=40%CD=S)&#xa;"/>
+</os>
+<uptime seconds="2402123" lastboot="Wed May  6 04:43:48 2026"/>
+<distance value="1"/>
+<tcpsequence index="263" difficulty="Good luck!" values="280907F5,2E9231B1,69206C92,D93D5B6,AA84190A,2CFDE46B"/>
+<ipidsequence class="All zeros" values="0,0,0,0,0,0"/>
+<tcptssequence class="1000HZ" values="8F2D5B6D,8F2D5BD1,8F2D5C36,8F2D5C9A,8F2D5CFE,8F2D5D63"/>
+<times srtt="1236" rttvar="121" to="100000"/>
+</host>
+<runstats><finished time="1780455551" timestr="Tue Jun  2 23:59:11 2026" summary="Nmap done at Tue Jun  2 23:59:11 2026; 3 IP addresses (3 hosts up) scanned in 285.08 seconds" elapsed="285.08" exit="success"/><hosts up="3" down="0" total="3"/>
+</runstats>
+</nmaprun>
