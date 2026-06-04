@@ -1,0 +1,13 @@
+POST /api/session HTTP/1.1
+Host: 10.10.100.100
+Content-Length: 49
+Accept-Language: en-US,en;q=0.9
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36
+Content-Type: application/json
+Accept: */*
+Origin: http://10.10.100.100
+Referer: http://10.10.100.100/
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+
+{"username":"suporte.n1","password":"SimoC@2023"}
