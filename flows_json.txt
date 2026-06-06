@@ -1,0 +1,1018 @@
+[
+    {
+        "id": "a7f1f29b.cb4ca",
+        "type": "tab",
+        "label": "Monitoramento de Bombas",
+        "disabled": false,
+        "info": "Dashboard para monitoramento de bombas de combust\u00edvel em tempo real"
+    },
+    {
+        "id": "a2106230.b4f97",
+        "type": "mqtt-broker",
+        "name": "Broker Local",
+        "broker": "${MQTT_BROKER_HOST}",
+        "port": "1883",
+        "clientid": "node-red-dashboard",
+        "autoConnect": true,
+        "usetls": false,
+        "compatmode": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "3b3c8ff5.1d8d4",
+        "type": "ui_group",
+        "name": "Medidores",
+        "tab": "7324a23f.f4c10c",
+        "order": 1,
+        "disp": true,
+        "width": "12",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "orders_group",
+        "type": "ui_group",
+        "name": "Ordens de Servi\u00e7o",
+        "tab": "7324a23f.f4c10c",
+        "order": 2,
+        "disp": true,
+        "width": "12",
+        "collapse": false
+    },
+    {
+        "id": "9a3e372a.fd3578",
+        "type": "ui_group",
+        "name": "Gr\u00e1ficos de Tend\u00eancia",
+        "tab": "7324a23f.f4c10c",
+        "order": 3,
+        "disp": true,
+        "width": "24",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "72c5c4e.dc0b97c",
+        "type": "ui_group",
+        "name": "Vis\u00e3o Geral",
+        "tab": "7324a23f.f4c10c",
+        "order": 4,
+        "disp": true,
+        "width": "24",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "7324a23f.f4c10c",
+        "type": "ui_tab",
+        "name": "Monitoramento de Bombas",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "657595ef74f552fd",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-light",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#0094CE",
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#fafafa",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#1bbfff",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#0094ce",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey",
+                "palette": "light"
+            }
+        },
+        "site": {
+            "name": "Node-RED Dashboard",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "false",
+            "allowTempTheme": "true",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "16f9b27c.20d94e",
+        "type": "mqtt in",
+        "z": "a7f1f29b.cb4ca",
+        "name": "Receber Dados das Bombas",
+        "topic": "fuel-pumps/data",
+        "qos": "1",
+        "datatype": "json",
+        "broker": "a2106230.b4f97",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 180,
+        "y": 120,
+        "wires": [
+            [
+                "19b4d1a3.67d87e",
+                "f10fa5ae.483a88",
+                "4b81c9a4.57eb68"
+            ]
+        ]
+    },
+    {
+        "id": "19b4d1a3.67d87e",
+        "type": "function",
+        "z": "a7f1f29b.cb4ca",
+        "name": "Processar Dados",
+        "func": "// Extrair informa\u00e7\u00f5es da mensagem\nvar pump = msg.payload;\n\n// Formatar dados para exibi\u00e7\u00e3o\nvar formattedData = {\n    pumpId: pump.pumpId,\n    capacityCurrent: pump.capacityCurrent,\n    capacityTotal: pump.capacityTotal,\n    percentage: parseFloat(pump.capacityPercentage),\n    location: pump.location || \"Terminal Leste\",\n    fuelType: pump.fuelType || \"Diesel S-10\",\n    timestamp: new Date(pump.timestamp),\n    formattedTime: new Date(pump.timestamp).toLocaleTimeString(),\n    status: \"Normal\"\n};\n\n// Verificar status de reabastecimento em andamento\nvar refillOrders = flow.get(\"refill_orders\") || [];\nvar activeOrder = refillOrders.find(order => \n    order.pumpId === pump.pumpId && \n    (order.status === \"Em andamento\" || order.status === \"Em aberto\")\n);\n\n// Determinar status com base na porcentagem\nif (formattedData.percentage <= 5) {\n    formattedData.levelStatus = \"Cr\u00edtico\";\n} else if (formattedData.percentage <= 30) {\n    formattedData.levelStatus = \"Alerta\";\n} else {\n    formattedData.levelStatus = \"Normal\";\n}\n\n// Se h\u00e1 um reabastecimento em andamento e n\u00edvel est\u00e1 subindo, atualizar o status\nif (activeOrder && activeOrder.status === \"Em aberto\" && formattedData.percentage > activeOrder.lastPercentage) {\n    // O n\u00edvel est\u00e1 subindo, o reabastecimento come\u00e7ou\n    activeOrder.status = \"Em andamento\";\n    activeOrder.startTime = new Date();\n    flow.set(\"refill_orders\", refillOrders);\n}\n\n// Se h\u00e1 um reabastecimento em andamento e n\u00edvel chegou a 80%+, marcar como conclu\u00eddo\nif (activeOrder && activeOrder.status === \"Em andamento\" && formattedData.percentage >= 80) {\n    // Reabastecimento conclu\u00eddo\n    activeOrder.status = \"Finalizado\";\n    activeOrder.completeTime = new Date();\n    flow.set(\"refill_orders\", refillOrders);\n}\n\n// Atualizar o \u00faltimo percentual conhecido para esta bomba\nif (activeOrder) {\n    activeOrder.lastPercentage = formattedData.percentage;\n    flow.set(\"refill_orders\", refillOrders);\n}\n\n// Verificar padr\u00e3o de consumo anormal (potencial ataque)\n// Armazenar hist\u00f3rico no contexto\nvar history = flow.get(\"pump_\" + pump.pumpId + \"_history\") || [];\n\n// Adicionar dados atuais ao hist\u00f3rico\nhistory.push({\n    timestamp: new Date(pump.timestamp),\n    capacityCurrent: pump.capacityCurrent,\n    percentage: parseFloat(pump.capacityPercentage)\n});\n\n// Manter apenas os \u00faltimos 10 registros\nif (history.length > 10) {\n    history.shift();\n}\n\n// Salvar hist\u00f3rico atualizado\nflow.set(\"pump_\" + pump.pumpId + \"_history\", history);\n\n// Verificar anomalias se houver pelo menos 3 registros\nif (history.length >= 3) {\n    // Calcular a m\u00e9dia de consumo das \u00faltimas 3 leituras\n    var recentConsumption = [];\n    for (var i = 1; i < history.length; i++) {\n        var diff = history[i-1].capacityCurrent - history[i].capacityCurrent;\n        if (diff > 0) { // Considerar apenas consumo positivo\n            recentConsumption.push(diff);\n        }\n    }\n    \n    // Se o consumo m\u00e9dio for muito alto, pode ser um ataque\n    if (recentConsumption.length >= 2) {\n        var avgConsumption = recentConsumption.reduce((a, b) => a + b, 0) / recentConsumption.length;\n        \n        // Consumo m\u00e9dio acima de 100L entre leituras \u00e9 suspeito\n        if (avgConsumption > 100) {\n            formattedData.status = \"Poss\u00edvel Ataque\";\n            formattedData.anomalyDetected = true;\n        }\n    }\n}\n\n// Armazenar os dados mais recentes para cada bomba\nvar latestData = flow.get(\"latest_data\") || {};\nlatestData[pump.pumpId] = formattedData;\nflow.set(\"latest_data\", latestData);\n\n// Atualizar tabela com dados de todas as bombas\nvar tableData = [];\nfor (var key in latestData) {\n    tableData.push(latestData[key]);\n}\nflow.set(\"table_data\", tableData);\n\n// Enviar dados formatados para os n\u00f3s subsequentes\nmsg.payload = formattedData;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 120,
+        "wires": [
+            [
+                "c12f0fbe.0d971"
+            ]
+        ]
+    },
+    {
+        "id": "c12f0fbe.0d971",
+        "type": "switch",
+        "z": "a7f1f29b.cb4ca",
+        "name": "Encaminhar por Bomba",
+        "property": "payload.pumpId",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "PUMP001",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "PUMP002",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "PUMP003",
+                "vt": "str"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 3,
+        "x": 650,
+        "y": 120,
+        "wires": [
+            [
+                "format_gauge1",
+                "format_chart1",
+                "format_led1"
+            ],
+            [
+                "format_gauge2",
+                "format_chart2",
+                "format_led2"
+            ],
+            [
+                "format_gauge3",
+                "format_chart3",
+                "format_led3"
+            ]
+        ]
+    },
+    {
+        "id": "format_gauge1",
+        "type": "function",
+        "z": "a7f1f29b.cb4ca",
+        "name": "Formatar para Medidor 1",
+        "func": "// Extrair apenas o valor percentual para o medidor\nmsg.payload = msg.payload.percentage || 0;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 60,
+        "wires": [
+            [
+                "2f143bb8.666b64"
+            ]
+        ]
+    },
+    {
+        "id": "format_gauge2",
+        "type": "function",
+        "z": "a7f1f29b.cb4ca",
+        "name": "Formatar para Medidor 2",
+        "func": "// Extrair apenas o valor percentual para o medidor\nmsg.payload = msg.payload.percentage || 0;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 120,
+        "wires": [
+            [
+                "7f8c51d5.c8b4b"
+            ]
+        ]
+    },
+    {
+        "id": "format_gauge3",
+        "type": "function",
+        "z": "a7f1f29b.cb4ca",
+        "name": "Formatar para Medidor 3",
+        "func": "// Extrair apenas o valor percentual para o medidor\nmsg.payload = msg.payload.percentage || 0;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 180,
+        "wires": [
+            [
+                "a7fda2ac.fbb34"
+            ]
+        ]
+    },
+    {
+        "id": "format_chart1",
+        "type": "function",
+        "z": "a7f1f29b.cb4ca",
+        "name": "Formatar para Gr\u00e1fico 1",
+        "func": "// Formato simplificado para gr\u00e1ficos de linha\n// Enviar apenas o valor num\u00e9rico\nmsg.payload = msg.payload.percentage || 0;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 240,
+        "wires": [
+            [
+                "3a98dc9b.c9c364"
+            ]
+        ]
+    },
+    {
+        "id": "format_chart2",
+        "type": "function",
+        "z": "a7f1f29b.cb4ca",
+        "name": "Formatar para Gr\u00e1fico 2",
+        "func": "// Formato simplificado para gr\u00e1ficos de linha\n// Enviar apenas o valor num\u00e9rico\nmsg.payload = msg.payload.percentage || 0;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 300,
+        "wires": [
+            [
+                "b92a4328.1cf3b"
+            ]
+        ]
+    },
+    {
+        "id": "format_chart3",
+        "type": "function",
+        "z": "a7f1f29b.cb4ca",
+        "name": "Formatar para Gr\u00e1fico 3",
+        "func": "// Formato simplificado para gr\u00e1ficos de linha\n// Enviar apenas o valor num\u00e9rico\nmsg.payload = msg.payload.percentage || 0;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 360,
+        "wires": [
+            [
+                "8941dbf8.26f738"
+            ]
+        ]
+    },
+    {
+        "id": "format_led1",
+        "type": "function",
+        "z": "a7f1f29b.cb4ca",
+        "name": "Formatar para LED 1",
+        "func": "// Extrair status baseado no n\u00edvel\nmsg.payload = msg.payload.levelStatus || \"Normal\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 420,
+        "wires": [
+            [
+                "5d6c2a2a.a51f04"
+            ]
+        ]
+    },
+    {
+        "id": "format_led2",
+        "type": "function",
+        "z": "a7f1f29b.cb4ca",
+        "name": "Formatar para LED 2",
+        "func": "// Extrair status baseado no n\u00edvel\nmsg.payload = msg.payload.levelStatus || \"Normal\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 480,
+        "wires": [
+            [
+                "d9ea8a3c.b54538"
+            ]
+        ]
+    },
+    {
+        "id": "format_led3",
+        "type": "function",
+        "z": "a7f1f29b.cb4ca",
+        "name": "Formatar para LED 3",
+        "func": "// Extrair status baseado no n\u00edvel\nmsg.payload = msg.payload.levelStatus || \"Normal\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 540,
+        "wires": [
+            [
+                "fe1b5a9c.79fbf8"
+            ]
+        ]
+    },
+    {
+        "id": "2f143bb8.666b64",
+        "type": "ui_gauge",
+        "z": "a7f1f29b.cb4ca",
+        "name": "N\u00edvel Bomba 1",
+        "group": "3b3c8ff5.1d8d4",
+        "order": 1,
+        "width": "4",
+        "height": "4",
+        "gtype": "gage",
+        "title": "Bomba 1",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#ca3838",
+            "#e6e600",
+            "#00b500"
+        ],
+        "seg1": "5",
+        "seg2": "30",
+        "className": "",
+        "x": 1040,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "7f8c51d5.c8b4b",
+        "type": "ui_gauge",
+        "z": "a7f1f29b.cb4ca",
+        "name": "N\u00edvel Bomba 2",
+        "group": "3b3c8ff5.1d8d4",
+        "order": 2,
+        "width": "4",
+        "height": "4",
+        "gtype": "gage",
+        "title": "Bomba 2",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#ca3838",
+            "#e6e600",
+            "#00b500"
+        ],
+        "seg1": "5",
+        "seg2": "30",
+        "className": "",
+        "x": 1100,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "a7fda2ac.fbb34",
+        "type": "ui_gauge",
+        "z": "a7f1f29b.cb4ca",
+        "name": "N\u00edvel Bomba 3",
+        "group": "3b3c8ff5.1d8d4",
+        "order": 3,
+        "width": "4",
+        "height": "4",
+        "gtype": "gage",
+        "title": "Bomba 3",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#ca3838",
+            "#e6e600",
+            "#00b500"
+        ],
+        "seg1": "5",
+        "seg2": "30",
+        "className": "",
+        "x": 1100,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "3a98dc9b.c9c364",
+        "type": "ui_chart",
+        "z": "a7f1f29b.cb4ca",
+        "name": "Hist\u00f3rico Bomba 1",
+        "group": "9a3e372a.fd3578",
+        "order": 1,
+        "width": "8",
+        "height": "4",
+        "label": "N\u00edvel Bomba 1 (%)",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Aguardando dados...",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "100",
+        "removeOlder": "10",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1070,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b92a4328.1cf3b",
+        "type": "ui_chart",
+        "z": "a7f1f29b.cb4ca",
+        "name": "Hist\u00f3rico Bomba 2",
+        "group": "9a3e372a.fd3578",
+        "order": 2,
+        "width": "8",
+        "height": "4",
+        "label": "N\u00edvel Bomba 2 (%)",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Aguardando dados...",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "100",
+        "removeOlder": "10",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1070,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8941dbf8.26f738",
+        "type": "ui_chart",
+        "z": "a7f1f29b.cb4ca",
+        "name": "Hist\u00f3rico Bomba 3",
+        "group": "9a3e372a.fd3578",
+        "order": 3,
+        "width": "8",
+        "height": "4",
+        "label": "N\u00edvel Bomba 3 (%)",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Aguardando dados...",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "100",
+        "removeOlder": "10",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1150,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f10fa5ae.483a88",
+        "type": "debug",
+        "z": "a7f1f29b.cb4ca",
+        "name": "Debug Dados",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 430,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "4b81c9a4.57eb68",
+        "type": "function",
+        "z": "a7f1f29b.cb4ca",
+        "name": "Atualizar Tabela",
+        "func": "// Recuperar dados da tabela do contexto de fluxo\nvar tableData = flow.get(\"table_data\") || [];\n\n// Ordenar por ID da bomba\ntableData.sort((a, b) => {\n    return a.pumpId.localeCompare(b.pumpId);\n});\n\n// Verificar se os dados est\u00e3o completos para cada bomba\ntableData.forEach(item => {\n    // Valores padr\u00e3o para campos possivelmente ausentes\n    item.location = item.location || \"Terminal Leste\";\n    item.fuelType = item.fuelType || \"Diesel S-10\";\n    item.capacityTotal = item.capacityTotal || 5000;\n    item.percentage = item.percentage || 0;\n    item.formattedTime = item.formattedTime || new Date().toLocaleTimeString();\n    item.status = item.status || \"Normal\";\n});\n\n// Enviar para o n\u00f3 de tabela\nmsg.payload = tableData;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 240,
+        "wires": [
+            [
+                "af0c7afe.35f478"
+            ]
+        ]
+    },
+    {
+        "id": "af0c7afe.35f478",
+        "type": "ui_table",
+        "z": "a7f1f29b.cb4ca",
+        "group": "72c5c4e.dc0b97c",
+        "name": "Status das Bombas",
+        "order": 1,
+        "width": "24",
+        "height": "5",
+        "columns": [
+            {
+                "field": "pumpId",
+                "title": "Bomba",
+                "width": "10%",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "location",
+                "title": "Localiza\u00e7\u00e3o",
+                "width": "15%",
+                "align": "left",
+                "formatter": "plaintext"
+            },
+            {
+                "field": "fuelType",
+                "title": "Combust\u00edvel",
+                "width": "12%",
+                "align": "left",
+                "formatter": "plaintext"
+            },
+            {
+                "field": "capacityCurrent",
+                "title": "Volume Atual (L)",
+                "width": "15%",
+                "align": "center",
+                "formatter": "plaintext"
+            },
+            {
+                "field": "capacityTotal",
+                "title": "Capacidade (L)",
+                "width": "15%",
+                "align": "center",
+                "formatter": "plaintext"
+            },
+            {
+                "field": "percentage",
+                "title": "N\u00edvel (%)",
+                "width": "10%",
+                "align": "center",
+                "formatter": "plaintext"
+            },
+            {
+                "field": "formattedTime",
+                "title": "Atualiza\u00e7\u00e3o",
+                "width": "12%",
+                "align": "center",
+                "formatter": "plaintext"
+            },
+            {
+                "field": "status",
+                "title": "Status",
+                "width": "11%",
+                "align": "center",
+                "formatter": "plaintext"
+            }
+        ],
+        "outputs": 0,
+        "cts": false,
+        "x": 650,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "5d6c2a2a.a51f04",
+        "type": "ui_led",
+        "z": "a7f1f29b.cb4ca",
+        "order": 4,
+        "group": "3b3c8ff5.1d8d4",
+        "width": "4",
+        "height": "1",
+        "label": "Status",
+        "labelPlacement": "right",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#00ff00",
+                "value": "Normal",
+                "valueType": "str"
+            },
+            {
+                "color": "#ffff00",
+                "value": "Alerta",
+                "valueType": "str"
+            },
+            {
+                "color": "#ff0000",
+                "value": "Cr\u00edtico",
+                "valueType": "str"
+            },
+            {
+                "color": "#ff00ff",
+                "value": "Poss\u00edvel Ataque",
+                "valueType": "str"
+            }
+        ],
+        "allowColorForValueInMessage": true,
+        "shape": "circle",
+        "showGlow": true,
+        "name": "LED Status Bomba 1",
+        "x": 950,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "d9ea8a3c.b54538",
+        "type": "ui_led",
+        "z": "a7f1f29b.cb4ca",
+        "order": 5,
+        "group": "3b3c8ff5.1d8d4",
+        "width": "4",
+        "height": "1",
+        "label": "Status",
+        "labelPlacement": "right",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#00ff00",
+                "value": "Normal",
+                "valueType": "str"
+            },
+            {
+                "color": "#ffff00",
+                "value": "Alerta",
+                "valueType": "str"
+            },
+            {
+                "color": "#ff0000",
+                "value": "Cr\u00edtico",
+                "valueType": "str"
+            },
+            {
+                "color": "#ff00ff",
+                "value": "Poss\u00edvel Ataque",
+                "valueType": "str"
+            }
+        ],
+        "allowColorForValueInMessage": true,
+        "shape": "circle",
+        "showGlow": true,
+        "name": "LED Status Bomba 2",
+        "x": 950,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "fe1b5a9c.79fbf8",
+        "type": "ui_led",
+        "z": "a7f1f29b.cb4ca",
+        "order": 6,
+        "group": "3b3c8ff5.1d8d4",
+        "width": "4",
+        "height": "1",
+        "label": "Status",
+        "labelPlacement": "right",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#00ff00",
+                "value": "Normal",
+                "valueType": "str"
+            },
+            {
+                "color": "#ffff00",
+                "value": "Alerta",
+                "valueType": "str"
+            },
+            {
+                "color": "#ff0000",
+                "value": "Cr\u00edtico",
+                "valueType": "str"
+            },
+            {
+                "color": "#ff00ff",
+                "value": "Poss\u00edvel Ataque",
+                "valueType": "str"
+            }
+        ],
+        "allowColorForValueInMessage": true,
+        "shape": "circle",
+        "showGlow": true,
+        "name": "LED Status Bomba 3",
+        "x": 950,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "refill_requests",
+        "type": "mqtt in",
+        "z": "a7f1f29b.cb4ca",
+        "name": "Receber Solicita\u00e7\u00f5es de Reabastecimento",
+        "topic": "fuel-pumps/refill-request",
+        "qos": "1",
+        "datatype": "json",
+        "broker": "a2106230.b4f97",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 220,
+        "y": 380,
+        "wires": [
+            [
+                "process_refill_request"
+            ]
+        ]
+    },
+    {
+        "id": "process_refill_request",
+        "type": "function",
+        "z": "a7f1f29b.cb4ca",
+        "name": "Processar Solicita\u00e7\u00e3o de Reabastecimento",
+        "func": "// Extrair informa\u00e7\u00f5es da solicita\u00e7\u00e3o\nvar request = msg.payload;\n\n// Pegar todas as ordens de servi\u00e7o existentes\nvar refillOrders = flow.get(\"refill_orders\") || [];\n\n// Criar nova ordem de servi\u00e7o\nvar newOrder = {\n    id: Date.now(), // ID \u00fanico baseado em timestamp\n    timestamp: new Date(),\n    formattedTime: new Date().toLocaleTimeString(),\n    date: new Date().toLocaleDateString(),\n    pumpId: request.pumpId,\n    description: `Reabastecimento solicitado para a bomba ${request.pumpId}`,\n    status: \"Em aberto\",\n    currentLevel: request.currentLevel,\n    lastPercentage: request.currentLevel // Armazenar o \u00faltimo n\u00edvel conhecido\n};\n\n// Adicionar a nova ordem no in\u00edcio da lista (mais recente primeiro)\nrefillOrders.unshift(newOrder);\n\n// Salvar no contexto\nflow.set(\"refill_orders\", refillOrders);\n\n// Atualizar tabela de ordens\nupdateOrdersTable();\n\n// Fun\u00e7\u00e3o para atualizar a tabela de ordens\nfunction updateOrdersTable() {\n    // Ordenar por data (mais recente primeiro)\n    refillOrders.sort((a, b) => b.timestamp - a.timestamp);\n    \n    // Preparar dados para a tabela\n    var tableData = refillOrders.map(order => ({\n        timestamp: order.formattedTime + ' ' + order.date,\n        description: order.description,\n        status: order.status\n    }));\n    \n    // Armazenar no contexto para o n\u00f3 da tabela\n    flow.set(\"orders_table_data\", tableData);\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 380,
+        "wires": [
+            [
+                "update_orders_table"
+            ]
+        ]
+    },
+    {
+        "id": "update_orders_table",
+        "type": "function",
+        "z": "a7f1f29b.cb4ca",
+        "name": "Atualizar Tabela de Ordens",
+        "func": "// Pegar dados da tabela de ordens de servi\u00e7o\nvar ordersTableData = flow.get(\"orders_table_data\") || [];\n\n// Enviar para o n\u00f3 de tabela\nmsg.payload = ordersTableData;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 380,
+        "wires": [
+            [
+                "service_orders_table"
+            ]
+        ]
+    },
+    {
+        "id": "service_orders_table",
+        "type": "ui_table",
+        "z": "a7f1f29b.cb4ca",
+        "group": "orders_group",
+        "name": "Tabela de Ordens de Servi\u00e7o",
+        "order": 1,
+        "width": "12",
+        "height": "6",
+        "columns": [
+            {
+                "field": "timestamp",
+                "title": "Data/Hora",
+                "width": "25%",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "description",
+                "title": "Descri\u00e7\u00e3o",
+                "width": "50%",
+                "align": "left",
+                "formatter": "plaintext"
+            },
+            {
+                "field": "status",
+                "title": "Status",
+                "width": "25%",
+                "align": "center",
+                "formatter": "plaintext"
+            }
+        ],
+        "outputs": 0,
+        "cts": false,
+        "x": 950,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "update_orders_periodic",
+        "type": "inject",
+        "z": "a7f1f29b.cb4ca",
+        "name": "Atualiza\u00e7\u00e3o Peri\u00f3dica",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.5",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 510,
+        "y": 440,
+        "wires": [
+            [
+                "update_orders_table"
+            ]
+        ]
+    }
+]

