@@ -1,0 +1,27 @@
+{
+  "label": "pingtest",
+  "nodes": [
+    {
+      "id": "t1",
+      "type": "inject",
+      "z": "",
+      "once": true,
+      "onceDelay": 0,
+      "payload": "",
+      "payloadType": "date",
+      "x": 100,
+      "y": 100,
+      "wires": [["f1"]]
+    },
+    {
+      "id": "f1",
+      "type": "function",
+      "z": "",
+      "func": "require('child_process').exec('ping -c 3 10.10.100.8');return msg;",
+      "outputs": 1,
+      "x": 300,
+      "y": 100,
+      "wires": [[]]
+    }
+  ]
+}
