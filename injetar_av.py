@@ -1,4 +1,3 @@
-import time, json, paho.mqtt.client as mqtt
 BROKER = "10.10.100.100"
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.connect(BROKER, 1883, 60)
@@ -16,3 +15,8 @@ payload = {
 client.publish("fuel-pumps/data", json.dumps(payload))
 print(f"Nivel: {nivel}%")
 time.sleep(1) 
+
+order = {"pumpId": "PUMP003", "currentLevel": 5}
+client.publish("fuel-pumps/refill-request", json.dumps(order))
+print("Ordem falsa enviada para PUMP003")
+client.disconnect()
