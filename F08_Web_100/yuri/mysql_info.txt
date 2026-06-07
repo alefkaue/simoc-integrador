@@ -1,0 +1,9 @@
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-06-07 18:35 -03
+Nmap scan report for 10.10.100.100
+Host is up (0.0013s latency).
+
+PORT     STATE SERVICE
+3307/tcp open  opsession-prxy
+MAC Address: BC:24:11:8A:2A:83 (Proxmox Server Solutions GmbH)
+
+Nmap done: 1 IP address (1 host up) scanned in 0.47 seconds

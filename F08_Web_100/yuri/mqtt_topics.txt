@@ -1,0 +1,6 @@
+fuel-pumps/data {"pumpId":"PUMP001","timestamp":"2026-06-07T21:33:35.110Z","capacityTotal":5000,"capacityCurrent":1846,"capacityPercentage":"36.92","location":"Terminal Leste","fuelType":"Diesel S-10"}
+fuel-pumps/data {"pumpId":"PUMP002","timestamp":"2026-06-07T21:33:35.111Z","capacityTotal":5000,"capacityCurrent":994,"capacityPercentage":"19.88","location":"Terminal Leste","fuelType":"Diesel S-10"}
+fuel-pumps/data {"pumpId":"PUMP003","timestamp":"2026-06-07T21:33:35.111Z","capacityTotal":5000,"capacityCurrent":2613,"capacityPercentage":"52.26","location":"Terminal Leste","fuelType":"Diesel S-10"}
+fuel-pumps/refill-request {"pumpId":"PUMP002","currentLevel":19.88,"currentCapacity":994,"requestTime":"2026-06-07T21:33:35.117Z","location":"Terminal Leste","fuelType":"Diesel S-10"}
+fuel-pumps/data {"pumpId":"PUMP001","timestamp":"2026-06-07T21:33:40.116Z","capacityTotal":5000,"capacityCurrent":1835,"capacityPercentage":"36.70","location":"Terminal Leste","fuelType":"Diesel S-10"}
+fuel-pumps/data {"pumpId":"PUMP003","timestamp":"2026-06-07T21:33:40.117Z","capacityTotal":5000,"capacityCurrent":2594,"capacityPercentage":"51.88","location":"Terminal Leste","fuelType":"Diesel S-10"}

@@ -1,0 +1,1 @@
+{"status":"ok","service":"portal-operacoes","release":"1.7.3-hml","environment":"homologacao","node":"v14.21.3","database":"portal_operacoes","mysql":"5.5.62"}

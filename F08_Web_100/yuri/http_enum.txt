@@ -1,0 +1,25 @@
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-06-07 18:15 -03
+Nmap scan report for 10.10.100.100
+Host is up (0.00094s latency).
+
+PORT   STATE SERVICE
+80/tcp open  http
+|_http-title: Portal de Operacoes
+| http-headers: 
+|   Server: nginx/1.24.0
+|   Date: Sun, 07 Jun 2026 21:15:01 GMT
+|   Content-Type: text/html; charset=utf-8
+|   Content-Length: 4319
+|   Connection: close
+|   X-Powered-By: Express
+|   ETag: W/"10df-Zsx+x3AXAt3SWrh5ceu8fwu9qx8"
+|   
+|_  (Request type: HEAD)
+| http-enum: 
+|   /admin/: Possible admin folder (401 Unauthorized)
+|   /Admin/: Possible admin folder (401 Unauthorized)
+|   /health/: Spring Boot Actuator endpoint
+|_  /user/: Potentially interesting folder
+MAC Address: BC:24:11:8A:2A:83 (Proxmox Server Solutions GmbH)
+
+Nmap done: 1 IP address (1 host up) scanned in 14.65 seconds
