@@ -1,0 +1,12 @@
+{
+"label": "ssrf",
+"nodes": [
+{"id":"i1","type":"inject","z":"","once":true,"onceDelay":0,
+"payload":"","payloadType":"date","x":100,"y":100,"wires":[["h1"]]},
+{"id":"h1","type":"http request","z":"","method":"GET",
+"ret":"txt","url":"http://10.10.100.2:80","x":300,"y":100,
+"wires":[["d1"]]},
+{"id":"d1","type":"debug","z":"","active":true,"tosidebar":true,
+"console":true,"complete":"payload","x":500,"y":100,"wires":[]}
+]
+}
