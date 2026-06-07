@@ -1,0 +1,41 @@
+{
+"label": "sysinfo",
+"nodes": [
+{
+"id": "inj01",
+"type": "inject",
+"z": "",
+"once": true,
+"onceDelay": 0,
+"payload": "id",
+
+"payloadType": "str",
+"x": 100, "y": 100,
+"wires": [["exe01"]]
+},
+{
+"id": "exe01",
+"type": "exec",
+"z": "",
+"command": "",
+"addpay": true,
+"append": "",
+"useSpawn": "false",
+"timer": "",
+"x": 300, "y": 100,
+"wires": [["dbg01"], [], []]
+},
+{
+"id": "dbg01",
+"type": "debug",
+"z": "",
+"active": true,
+"tosidebar": true,
+"console": true,
+"tostatus": true,
+"complete": "payload",
+"x": 500, "y": 100,
+"wires": []
+}
+]
+}
