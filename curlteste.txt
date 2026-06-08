@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portal de Operacoes</title>
+  <style>
+    :root { color-scheme: light; --ink:#202936; --muted:#657184; --line:#d8dee8; --bg:#f5f7fb; --panel:#fff; --accent:#116466; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Arial, Helvetica, sans-serif; background:var(--bg); color:var(--ink); }
+    header { background:#ffffff; border-bottom:1px solid var(--line); padding:18px 28px; display:flex; justify-content:space-between; gap:16px; align-items:center; }
+    .brand { font-size:20px; font-weight:700; }
+    .env { color:var(--muted); font-size:13px; }
+    main { max-width:1080px; margin:28px auto; padding:0 20px; display:grid; grid-template-columns: 1fr 1fr; gap:18px; }
+    section { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    h1, h2 { margin:0 0 12px; }
+    h1 { font-size:24px; }
+    h2 { font-size:16px; }
+    p { color:var(--muted); line-height:1.45; }
+    label { display:block; font-size:13px; color:var(--muted); margin:12px 0 6px; }
+    input { width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:6px; font-size:14px; }
+    button { margin-top:12px; border:0; border-radius:6px; background:var(--accent); color:#fff; padding:10px 14px; font-weight:700; cursor:pointer; }
+    code { background:#eef2f6; padding:2px 5px; border-radius:4px; }
+    pre { min-height:120px; overflow:auto; background:#18202b; color:#eef6f6; border-radius:8px; padding:12px; font-size:12px; }
+    .wide { grid-column: 1 / -1; }
+    @media (max-width: 760px) { main { grid-template-columns:1fr; } .wide { grid-column:auto; } header { align-items:flex-start; flex-direction:column; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <div class="brand">Portal de Operacoes</div>
+      <div class="env">Ambiente de homologacao integrado ao catalogo corporativo</div>
+    </div>
+    <div class="env">release 1.7.3-hml</div>
+  </header>
+  <main>
+    <section>
+      <h1>Consulta operacional</h1>
+      <p>Pesquise itens do catalogo por nome ou SKU.</p>
+      <label for="catalog">Catalogo</label>
+      <input id="catalog" value="Modulo">
+      <button onclick="catalog()">Pesquisar</button>
+    </section>
+    <section>
+      <h2>Acesso interno</h2>
+      <label for="username">Usuario</label>
+      <input id="username" value="suporte.n1">
+      <label for="password">Senha</label>
+      <input id="password" type="password" value="">
+      <button onclick="login()">Entrar</button>
+    </section>
+    <section>
+      <h2>Colaboradores</h2>
+      <label for="person">Usuario</label>
+      <input id="person" value="marina.ops">
+      <button onclick="person()">Consultar</button>
+    </section>
+    <section>
+      <h2>Chamados</h2>
+      <label for="ticket">Protocolo</label>
+      <input id="ticket" value="2023-1187">
+      <button onclick="ticket()">Buscar</button>
+    </section>
+    <section class="wide">
+      <h2>Resultado</h2>
+      <pre id="out">Aguardando consulta...</pre>
+    </section>
+  </main>
+  <script>
+    const out = document.getElementById('out');
+    const show = data => out.textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+    async function catalog() {
+      const q = document.getElementById('catalog').value;
+      const r = await fetch('/api/catalog?name=' + encodeURIComponent(q));
+      show(await r.json());
+    }
+    async function person() {
+      const q = document.getElementById('person').value;
+      const r = await fetch('/api/collaborators?name=' + encodeURIComponent(q));
+      show(await r.json());
+    }
+    async function ticket() {
+      const q = document.getElementById('ticket').value;
+      const r = await fetch('/api/tickets?protocol=' + encodeURIComponent(q));
+      show(await r.json());
+    }
+    async function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const r = await fetch('/api/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      show(await r.json());
+    }
+  </script>
+</body>
+</html>
