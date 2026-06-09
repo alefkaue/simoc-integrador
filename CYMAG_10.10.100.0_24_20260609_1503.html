@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CYMAG — 10.10.100.0/24</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;font-size:14px}
+.hdr{background:#1a1a2e;color:#fff;padding:18px 32px;display:flex;justify-content:space-between;align-items:center}
+.hdr h1{font-size:20px;font-weight:700;letter-spacing:1px}
+.hdr .meta{font-size:11px;color:#aaa;text-align:right;line-height:2}
+.wrap{max-width:1080px;margin:0 auto;padding:22px 14px}
+.dash{display:grid;grid-template-columns:160px 1fr;gap:14px;margin-bottom:20px}
+.sc{background:#fff;border-radius:8px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.07);border-left:4px solid #27ae60;text-align:center}
+.sl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#777;margin-bottom:6px}
+.sv{font-size:42px;font-weight:700;color:#27ae60}
+.ss{font-size:11px;color:#888;margin-top:3px}
+.cc{background:#fff;border-radius:8px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.07);display:flex;align-items:center;gap:24px}
+.li{display:flex;align-items:center;gap:7px;font-size:12px;margin-bottom:6px}
+.ld{display:inline-block;width:11px;height:11px;border-radius:50%}
+.sdd-critico{background:#c0392b}.sdd-alto{background:#e67e22}
+.sdd-medio{background:#f39c12}.sdd-baixo{background:#27ae60}.sdd-info{background:#95a5a6}
+.sb{background:#fff;border-radius:8px;padding:18px;margin-bottom:20px;
+    box-shadow:0 1px 4px rgba(0,0,0,.07);border-left:4px solid #0f3460}
+.sb h2{font-size:14px;color:#0f3460;margin-bottom:8px}
+.sb p{line-height:1.7;color:#444}
+.disc{background:#fff8e1;border-left:3px solid #f39c12;padding:9px 13px;
+      margin-top:10px;font-size:11px;color:#666;border-radius:0 4px 4px 0}
+.fts{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;align-items:center}
+.flb{font-size:11px;color:#666;font-weight:700}
+.fb{border:none;padding:5px 13px;border-radius:20px;cursor:pointer;font-size:11px;
+    font-weight:600;background:#ddd;color:#333;transition:opacity .2s}
+.fb.active{outline:2px solid #333}.fb:hover{opacity:.8}
+.fb-critico{background:#c0392b;color:#fff}.fb-alto{background:#e67e22;color:#fff}
+.fb-medio{background:#f39c12;color:#fff}.fb-baixo{background:#27ae60;color:#fff}
+.fb-info{background:#95a5a6;color:#fff}
+.st{font-size:15px;font-weight:700;margin-bottom:10px}
+.card{background:#fff;border-radius:8px;margin-bottom:9px;
+      box-shadow:0 1px 3px rgba(0,0,0,.06);border-left:4px solid #ccc;transition:box-shadow .2s}
+.card:hover{box-shadow:0 3px 10px rgba(0,0,0,.11)}
+.sev-critico{border-left-color:#c0392b}.sev-alto{border-left-color:#e67e22}
+.sev-medio{border-left-color:#f39c12}.sev-baixo{border-left-color:#27ae60}
+.sev-info{border-left-color:#95a5a6}.card.done{opacity:.5;filter:grayscale(60%)}
+.ch{padding:13px 14px;cursor:pointer;position:relative;user-select:none}
+.r1{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.bg{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700}
+.bg-critico{background:#c0392b;color:#fff}.bg-alto{background:#e67e22;color:#fff}
+.bg-medio{background:#f39c12;color:#fff}.bg-baixo{background:#27ae60;color:#fff}
+.bg-info{background:#95a5a6;color:#fff}
+.ct{font-weight:600;font-size:13.5px;flex:1}.cv{font-size:11px;color:#888}
+.r2{margin-top:5px;font-size:11px;color:#888}
+.chv{position:absolute;right:14px;top:14px;font-size:11px;color:#aaa;transition:transform .2s}
+.chv.open{transform:rotate(180deg)}
+.cb{display:none;padding:0 14px 14px;border-top:1px solid #f0f0f0}
+.desc{color:#444;line-height:1.65;margin-top:11px}
+.ev{background:#1e1e1e;border-radius:4px;padding:9px 11px;margin:9px 0;overflow-x:auto}
+.ev code{color:#d4d4d4;font-size:11px;font-family:Consolas,monospace;white-space:pre-wrap;word-break:break-all}
+.ab{background:#f0f4ff;border-left:3px solid #3498db;padding:9px 13px;margin:9px 0;border-radius:0 4px 4px 0}
+.al{font-size:10px;font-weight:700;color:#2980b9;margin-bottom:4px}
+.ab p{color:#333;line-height:1.6;font-size:13px}
+.rb{background:#f0fff4;border-left:3px solid #27ae60;padding:9px 13px;margin:9px 0;border-radius:0 4px 4px 0}
+.rl{font-size:10px;font-weight:700;color:#1e8449;margin-bottom:4px}
+.rb p{color:#333;line-height:1.6;font-size:13px}
+.ck{display:flex;align-items:center;gap:7px;margin-top:10px;font-size:12px;color:#666;cursor:pointer}
+.ftr{background:#1a1a2e;color:#666;text-align:center;padding:14px;font-size:11px;margin-top:28px}
+@media print{.fts,.fb{display:none}.cb{display:block!important}body{background:#fff}}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div>
+    <h1>🔍 CYMAG AutoScanner v1.1</h1>
+    <div style="font-size:12px;color:#aaa;margin-top:3px">Relatório de Diagnóstico de Segurança</div>
+  </div>
+  <div class="meta">Alvo: <b style="color:#fff">10.10.100.0/24</b><br>09/06/2026 15:03<br>19 achados</div>
+</div>
+<div class="wrap">
+  <div class="dash">
+    <div class="sc"><div class="sl">Score de Risco</div><div class="sv">0</div><div class="ss">BAIXO</div></div>
+    <div class="cc">
+      <svg viewBox="0 0 120 120" width="115" height="115" style="flex-shrink:0">
+        <path d="M 60.0 8.0 A 52 52 0 1 1 51.4 111.3 L 55.1 89.6 A 30 30 0 1 0 60.0 30.0 Z" fill="#c0392b" title="CRÍTICO:10"/>
+<path d="M 51.4 111.3 A 52 52 0 0 1 35.3 105.7 L 45.7 86.4 A 30 30 0 0 0 55.1 89.6 Z" fill="#e67e22" title="ALTO:1"/>
+<path d="M 35.3 105.7 A 52 52 0 0 1 9.6 47.2 L 30.9 52.6 A 30 30 0 0 0 45.7 86.4 Z" fill="#f39c12" title="MÉDIO:4"/>
+<path d="M 9.6 47.2 A 52 52 0 0 1 60.0 8.0 L 60.0 30.0 A 30 30 0 0 0 30.9 52.6 Z" fill="#27ae60" title="BAIXO:4"/>
+
+        <text x="60" y="64" text-anchor="middle" font-size="15" font-weight="bold" fill="#333">19</text>
+        <text x="60" y="76" text-anchor="middle" font-size="8" fill="#999">achados</text>
+      </svg>
+      <div><div class="li"><span class="ld sdd-critico"></span>CRÍTICO: <b>10</b></div><div class="li"><span class="ld sdd-alto"></span>ALTO: <b>1</b></div><div class="li"><span class="ld sdd-medio"></span>MÉDIO: <b>4</b></div><div class="li"><span class="ld sdd-baixo"></span>BAIXO: <b>4</b></div></div>
+    </div>
+  </div>
+  <div class="sb">
+    <h2>🤖 Análise Executiva — Inteligência Artificial</h2>
+    <p>Análise de IA não disponível.</p>
+    <div class="disc">⚠ <b>Aviso:</b> Esta análise foi gerada por IA e pode conter imprecisões. Consulte sempre um especialista em segurança cibernética.</div>
+  </div>
+  <div class="st">Achados de Segurança</div>
+  <div class="fts"><span class="flb">Filtrar:</span><button class="fb active" data-f="ALL" onclick="flt(this)">Todos <span class="cnt">19</span></button><button class="fb fb-critico" data-f="CRÍTICO" onclick="flt(this)">CRÍTICO <span class="cnt">10</span></button><button class="fb fb-alto" data-f="ALTO" onclick="flt(this)">ALTO <span class="cnt">1</span></button><button class="fb fb-medio" data-f="MÉDIO" onclick="flt(this)">MÉDIO <span class="cnt">4</span></button><button class="fb fb-baixo" data-f="BAIXO" onclick="flt(this)">BAIXO <span class="cnt">4</span></button></div>
+  <div id="fl">
+<div class="card sev-critico" data-severity="CRÍTICO" id="c0">
+  <div class="ch" onclick="tog(this)">
+    <div class="r1">
+      <span class="bg bg-critico">CRÍTICO</span>
+      <span class="ct">SQL Injection Detectado</span>
+      <span class="cv">CVSS&nbsp;9.8</span>
+    </div>
+    <div class="r2">🖥 10.10.100.100:80 &nbsp; ⚙ HTTP</div>
+    <span class="chv">▼</span>
+  </div>
+  <div class="cb">
+    <p class="desc">Endpoint retorna erros SQL ao receber entrada malformada. Pode permitir extração completa do banco de dados.</p>
+    <div class="ev"><code>GET /api/collaborators?name=' → erro SQL na resposta</code></div>
+    <label class="ck"><input type="checkbox" onchange="done(this,'c0')"> Marcar como revisado</label>
+  </div>
+</div>
+<div class="card sev-critico" data-severity="CRÍTICO" id="c1">
+  <div class="ch" onclick="tog(this)">
+    <div class="r1">
+      <span class="bg bg-critico">CRÍTICO</span>
+      <span class="ct">Broken Authentication — Token Base64 Forjável</span>
+      <span class="cv">CVSS&nbsp;9.1</span>
+    </div>
+    <div class="r2">🖥 10.10.100.100:80 &nbsp; ⚙ HTTP</div>
+    <span class="chv">▼</span>
+  </div>
+  <div class="cb">
+    <p class="desc">O token de sessão é Base64 de usuario:role:contexto sem assinatura criptográfica. Qualquer usuário pode forjar um token de administrador.</p>
+    <div class="ev"><code>Token forjado aceito em /admin (HTTP 200)</code></div>
+    <label class="ck"><input type="checkbox" onchange="done(this,'c1')"> Marcar como revisado</label>
+  </div>
+</div>
+<div class="card sev-critico" data-severity="CRÍTICO" id="c2">
+  <div class="ch" onclick="tog(this)">
+    <div class="r1">
+      <span class="bg bg-critico">CRÍTICO</span>
+      <span class="ct">Node-RED Sem Autenticação</span>
+      <span class="cv">CVSS&nbsp;9.8</span>
+    </div>
+    <div class="r2">🖥 10.10.100.100:1880 &nbsp; ⚙ Node-RED</div>
+    <span class="chv">▼</span>
+  </div>
+  <div class="cb">
+    <p class="desc">Interface administrativa do Node-RED v4.1.10 acessível sem credenciais. Controle total sobre fluxos OT.</p>
+    <div class="ev"><code>GET /settings → 200 | v4.1.10 | funcExtModules:True</code></div>
+    <label class="ck"><input type="checkbox" onchange="done(this,'c2')"> Marcar como revisado</label>
+  </div>
+</div>
+<div class="card sev-critico" data-severity="CRÍTICO" id="c3">
+  <div class="ch" onclick="tog(this)">
+    <div class="r1">
+      <span class="bg bg-critico">CRÍTICO</span>
+      <span class="ct">RCE Potencial — functionExternalModules Ativo</span>
+      <span class="cv">CVSS&nbsp;9.1</span>
+    </div>
+    <div class="r2">🖥 10.10.100.100:1880 &nbsp; ⚙ Node-RED</div>
+    <span class="chv">▼</span>
+  </div>
+  <div class="cb">
+    <p class="desc">A flag functionExternalModules:true permite carregar child_process e executar comandos no SO do servidor.</p>
+    <div class="ev"><code>"functionExternalModules": true</code></div>
+    <label class="ck"><input type="checkbox" onchange="done(this,'c3')"> Marcar como revisado</label>
+  </div>
+</div>
+<div class="card sev-critico" data-severity="CRÍTICO" id="c4">
+  <div class="ch" onclick="tog(this)">
+    <div class="r1">
+      <span class="bg bg-critico">CRÍTICO</span>
+      <span class="ct">Código-Fonte de Automação Exposto</span>
+      <span class="cv">CVSS&nbsp;8.6</span>
+    </div>
+    <div class="r2">🖥 10.10.100.100:1880 &nbsp; ⚙ Node-RED</div>
+    <span class="chv">▼</span>
+  </div>
+  <div class="cb">
+    <p class="desc">37 nós de automação acessíveis sem autenticação.</p>
+    <div class="ev"><code>GET /flows → 200 | 37 nós</code></div>
+    <label class="ck"><input type="checkbox" onchange="done(this,'c4')"> Marcar como revisado</label>
+  </div>
+</div>
+<div class="card sev-critico" data-severity="CRÍTICO" id="c5">
+  <div class="ch" onclick="tog(this)">
+    <div class="r1">
+      <span class="bg bg-critico">CRÍTICO</span>
+      <span class="ct">Sistema SCADA/OT de Bombas Exposto</span>
+      <span class="cv">CVSS&nbsp;9.5</span>
+    </div>
+    <div class="r2">🖥 10.10.100.100:1880 &nbsp; ⚙ Node-RED</div>
+    <span class="chv">▼</span>
+  </div>
+  <div class="cb">
+    <p class="desc">Flows expõem sistema industrial de monitoramento de bombas. Permite injeção de telemetria falsa.</p>
+    <div class="ev"><code>Tópicos MQTT industriais detectados nos flows</code></div>
+    <label class="ck"><input type="checkbox" onchange="done(this,'c5')"> Marcar como revisado</label>
+  </div>
+</div>
+<div class="card sev-critico" data-severity="CRÍTICO" id="c6">
+  <div class="ch" onclick="tog(this)">
+    <div class="r1">
+      <span class="bg bg-critico">CRÍTICO</span>
+      <span class="ct">Broker MQTT Sem Autenticação e Sem TLS</span>
+      <span class="cv">CVSS&nbsp;9.3</span>
+    </div>
+    <div class="r2">🖥 10.10.100.100:1883 &nbsp; ⚙ MQTT</div>
+    <span class="chv">▼</span>
+  </div>
+  <div class="cb">
+    <p class="desc">Broker MQTT aceita conexões anônimas e transmite dados em texto claro. Qualquer dispositivo pode publicar ou assinar qualquer tópico industrial.</p>
+    <div class="ev"><code>Conexão anônima aceita na porta 1883/tcp (sem TLS)</code></div>
+    <label class="ck"><input type="checkbox" onchange="done(this,'c6')"> Marcar como revisado</label>
+  </div>
+</div>
+<div class="card sev-critico" data-severity="CRÍTICO" id="c7">
+  <div class="ch" onclick="tog(this)">
+    <div class="r1">
+      <span class="bg bg-critico">CRÍTICO</span>
+      <span class="ct">MySQL 5.5.62 — EOL sem patches desde 2018</span>
+      <span class="cv">CVSS&nbsp;9.8</span>
+    </div>
+    <div class="r2">🖥 10.10.100.100:3307 &nbsp; ⚙ MySQL</div>
+    <span class="chv">▼</span>
+  </div>
+  <div class="cb">
+    <p class="desc">MySQL 5.5.62 atingiu End-of-Life em 2018. Múltiplas CVEs críticas sem correção disponível.</p>
+    <div class="ev"><code>Versão: MySQL 5.5.62</code></div>
+    <label class="ck"><input type="checkbox" onchange="done(this,'c7')"> Marcar como revisado</label>
+  </div>
+</div>
+<div class="card sev-critico" data-severity="CRÍTICO" id="c8">
+  <div class="ch" onclick="tog(this)">
+    <div class="r1">
+      <span class="bg bg-critico">CRÍTICO</span>
+      <span class="ct">SMB Signing Desabilitado — NTLM Relay Viável</span>
+      <span class="cv">CVSS&nbsp;9.0</span>
+    </div>
+    <div class="r2">🖥 10.10.100.2:139 &nbsp; ⚙ SMB</div>
+    <span class="chv">▼</span>
+  </div>
+  <div class="cb">
+    <p class="desc">Sem assinatura SMB, ataques NTLM Relay são viáveis. Em ambientes com Active Directory, isso pode levar ao comprometimento total do domínio.</p>
+    <div class="ev"><code>SMB Signing: disabled/not required</code></div>
+    <label class="ck"><input type="checkbox" onchange="done(this,'c8')"> Marcar como revisado</label>
+  </div>
+</div>
+<div class="card sev-critico" data-severity="CRÍTICO" id="c9">
+  <div class="ch" onclick="tog(this)">
+    <div class="r1">
+      <span class="bg bg-critico">CRÍTICO</span>
+      <span class="ct">SMB Signing Desabilitado — NTLM Relay Viável</span>
+      <span class="cv">CVSS&nbsp;9.0</span>
+    </div>
+    <div class="r2">🖥 10.10.100.2:445 &nbsp; ⚙ SMB</div>
+    <span class="chv">▼</span>
+  </div>
+  <div class="cb">
+    <p class="desc">Sem assinatura SMB, ataques NTLM Relay são viáveis. Em ambientes com Active Directory, isso pode levar ao comprometimento total do domínio.</p>
+    <div class="ev"><code>SMB Signing: disabled/not required | [*] Windows 10 / Server 2016 Build 17134 x64 (name:WIN10101002) (domain:corp.local) (signing:False) (SMBv1:False) | Host: WIN10101002</code></div>
+    <label class="ck"><input type="checkbox" onchange="done(this,'c9')"> Marcar como revisado</label>
+  </div>
+</div>
+<div class="card sev-alto" data-severity="ALTO" id="c10">
+  <div class="ch" onclick="tog(this)">
+    <div class="r1">
+      <span class="bg bg-alto">ALTO</span>
+      <span class="ct">Endpoint Sensível Exposto: /api/collaborators</span>
+      <span class="cv">CVSS&nbsp;7.5</span>
+    </div>
+    <div class="r2">🖥 10.10.100.100:80 &nbsp; ⚙ HTTP</div>
+    <span class="chv">▼</span>
+  </div>
+  <div class="cb">
+    <p class="desc">Endpoint de Colaboradores acessível sem autenticação adequada.</p>
+    <div class="ev"><code>GET /api/collaborators → HTTP 200</code></div>
+    <label class="ck"><input type="checkbox" onchange="done(this,'c10')"> Marcar como revisado</label>
+  </div>
+</div>
+<div class="card sev-medio" data-severity="MÉDIO" id="c11">
+  <div class="ch" onclick="tog(this)">
+    <div class="r1">
+      <span class="bg bg-medio">MÉDIO</span>
+      <span class="ct">Headers de Segurança Ausentes</span>
+      <span class="cv">CVSS&nbsp;5.3</span>
+    </div>
+    <div class="r2">🖥 10.10.100.100:80 &nbsp; ⚙ HTTP</div>
+    <span class="chv">▼</span>
+  </div>
+  <div class="cb">
+    <p class="desc">A aplicação não implementa headers de segurança HTTP recomendados, deixando usuários expostos a ataques como clickjacking e XSS.</p>
+    <div class="ev"><code>Ausentes: X-Content-Type-Options, X-Frame-Options, Content-Security-Policy, Strict-Transport-Security</code></div>
+    <label class="ck"><input type="checkbox" onchange="done(this,'c11')"> Marcar como revisado</label>
+  </div>
+</div>
+<div class="card sev-medio" data-severity="MÉDIO" id="c12">
+  <div class="ch" onclick="tog(this)">
+    <div class="r1">
+      <span class="bg bg-medio">MÉDIO</span>
+      <span class="ct">Endpoint Sensível Exposto: /admin</span>
+      <span class="cv">CVSS&nbsp;5.0</span>
+    </div>
+    <div class="r2">🖥 10.10.100.100:80 &nbsp; ⚙ HTTP</div>
+    <span class="chv">▼</span>
+  </div>
+  <div class="cb">
+    <p class="desc">Painel Administrativo acessível sem autenticação adequada.</p>
+    <div class="ev"><code>GET /admin → HTTP 401</code></div>
+    <label class="ck"><input type="checkbox" onchange="done(this,'c12')"> Marcar como revisado</label>
+  </div>
+</div>
+<div class="card sev-medio" data-severity="MÉDIO" id="c13">
+  <div class="ch" onclick="tog(this)">
+    <div class="r1">
+      <span class="bg bg-medio">MÉDIO</span>
+      <span class="ct">RPC Endpoint Mapper Exposto</span>
+      <span class="cv">CVSS&nbsp;5.3</span>
+    </div>
+    <div class="r2">🖥 10.10.100.2:135 &nbsp; ⚙ RPC</div>
+    <span class="chv">▼</span>
+  </div>
+  <div class="cb">
+    <p class="desc">A porta 135 (RPC Endpoint Mapper) está acessível. Pode ser usada para enumeração de serviços RPC registrados e movimentação lateral em ambientes Windows/AD.</p>
+    <div class="ev"><code>Porta 135/tcp aberta em 10.10.100.2</code></div>
+    <label class="ck"><input type="checkbox" onchange="done(this,'c13')"> Marcar como revisado</label>
+  </div>
+</div>
+<div class="card sev-medio" data-severity="MÉDIO" id="c14">
+  <div class="ch" onclick="tog(this)">
+    <div class="r1">
+      <span class="bg bg-medio">MÉDIO</span>
+      <span class="ct">RPC Endpoint Mapper Exposto</span>
+      <span class="cv">CVSS&nbsp;5.3</span>
+    </div>
+    <div class="r2">🖥 10.10.100.3:135 &nbsp; ⚙ RPC</div>
+    <span class="chv">▼</span>
+  </div>
+  <div class="cb">
+    <p class="desc">A porta 135 (RPC Endpoint Mapper) está acessível. Pode ser usada para enumeração de serviços RPC registrados e movimentação lateral em ambientes Windows/AD.</p>
+    <div class="ev"><code>Porta 135/tcp aberta em 10.10.100.3</code></div>
+    <label class="ck"><input type="checkbox" onchange="done(this,'c14')"> Marcar como revisado</label>
+  </div>
+</div>
+<div class="card sev-baixo" data-severity="BAIXO" id="c15">
+  <div class="ch" onclick="tog(this)">
+    <div class="r1">
+      <span class="bg bg-baixo">BAIXO</span>
+      <span class="ct">Divulgação de Versão do Servidor Web</span>
+      <span class="cv">CVSS&nbsp;3.1</span>
+    </div>
+    <div class="r2">🖥 10.10.100.100:80 &nbsp; ⚙ HTTP</div>
+    <span class="chv">▼</span>
+  </div>
+  <div class="cb">
+    <p class="desc">O header Server revela versão exata, facilitando ataques direcionados.</p>
+    <div class="ev"><code>Server: nginx/1.24.0</code></div>
+    <label class="ck"><input type="checkbox" onchange="done(this,'c15')"> Marcar como revisado</label>
+  </div>
+</div>
+<div class="card sev-baixo" data-severity="BAIXO" id="c16">
+  <div class="ch" onclick="tog(this)">
+    <div class="r1">
+      <span class="bg bg-baixo">BAIXO</span>
+      <span class="ct">MySQL em Porta Não Padrão (3307)</span>
+      <span class="cv">CVSS&nbsp;2.0</span>
+    </div>
+    <div class="r2">🖥 10.10.100.100:3307 &nbsp; ⚙ MySQL</div>
+    <span class="chv">▼</span>
+  </div>
+  <div class="cb">
+    <p class="desc">Porta não padrão não é medida de segurança efetiva.</p>
+    <div class="ev"><code>MySQL em 3307/tcp</code></div>
+    <label class="ck"><input type="checkbox" onchange="done(this,'c16')"> Marcar como revisado</label>
+  </div>
+</div>
+<div class="card sev-baixo" data-severity="BAIXO" id="c17">
+  <div class="ch" onclick="tog(this)">
+    <div class="r1">
+      <span class="bg bg-baixo">BAIXO</span>
+      <span class="ct">Serviços RPC Enumerados</span>
+      <span class="cv">CVSS&nbsp;3.1</span>
+    </div>
+    <div class="r2">🖥 10.10.100.2:135 &nbsp; ⚙ RPC</div>
+    <span class="chv">▼</span>
+  </div>
+  <div class="cb">
+    <p class="desc">Serviços RPC enumerados sem autenticação. Pode revelar serviços internos e versões.</p>
+    <div class="ev"><code>Serviços: [MS-RSP]: Remote Shutdown Protocol , N/A , N/A , N/A , N/A </code></div>
+    <label class="ck"><input type="checkbox" onchange="done(this,'c17')"> Marcar como revisado</label>
+  </div>
+</div>
+<div class="card sev-baixo" data-severity="BAIXO" id="c18">
+  <div class="ch" onclick="tog(this)">
+    <div class="r1">
+      <span class="bg bg-baixo">BAIXO</span>
+      <span class="ct">Serviços RPC Enumerados</span>
+      <span class="cv">CVSS&nbsp;3.1</span>
+    </div>
+    <div class="r2">🖥 10.10.100.3:135 &nbsp; ⚙ RPC</div>
+    <span class="chv">▼</span>
+  </div>
+  <div class="cb">
+    <p class="desc">Serviços RPC enumerados sem autenticação. Pode revelar serviços internos e versões.</p>
+    <div class="ev"><code>Serviços: [MS-RSP]: Remote Shutdown Protocol , N/A , N/A , N/A , N/A </code></div>
+    <label class="ck"><input type="checkbox" onchange="done(this,'c18')"> Marcar como revisado</label>
+  </div>
+</div></div>
+</div>
+<div class="ftr">CYMAG AutoScanner v1.1 &nbsp;|&nbsp; SENAI / Faculdade de Tecnologia Paulo Antonio Skaf &nbsp;|&nbsp; Projeto Integrador I<br>Relatório gerado automaticamente. Consulte sempre um especialista em segurança cibernética.</div>
+<script>
+function flt(b){document.querySelectorAll('.fb').forEach(x=>x.classList.remove('active'));b.classList.add('active');const f=b.dataset.f;document.querySelectorAll('.card').forEach(c=>{c.style.display=(f==='ALL'||c.dataset.severity===f)?'':'none';});}
+function tog(h){const b=h.nextElementSibling,c=h.querySelector('.chv'),o=b.style.display==='block';b.style.display=o?'none':'block';c.classList.toggle('open',!o);}
+function done(cb,id){const c=document.getElementById(id);c.classList.toggle('done',cb.checked);localStorage.setItem(id,cb.checked?'1':'');}
+window.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('.card').forEach(c=>{if(localStorage.getItem(c.id)==='1'){c.classList.add('done');const cb=c.querySelector('input');if(cb)cb.checked=true;}});
+  document.querySelectorAll('.sev-critico').forEach(c=>{const b=c.querySelector('.cb'),ch=c.querySelector('.chv');if(b)b.style.display='block';if(ch)ch.classList.add('open');});
+});
+</script>
+</body>
+</html>
