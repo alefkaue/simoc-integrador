@@ -1,95 +1,106 @@
-# CYMAG – Active Directory Security Analysis (SIMOC Cyber Range)
+CYMAG – Continuous Automated Red Teaming (SIMOC Cyber Range)
 
-Projeto acadêmico desenvolvido no curso de Tecnologia em Segurança Cibernética – SENAI.
+Projeto académico desenvolvido no curso de Tecnologia em Segurança Cibernética – SENAI / Faculdade de Tecnologia Paulo Antonio Skaf.
 
-## Sobre o Projeto
+Sobre o Projeto
 
-Este repositório contém os resultados, documentações e evidências técnicas coletadas durante a análise de segurança de um ambiente Active Directory existente na plataforma SIMOC Cyber Range (Indra Brasil).
+Este repositório contém o código-fonte, resultados e documentações do CYMAG, um protótipo de SaaS focado em testes contínuos de segurança (CART). O projeto foi desenvolvido com base na análise de um ambiente corporativo simulado na plataforma SIMOC Cyber Range (Indra Brasil).
 
-O projeto segue uma abordagem:
+A nossa solução evoluiu de testes manuais para um fluxo automatizado que utiliza Inteligência Artificial para não apenas encontrar vulnerabilidades, mas também traduzir riscos técnicos (como SQL Injection e falhas OT) em impacto financeiro e operacional para executivos.
 
-* Blackbox
-* Defensiva
-* Acadêmica
-* Não destrutiva
+O projeto segue as premissas de uma abordagem:
 
-O foco principal é realizar:
+Blackbox
 
-* reconhecimento de rede;
-* enumeração de serviços;
-* análise de Active Directory;
-* identificação de superfícies de ataque;
-* correlação de riscos e vulnerabilidades;
-* documentação técnica.
+Automação de Red Team (CART)
 
----
+Integração com IA (LLM via Function Calling)
 
-## Ambiente
+Não destrutiva e com foco educacional
 
-Infraestrutura analisada:
+Ambiente Analisado (Laboratório SIMOC)
 
-| Host        | Função               |
-| ----------- | -------------------- |
-| 10.10.100.1 | Gateway / MikroTik   |
-| 10.10.100.2 | Domain Controller    |
-| 10.10.100.3 | Cliente Windows      |
-| 10.10.100.4 | Dispositivo IoT      |
-| 10.10.100.5 | Servidor Linux       |
-| 10.10.100.8 | Kali Linux (Análise) |
+A infraestrutura alvo consistia numa rede /24 contendo sistemas Windows (Active Directory) e serviços OT/IoT. A equipa operou a partir de 5 máquinas de análise simultâneas.
 
----
+IP / Host
 
-## Ferramentas Utilizadas
+Função no Ambiente
 
-* Nmap
-* arp-scan
-* smbclient
-* enum4linux
-* rpcclient
-* ldapsearch
-* BloodHound
-* CrackMapExec / NetExec
-* Python3
+10.10.100.1
 
----
+Gateway / Roteador de Borda
 
-## Objetivos
+10.10.100.2
 
-* Mapear ativos da rede
-* Enumerar serviços SMB/LDAP/Kerberos
-* Identificar configurações inseguras
-* Analisar exposição de serviços
-* Correlacionar achados com CVEs
-* Produzir documentação técnica defensiva
+Domain Controller (Windows Server / Active Directory)
 
----
+10.10.100.3
 
-## Estrutura do Projeto
+Host Windows Cliente (RPC)
 
-```text
-/resultados
-/documentacao
-/scripts
-/evidencias
-```
+10.10.100.100
 
----
+Servidor Principal (Web, Banco de Dados, Node-RED OT e MQTT)
 
-## Observações
+10.10.100.4 a .8
 
-Este projeto é exclusivamente acadêmico e todas as atividades foram realizadas apenas dentro do ambiente autorizado do SIMOC Cyber Range.
+Máquinas de Análise / Atacantes (Kali Linux - Equipa CYMAG)
 
-Nenhuma técnica destrutiva, exploit ativo ou atividade ofensiva fora do escopo educacional foi utilizada.
+Ferramentas e Tecnologias Utilizadas
 
----
+Motor de Varredura e Scripts:
 
-## Equipe CYMAG
+Python3 (Motor Agente)
 
-* Alef Kaue
-* Carla Santos
-* Gustavo Lopreto
-* Matheus Sousa
-* Yuri Siqueira
+Nmap & arp-scan (Discovery)
 
-SENAI – Segurança Cibernética
+CrackMapExec / Impacket (Enumeração SMB/RPC e NTLM Relay)
+
+SQLMap (Validação de injeção em base de dados)
+
+Bibliotecas: requests, paho-mqtt, python-nmap
+
+Inteligência Artificial e Frontend:
+
+Integração com IA (Groq API / Modelos LLM)
+
+HTML5/CSS3 e JavaScript (Dashboard Web SaaS Master-Detail)
+
+Objetivos e Resultados
+
+Mapeamento silencioso de ativos na rede interna.
+
+Enumeração de portas e serviços críticos (SMB, RPC, HTTP, Node-RED, MQTT).
+
+Identificação de Cadeias de Ataque (Attack Paths), incluindo a transição da rede Web para a planta industrial (OT).
+
+Desenvolvimento de um Agente Python Local que envia logs estruturados (JSON).
+
+Criação de um Painel de Triagem Web (SaaS) com Role-Based Access Control (RBAC), separando a visão técnica (SOC) da visão de negócios (C-Level).
+
+Estrutura do Repositório
+
+/F08_Web_100       # Evidências e outputs brutos da exploração do alvo .100
+/F09_Automacao     # Scripts do Agente CYMAG (Python) e payloads (JSON/JS)
+/relatorios        # Dashboards gerados e exportações em PDF
+
+
+Observações Legais e Éticas
+
+Este projeto é estritamente académico. Todas as atividades, automações e varreduras foram realizadas exclusivamente dentro do ambiente autorizado e isolado do SIMOC Cyber Range.
+
+Nenhuma técnica destrutiva, exploit ativo que comprometa a disponibilidade dos serviços reais, ou atividade ofensiva fora do escopo educacional foi utilizada no desenvolvimento deste projeto.
+
+Equipa CYMAG
+
+Alef Kaue
+
+Carla Santos
+
+Gustavo Lopreto
+
+Matheus Sousa
+
+Yuri Siqueira
+
 Projeto Integrador Interdisciplinar I – 2026
