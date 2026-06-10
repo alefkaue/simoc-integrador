@@ -1,0 +1,39 @@
+# Configs pessoais do shell (nunca commitar)
+.zshrc
+.zshrc*
+.bashrc
+.bash_history
+.zsh_history
+
+# Binários e ferramentas
+chisel
+chisel_*
+*.exe
+*.elf
+
+# Chaves e credenciais
+api.txt
+*.key
+*.pem
+id_rsa
+*api_key*
+*secret*
+*password*
+*credentials*
+
+# Python
+venv/
+__pycache__/
+*.pyc
+.env
+
+# Sistema
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Saídas temporárias de scan
+*.gnmap
+nmap_temp_*
+sqlmap_output/
