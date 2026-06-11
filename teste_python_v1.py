@@ -805,7 +805,10 @@ class CYMAGScanner:
 # ─── AI Analysis (Groq/Llama 3) ──────────────────────────────────────────────
 
 def ai_analyze(findings: list[Finding], api_key: str) -> dict:
-    client = Groq(api_key=api_key)
+    # Bypass de SSL para redes com inspeção (SENAI/Cyber Range)
+    import httpx
+    http_client = httpx.Client(verify=False)
+    client = Groq(api_key=api_key, http_client=http_client)
 
     # Prepara os findings para enviar ao LLM
     findings_data = []
