@@ -256,8 +256,7 @@ class CYMAGScanner:
                                 "script":    d.get("script", {}),
                                 "source":    "nmap",
                             }
-                            self.dbg(f"  Nmap: {p}/tcp {d.get(\'name\',\'\')} "
-                                     f"{d.get(\'product\',\'\')} {d.get(\'version\',\'\')}")
+                            self.dbg(f"  Nmap: {p}/tcp {d.get('name','')} {d.get('product','')} {d.get('version','')}")
         except Exception as e:
             self.dbg(f"Nmap erro: {e}")
 
@@ -442,7 +441,7 @@ class CYMAGScanner:
                                       "X-Frame-Options, CSP) estão ausentes, aumentando o risco de "
                                       "ataques como XSS, Clickjacking e Man-in-the-Middle."),
                          severity="MÉDIO", cvss=6.1,
-                         evidence=f"Headers ausentes: {", ".join(missing_headers)}")
+                         evidence=f"Headers ausentes: {', '.join(missing_headers)}")
         except Exception:
             pass
 
@@ -559,7 +558,7 @@ class CYMAGScanner:
 
         def on_message(client, ud, msg):
             try:
-                messages.append(f"{msg.topic}: {msg.payload.decode(\'utf-8\',\'ignore\')[:80]}")
+                messages.append(f"{msg.topic}: {msg.payload.decode('utf-8','ignore')[:80]}")
             except Exception:
                 pass
 
@@ -614,9 +613,9 @@ class CYMAGScanner:
         if signing is False:
             evidence = "SMB Signing: disabled/not required"
             if cme.get("os_info"):
-                evidence += f" | {cme["os_info"]}"
+                evidence += f" | {cme['os_info']}"
             if cme.get("hostname"):
-                evidence += f" | Host: {cme["hostname"]}"
+                evidence += f" | Host: {cme['hostname']}"
             self.add(host=host, service="SMB", port=port,
                      title="SMB Signing Desabilitado — NTLM Relay Viável",
                      description=("Sem assinatura SMB, ataques NTLM Relay são viáveis. "
@@ -674,7 +673,7 @@ class CYMAGScanner:
                              description=("Serviços RPC enumerados sem autenticação. "
                                           "Pode revelar serviços internos e versões."),
                              severity="BAIXO", cvss=3.1,
-                             evidence=f"Serviços: {", ".join(services_found[:5])}")
+                             evidence=f"Serviços: {', '.join(services_found[:5])}")
         except Exception:
             pass
 
@@ -682,7 +681,7 @@ class CYMAGScanner:
         """Porta 389/636/3268/3269 — LDAP/AD."""
         tls = port in [636, 3269]
         self.add(host=host, service="LDAP", port=port,
-                 title=f"LDAP {"SSL" if tls else "Aberto"} Acessível",
+                 title=f"LDAP {'SSL' if tls else 'Aberto'} Acessível",
                  description=("Porta LDAP detectada. Se permitir consultas anônimas "
                                "(null bind), pode expor usuários, grupos e estrutura do AD."),
                  severity="MÉDIO" if not tls else "BAIXO", cvss=5.3 if not tls else 3.1,
