@@ -503,7 +503,7 @@ class CYMAGScanner:
         except Exception:
             pass
 
-    def _nodered(self, host, port):
+    def _nodered(self, host, port, svc):
         base = f"http://{host}:{port}"
         try:
             r = requests.get(f"{base}/settings", timeout=5)
@@ -547,7 +547,7 @@ class CYMAGScanner:
         except Exception:
             pass
 
-    def _mqtt(self, host, port):
+    def _mqtt(self, host, port, svc):
         connected = [False]
         messages  = []
 
@@ -718,7 +718,7 @@ class CYMAGScanner:
                      severity="MÉDIO", cvss=5.3,
                      evidence=f"ssh-auth-methods: {auth}")
 
-    def _rdp(self, host, port):
+    def _rdp(self, host, port, svc):
         self.add(host=host, service="RDP", port=port,
                  title="RDP Exposto na Rede",
                  description=("RDP acessível é vetor comum de ransomware. "
