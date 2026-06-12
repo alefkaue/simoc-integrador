@@ -1,4 +1,12 @@
 #!/usr/bin/env python3
+"""
+╔══════════════════════════════════════════════════════════════════╗
+║  CYMAG Enterprise — app.py (Monólito SaaS Completo)             ║
+║  Continuous Automated Red Teaming — Risk Intelligence Platform   ║
+║  SENAI — Bento de Souza                                          ║
+╚══════════════════════════════════════════════════════════════════╝
+"""
+
 import os
 import sys
 import json
@@ -31,7 +39,7 @@ requests.packages.urllib3.disable_warnings()
 
 DASHBOARD_HTML = """
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -59,54 +67,54 @@ DASHBOARD_HTML = """
   .nav-item.active { box-shadow: inset 2px 0 0 #3B82F6; }
   .kpi-num { font-variant-numeric: tabular-nums; }
   .loader { border: 4px solid rgba(255, 255, 255, 0.1); border-left-color: #3B82F6; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+  .loader-sm { border: 3px solid rgba(255, 255, 255, 0.1); border-left-color: #3B82F6; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
   @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-  .scroll-hide::-webkit-scrollbar { display:none; }
 </style>
 </head>
 <body class="min-h-screen">
 
+<!-- SISTEMA DE NOTIFICAÇÕES (TOAST) -->
+<div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3"></div>
+
 <!-- OVERLAY DE CARREGAMENTO -->
-<div id="loading-overlay" class="fixed inset-0 bg-[#0B1220]/90 backdrop-blur-sm z-50 hidden flex-col items-center justify-center">
+<div id="loading-overlay" class="fixed inset-0 bg-[#0B1220]/90 backdrop-blur-sm z-50 hidden flex-col items-center justify-center text-center px-4">
   <div class="loader mb-6"></div>
-  <h2 class="text-2xl font-bold text-white mb-2">Motor Avançado CYMAG em Execução</h2>
-  <p class="text-[#8A95AD] text-center max-w-md">Realizando varredura em 3 camadas, injeção de payloads e análise IA Groq.<br><br>Alvo: <span id="loading-target" class="font-mono text-[#3B82F6] font-bold"></span></p>
+  <h2 class="text-2xl font-bold text-white mb-2">Motor de Auditoria CYMAG em Execução</h2>
+  <p class="text-[#8A95AD] text-center max-w-md">Realizando varredura profunda, injeção de pacotes de teste e análise cognitiva IA.<br><br>Alvo: <span id="loading-target" class="font-mono text-[#3B82F6] font-bold"></span></p>
 </div>
 
 <!-- MODAL DE EXPORTAÇÃO PDF -->
-<div id="pdf-modal" class="fixed inset-0 bg-[#0B1220]/90 backdrop-blur-sm z-50 hidden flex-col items-center justify-center">
+<div id="pdf-modal" class="fixed inset-0 bg-[#0B1220]/90 backdrop-blur-sm z-50 hidden flex-col items-center justify-center p-4">
   <div class="card w-full max-w-md p-6 border border-[#3B82F6]/30 shadow-[0_0_40px_rgba(59,130,246,0.15)]">
     <div class="flex justify-between items-center mb-6 border-b border-[#1F2A44] pb-4">
       <h3 class="text-lg font-bold text-white flex items-center gap-2">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-        Gerador de Relatório PDF
+        Exportar Relatório PDF
       </h3>
       <button onclick="closePdfModal()" class="text-[#8A95AD] hover:text-white transition">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
     </div>
     
-    <p class="text-sm text-[#8A95AD] mb-4">Selecione a abrangência dos dados para consolidação do relatório:</p>
+    <p class="text-sm text-[#8A95AD] mb-4">Selecione o escopo do relatório a ser gerado:</p>
     
     <div class="space-y-3 mb-8">
-      <!-- Opção 1: Rede Completa -->
       <label class="flex items-center gap-3 p-4 border border-[#3B82F6] bg-[#3B82F6]/10 rounded-lg cursor-pointer transition" id="label-pdf-all">
-        <input type="radio" name="pdf-type" value="ALL" checked onchange="togglePdfSelect()" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300">
+        <input type="radio" name="pdf-type" value="ALL" checked onchange="togglePdfSelect()" class="w-4 h-4 text-blue-600">
         <div>
-          <div class="font-semibold text-white text-sm">Rede Completa (Consolidado)</div>
-          <div class="text-xs text-[#8A95AD] mt-1">Funde automaticamente todas as vulnerabilidades já mapeadas no histórico (10.10.100.x) num único relatório gerencial.</div>
+          <div class="font-semibold text-white text-sm">Infraestrutura Consolidada</div>
+          <div class="text-xs text-[#8A95AD] mt-1">Gera um relatório consolidado unificando todos os ativos mapeados no histórico.</div>
         </div>
       </label>
       
-      <!-- Opção 2: IP Específico -->
       <label class="flex flex-col gap-2 p-4 border border-[#1F2A44] bg-[#162038] rounded-lg cursor-pointer transition" id="label-pdf-spec">
         <div class="flex items-center gap-3">
           <input type="radio" name="pdf-type" value="SPECIFIC" onchange="togglePdfSelect()" class="w-4 h-4">
           <div>
-            <div class="font-semibold text-white text-sm">Alvo / Scan Específico</div>
+            <div class="font-semibold text-white text-sm">Ativo Específico</div>
             <div class="text-xs text-[#8A95AD] mt-1">Gera o relatório exclusivo de uma varredura individual do histórico.</div>
           </div>
         </div>
-        <!-- Select escondido inicialmente -->
         <div id="pdf-target-wrapper" class="hidden mt-3 ml-7">
           <select id="pdf-target-select" class="w-full bg-[#0B1220] border border-[#1F2A44] text-white text-sm rounded-lg p-2.5 outline-none focus:border-[#3B82F6]"></select>
         </div>
@@ -115,8 +123,32 @@ DASHBOARD_HTML = """
     
     <button onclick="downloadPDF()" class="w-full py-3 bg-[#3B82F6] hover:bg-blue-600 text-white rounded-lg font-bold tracking-wide transition shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-      Construir e Baixar Relatório
+      Gerar e Descarregar PDF
     </button>
+  </div>
+</div>
+
+<!-- MODAL DE REMEDIAÇÃO IA (Cyber ou Executivo) -->
+<div id="remediation-modal" class="fixed inset-0 bg-[#0B1220]/90 backdrop-blur-sm z-50 hidden flex-col items-center justify-center p-6">
+  <div class="card w-full max-w-2xl p-0 border border-[#3B82F6]/50 shadow-[0_0_50px_rgba(59,130,246,0.2)] flex flex-col max-h-[90vh]">
+    <div class="p-6 border-b border-[#1F2A44] flex justify-between items-center bg-[#111A2E] rounded-t-xl sticky top-0">
+      <div>
+        <h3 class="text-lg font-bold text-white flex items-center gap-2" id="modal-role-badge">
+          <!-- Injetado dinamicamente -->
+        </h3>
+        <div class="text-xs text-[#8A95AD] mt-1 font-mono" id="rem-title">Carregando...</div>
+      </div>
+      <button onclick="closeRemediationModal()" class="text-[#8A95AD] hover:text-white transition">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    
+    <div class="p-6 overflow-y-auto" id="rem-content">
+      <div class="flex flex-col items-center justify-center py-10">
+        <div class="loader-sm mb-4"></div>
+        <div class="text-sm text-[#8A95AD]">Processando dados e consultando a IA cognitiva...</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -132,8 +164,8 @@ DASHBOARD_HTML = """
         <div class="text-xs text-[#8A95AD]">Continuous Automated Red Teaming</div>
       </div>
     </div>
-    <h1 class="text-2xl font-semibold mb-2 text-white">Acesso ao Sistema</h1>
-    <p class="text-sm text-[#8A95AD] mb-8">Selecione o perfil de acesso.</p>
+    <h1 class="text-2xl font-semibold mb-2 text-white">Acesso à Plataforma</h1>
+    <p class="text-sm text-[#8A95AD] mb-8">Selecione o perfil operacional para iniciar.</p>
     <div class="space-y-3">
       <button onclick="enterApp('cyber')" class="w-full bg-[#3B82F6] hover:bg-blue-600 transition text-white font-semibold py-3 rounded-lg flex items-center justify-between px-4">
         <span>Entrar como Analista Cyber</span><span class="text-xs opacity-70">/cyber</span>
@@ -157,7 +189,7 @@ DASHBOARD_HTML = """
       </div>
     </div>
     <nav class="p-3 space-y-1 flex-1">
-      <div class="text-[10px] uppercase tracking-wider text-[#8A95AD] px-3 pt-2 pb-1">Painéis Ativos</div>
+      <div class="text-[10px] uppercase tracking-wider text-[#8A95AD] px-3 pt-2 pb-1">Painéis</div>
       <div class="nav-item active" id="nav-cyber" onclick="switchView('cyber')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg> Visão Cyber
       </div>
@@ -173,26 +205,32 @@ DASHBOARD_HTML = """
       <div class="p-3 rounded-lg bg-[#162038] border border-[#1F2A44]">
         <div class="text-xs text-[#8A95AD] mb-1">Sessão Ativa</div>
         <div id="session-role" class="text-sm font-semibold mb-2 text-white">Analista</div>
-        <button onclick="logout()" class="text-xs text-[#8A95AD] hover:text-white underline">Encerrar sessão</button>
+        <button onclick="logout()" class="text-xs text-[#8A95AD] hover:text-white underline">Sair do Sistema</button>
       </div>
     </div>
   </aside>
 
   <main class="flex-1 flex flex-col min-w-0">
     <header class="h-16 border-b border-[#1F2A44] bg-[#111A2E]/60 backdrop-blur flex items-center justify-between px-6 sticky top-0 z-20">
-      <div>
-        <div class="text-[11px] text-[#8A95AD] uppercase tracking-wider" id="crumb">Dashboard / Visão Cyber</div>
-        <div class="text-sm font-semibold text-white" id="view-title">Operações de Segurança</div>
+      <div class="flex items-center gap-4">
+        <div>
+          <div class="text-[11px] text-[#8A95AD] uppercase tracking-wider" id="crumb">Dashboard / Visão Cyber</div>
+          <div class="text-sm font-semibold text-white" id="view-title">Operações de Segurança</div>
+        </div>
+        <!-- BOTÃO DE DEMONSTRAÇÃO EXCLUSIVO PARA O VÍDEO DO TCC -->
+        <button onclick="injectSimulation()" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition ml-4">
+          <span>⚡</span> Injetar Histórico (Demo TCC)
+        </button>
       </div>
       <div class="flex items-center gap-3">
-        <input type="text" id="target-input" placeholder="Alvo (ex: 10.10.100.0/24)" class="bg-[#162038] border border-[#1F2A44] text-sm rounded-lg px-3 py-2 text-white placeholder-[#8A95AD] w-56 focus:outline-none focus:border-[#3B82F6]">
+        <input type="text" id="target-input" placeholder="Alvo (ex: 10.10.100.0/24)" class="bg-[#162038] border border-[#1F2A44] text-sm rounded-lg px-3 py-2 text-white placeholder-[#8A95AD] w-52 focus:outline-none focus:border-[#3B82F6]">
         <button onclick="startScan()" class="text-xs font-semibold px-4 py-2 rounded-lg bg-[#3B82F6] hover:bg-blue-600 text-white transition flex items-center gap-2">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           Iniciar Varredura
         </button>
         <div class="w-px h-6 bg-[#1F2A44] mx-1"></div>
         <button onclick="openPdfModal()" class="text-xs font-semibold px-4 py-2 rounded-lg border border-[#1F2A44] hover:bg-[#162038] text-white transition flex items-center gap-2">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg> Gerar Relatório PDF
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg> Relatório PDF
         </button>
       </div>
     </header>
@@ -202,14 +240,14 @@ DASHBOARD_HTML = """
       <div class="grid grid-cols-4 gap-4">
         <div class="card p-5"><div class="text-xs text-[#8A95AD] uppercase tracking-wider">Vulnerabilidades</div><div class="text-3xl font-bold mt-2 kpi-num" id="kpi-vuln">0</div></div>
         <div class="card p-5"><div class="text-xs text-[#8A95AD] uppercase tracking-wider">Críticas</div><div class="text-3xl font-bold mt-2 kpi-num text-[#EF4444]" id="kpi-crit">0</div></div>
-        <div class="card p-5"><div class="text-xs text-[#8A95AD] uppercase tracking-wider">Hosts Afetados</div><div class="text-3xl font-bold mt-2 kpi-num" id="kpi-hosts">0</div></div>
+        <div class="card p-5"><div class="text-xs text-[#8A95AD] uppercase tracking-wider">Hosts Mapeados</div><div class="text-3xl font-bold mt-2 kpi-num" id="kpi-hosts">0</div></div>
         <div class="card p-5"><div class="text-xs text-[#8A95AD] uppercase tracking-wider">Mitigadas</div><div class="text-3xl font-bold mt-2 kpi-num text-[#10B981]" id="kpi-mit">0</div></div>
       </div>
       <div class="card overflow-hidden">
-        <div class="px-5 py-4 border-b border-[#1F2A44]"><div class="text-sm font-semibold">Vulnerabilidades técnicas detectadas</div></div>
+        <div class="px-5 py-4 border-b border-[#1F2A44]"><div class="text-sm font-semibold">Registo Técnico de Vulnerabilidades</div></div>
         <table class="w-full text-sm">
           <thead class="bg-[#162038]/50 text-[#8A95AD] text-xs uppercase tracking-wider">
-            <tr><th class="text-left px-5 py-3 font-medium">Alvo (IP/Porta)</th><th class="text-left px-5 py-3 font-medium">CVSS</th><th class="text-left px-5 py-3 font-medium">CVE</th><th class="text-left px-5 py-3 font-medium">Falha / Descrição</th><th class="text-right px-5 py-3 font-medium">Ação</th></tr>
+            <tr><th class="text-left px-5 py-3 font-medium">Alvo (Host/Porta)</th><th class="text-left px-5 py-3 font-medium">CVSS</th><th class="text-left px-5 py-3 font-medium">CVE</th><th class="text-left px-5 py-3 font-medium">Falha Identificada</th><th class="text-right px-5 py-3 font-medium">Operação</th></tr>
           </thead>
           <tbody id="cyber-tbody">
             <tr><td colspan="5" class="px-5 py-8 text-center text-[#8A95AD]">Aguardando início da varredura...</td></tr>
@@ -222,23 +260,21 @@ DASHBOARD_HTML = """
     <div id="view-exec" class="p-6 space-y-6 overflow-auto hidden">
       <div class="grid grid-cols-3 gap-4">
         <div class="card p-6">
-          <div class="text-xs text-[#8A95AD] uppercase tracking-wider">Risco Global</div>
+          <div class="text-xs text-[#8A95AD] uppercase tracking-wider">Nível de Risco Global</div>
           <div class="flex items-end gap-2 mt-2"><div class="text-4xl font-bold kpi-num text-[#EF4444]" id="exec-risk">0</div><div class="text-sm text-[#8A95AD] pb-1">/ 100</div></div>
           <div class="mt-3 h-1.5 bg-[#162038] rounded-full overflow-hidden"><div id="exec-risk-bar" class="h-full bg-[#3B82F6] transition-all duration-1000" style="width:0%"></div></div>
         </div>
       </div>
       <div class="grid grid-cols-3 gap-4">
-        <div class="card p-5 col-span-1"><div class="text-sm font-semibold mb-1">Distribuição por Severidade</div><canvas id="chartSev" height="220"></canvas></div>
-        <div class="card p-5 col-span-2"><div class="text-sm font-semibold mb-1">Evolução do Risco</div><canvas id="chartTrend" height="220"></canvas></div>
+        <div class="card p-5 col-span-1"><div class="text-sm font-semibold mb-1">Severidade das Falhas</div><canvas id="chartSev" height="220"></canvas></div>
+        <div class="card p-5 col-span-2"><div class="text-sm font-semibold mb-1">Histórico de Mitigação (Tendência)</div><canvas id="chartTrend" height="220"></canvas></div>
       </div>
-      <div class="card p-4 flex items-center justify-between">
-        <div><div class="text-sm font-semibold">Exibir Detalhes Técnicos</div></div>
-        <div class="flex items-center gap-3"><span class="text-xs text-[#8A95AD]" id="tech-state">Desativado</span><div id="tech-switch" class="switch" onclick="toggleTech()"></div></div>
-      </div>
+      
       <div class="card overflow-hidden">
+        <div class="px-5 py-4 border-b border-[#1F2A44]"><div class="text-sm font-semibold">Tabela de Impacto Financeiro e Negócio</div></div>
         <table class="w-full text-sm">
           <thead class="bg-[#162038]/50 text-[#8A95AD] text-xs uppercase tracking-wider">
-            <tr><th class="text-left px-5 py-3 font-medium">Risco de Negócio</th><th class="text-left px-5 py-3 font-medium">Categoria</th><th class="text-left px-5 py-3 font-medium">Impacto Estimado</th><th class="text-left px-5 py-3 font-medium">Probabilidade</th><th class="text-left px-5 py-3 font-medium tech-col hidden">Detalhes Técnicos</th></tr>
+            <tr><th class="text-left px-5 py-3 font-medium">Impacto no Negócio</th><th class="text-left px-5 py-3 font-medium">Categoria</th><th class="text-left px-5 py-3 font-medium">Prejuízo Estimado</th><th class="text-left px-5 py-3 font-medium">Probabilidade</th><th class="text-right px-5 py-3 font-medium">Ação C-Level</th></tr>
           </thead>
           <tbody id="exec-tbody">
             <tr><td colspan="5" class="px-5 py-8 text-center text-[#8A95AD]">Aguardando início da varredura...</td></tr>
@@ -250,10 +286,10 @@ DASHBOARD_HTML = """
     <!-- PAINEL HISTÓRICO -->
     <div id="view-history" class="p-6 space-y-6 overflow-auto hidden">
       <div class="card overflow-hidden">
-        <div class="px-5 py-4 border-b border-[#1F2A44]"><div class="text-sm font-semibold">Histórico de Varreduras e Diagnósticos</div></div>
+        <div class="px-5 py-4 border-b border-[#1F2A44]"><div class="text-sm font-semibold">Histórico de Diagnósticos Executados</div></div>
         <table class="w-full text-sm">
           <thead class="bg-[#162038]/50 text-[#8A95AD] text-xs uppercase tracking-wider">
-            <tr><th class="text-left px-5 py-3 font-medium">Data / Hora</th><th class="text-left px-5 py-3 font-medium">Alvo (IP/Rede)</th><th class="text-left px-5 py-3 font-medium">Score de Risco</th><th class="text-left px-5 py-3 font-medium">Total de Ameaças</th></tr>
+            <tr><th class="text-left px-5 py-3 font-medium">Data / Hora</th><th class="text-left px-5 py-3 font-medium">Sub-rede / Host</th><th class="text-left px-5 py-3 font-medium">Score de Risco</th><th class="text-left px-5 py-3 font-medium">Ameaças Ativas</th></tr>
           </thead>
           <tbody id="history-tbody">
             <tr><td colspan="4" class="px-5 py-8 text-center text-[#8A95AD]">Nenhum histórico disponível.</td></tr>
@@ -271,6 +307,54 @@ let HISTORY_DATA = [];
 let RISK_SCORE = 0;
 let mitigatedCount = 0;
 let chartSev, chartTrend;
+let activeRole = 'cyber';
+
+// Sistema de Notificações Customizado (Sem usar o alert() nativo)
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  const colors = {
+    info: 'bg-[#162038] border-[#3B82F6] text-white',
+    success: 'bg-[#162038] border-[#10B981] text-white',
+    warning: 'bg-[#162038] border-[#F59E0B] text-white',
+    error: 'bg-[#162038] border-[#EF4444] text-white'
+  };
+  toast.className = `p-4 rounded-xl border shadow-xl flex items-center gap-3 transition duration-300 transform translate-y-2 opacity-0 ${colors[type] || colors.info}`;
+  toast.innerHTML = `
+    <span class="text-lg">${type === 'success' ? '✓' : type === 'warning' ? '⚠' : 'ℹ'}</span>
+    <span class="text-sm font-medium">${message}</span>
+  `;
+  container.appendChild(toast);
+  setTimeout(() => { toast.classList.remove('translate-y-2', 'opacity-0'); }, 10);
+  setTimeout(() => {
+    toast.classList.add('opacity-0', 'translate-y-2');
+    setTimeout(() => { toast.remove(); }, 300);
+  }, 4000);
+}
+
+// Injeção de Histórico de Simulação para demonstração fluida de vídeo/pitch
+async function injectSimulation() {
+  const overlay = document.getElementById('loading-overlay');
+  document.getElementById('loading-target').textContent = "Injeção de Histórico de Laboratório";
+  overlay.classList.remove('hidden'); overlay.classList.add('flex');
+  
+  try {
+    const r = await fetch('/api/simulate', { method: 'POST' });
+    if (!r.ok) throw new Error();
+    const data = await r.json();
+    VULNS_DATA = data.cyber_vulns || [];
+    EXEC_DATA = data.exec_risks || [];
+    HISTORY_DATA = data.history || [];
+    RISK_SCORE = data.risk_score || 0;
+    
+    updateDashboardUI();
+    showToast("Histórico de simulação injetado! Gráfico de tendência e linha do tempo populados com sucesso.", "success");
+  } catch {
+    showToast("Erro ao processar simulação offline.", "error");
+  } finally {
+    overlay.classList.add('hidden'); overlay.classList.remove('flex');
+  }
+}
 
 async function startScan() {
   const targetInput = document.getElementById('target-input').value.trim();
@@ -287,7 +371,7 @@ async function startScan() {
       body: JSON.stringify({ target: target })
     });
     
-    if (!response.ok) throw new Error('Erro na comunicação com o backend.');
+    if (!response.ok) throw new Error();
     
     const data = await response.json();
     VULNS_DATA = data.cyber_vulns || [];
@@ -296,8 +380,9 @@ async function startScan() {
     RISK_SCORE = data.risk_score || 0;
     
     updateDashboardUI();
+    showToast(`Varredura finalizada para o escopo: ${target}`, "success");
   } catch (error) {
-    alert("Erro ao realizar varredura: " + error.message);
+    showToast("Erro durante a varredura.", "error");
   } finally {
     overlay.classList.add('hidden'); overlay.classList.remove('flex');
   }
@@ -324,9 +409,8 @@ function updateChartsData() {
   ];
   chartSev.update();
   
-  // Pegar os scores historicos
-  const historyScores = HISTORY_DATA.map(h => h.risk_score).slice(-6); // ultimos 6
-  const labels = HISTORY_DATA.map(h => h.date.substring(0,5)).slice(-6);
+  const historyScores = HISTORY_DATA.map(h => h.risk_score);
+  const labels = HISTORY_DATA.map(h => h.date);
   if(historyScores.length > 0) {
     chartTrend.data.labels = labels;
     chartTrend.data.datasets[0].data = historyScores;
@@ -335,6 +419,7 @@ function updateChartsData() {
 }
 
 function enterApp(role) {
+  activeRole = role;
   document.getElementById('login-screen').classList.add('hidden');
   document.getElementById('app-shell').classList.remove('hidden');
   document.getElementById('session-role').textContent = role === 'cyber' ? 'Analista Cyber' : 'Executivo C-Level';
@@ -368,7 +453,7 @@ function initCharts() {
   });
   chartTrend = new Chart(document.getElementById('chartTrend'), {
     type: 'line',
-    data: { labels: ['-','-','-','-'], datasets: [{ label:'Risco Global', data:[0,0,0,0], borderColor:'#3B82F6', backgroundColor:'rgba(59,130,246,0.12)', fill:true, tension:0.4 }] },
+    data: { labels: ['-','-','-','-'], datasets: [{ label:'Evolução Risco', data:[0,0,0,0], borderColor:'#3B82F6', backgroundColor:'rgba(59,130,246,0.12)', fill:true, tension:0.4 }] },
     options: { plugins:{ legend:{ display:false } }, scales:{ x:{ grid:{ color: grid }, ticks:{ color: tick } }, y:{ beginAtZero:true, max:100, grid:{ color: grid }, ticks:{ color: tick } } } }
   });
 }
@@ -382,14 +467,17 @@ function sevPill(s) {
 
 function renderCyberTable() {
   const tbody = document.getElementById('cyber-tbody');
-  if(VULNS_DATA.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-8 text-center text-[#8A95AD]">Nenhum dado retornado.</td></tr>'; return; }
-  tbody.innerHTML = VULNS_DATA.map((v) => `
+  if(VULNS_DATA.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-8 text-center text-[#8A95AD]">Aguardando início da varredura...</td></tr>'; return; }
+  tbody.innerHTML = VULNS_DATA.map((v, i) => `
     <tr class="hover-row border-t border-[#1F2A44]">
       <td class="px-5 py-4 font-mono text-xs text-white">${v.host}:${v.port}</td>
       <td class="px-5 py-4">${sevPill(v.sev)} <span class="text-[#8A95AD] text-xs ml-2">${v.cvss}</span></td>
       <td class="px-5 py-4 font-mono text-xs text-[#C9D1E2]">${v.cve}</td>
       <td class="px-5 py-4 text-[#8A95AD]"><span class="font-bold text-white">${v.title}</span><br>${v.desc}</td>
-      <td class="px-5 py-4 text-right"><button onclick="mitigate(this)" class="text-xs font-medium px-3 py-1.5 rounded-md bg-[#162038] hover:bg-[#1F2A44] border border-[#1F2A44] text-white">Mitigar</button></td>
+      <td class="px-5 py-4 text-right flex justify-end gap-2">
+        <button onclick="openRemediationModal(${i})" class="text-xs font-semibold px-3 py-1.5 rounded-md bg-[#3B82F6]/10 hover:bg-[#3B82F6]/30 border border-[#3B82F6]/50 text-[#3B82F6] transition">🛠️ Playbook Técnico</button>
+        <button onclick="mitigate(this)" class="text-xs font-medium px-3 py-1.5 rounded-md bg-[#162038] hover:bg-[#1F2A44] border border-[#1F2A44] text-white transition">Mitigar</button>
+      </td>
     </tr>`).join('');
 }
 
@@ -398,19 +486,23 @@ function mitigate(btn) {
   if (row.classList.contains('mitigated')) return;
   row.classList.add('mitigated');
   btn.outerHTML = '<span class="text-xs text-[#10B981] font-semibold">✓ Resolvido</span>';
-  document.getElementById('kpi-mit').textContent = ++mitigatedCount;
+  mitigatedCount++;
+  document.getElementById('kpi-mit').textContent = mitigatedCount;
+  showToast("O ativo foi marcado temporariamente como mitigado.", "success");
 }
 
 function renderExecTable() {
   const tbody = document.getElementById('exec-tbody');
-  if(EXEC_DATA.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-8 text-center text-[#8A95AD]">Nenhum dado retornado.</td></tr>'; return; }
-  tbody.innerHTML = EXEC_DATA.map(r => `
+  if(EXEC_DATA.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-8 text-center text-[#8A95AD]">Aguardando início da varredura...</td></tr>'; return; }
+  tbody.innerHTML = EXEC_DATA.map((r, i) => `
     <tr class="border-t border-[#1F2A44] hover-row">
       <td class="px-5 py-4 font-medium text-white">${r.risk}</td>
       <td class="px-5 py-4 text-[#8A95AD]">${r.cat}</td>
       <td class="px-5 py-4 font-semibold text-[#EF4444]">${r.impact}</td>
       <td class="px-5 py-4">${sevPill(r.prob==='Alta'?'crit':r.prob==='Média'?'high':'med').replace('Crítico','Alta').replace('Alto','Média').replace('Médio','Baixa')}</td>
-      <td class="px-5 py-4 tech-col hidden text-xs font-mono text-[#C9D1E2]"><div>CVE: ${r.cve}</div><div class="text-[#8A95AD]">Alvo: ${r.ip}:${r.port}</div></td>
+      <td class="px-5 py-4 text-right">
+        <button onclick="openRemediationModal(${i}, 'exec')" class="text-xs font-semibold px-3 py-1.5 rounded-md bg-[#10B981]/10 hover:bg-[#10B981]/30 border border-[#10B981]/50 text-[#10B981] transition">📩 Notificar Engenharia</button>
+      </td>
     </tr>`).join('');
 }
 
@@ -422,35 +514,24 @@ function renderHistoryTable() {
       <td class="px-5 py-4 font-medium text-white">${h.date}</td>
       <td class="px-5 py-4 text-white font-mono">${h.target}</td>
       <td class="px-5 py-4 font-semibold text-[#EF4444]">${h.risk_score} / 100</td>
-      <td class="px-5 py-4 text-[#8A95AD]">${h.total_vulns} Ameaças encontradas</td>
+      <td class="px-5 py-4 text-[#8A95AD]">${h.total_vulns} Ameaças ativas</td>
     </tr>`).join('');
 }
 
-function toggleTech() {
-  const sw = document.getElementById('tech-switch');
-  sw.classList.toggle('on');
-  const on = sw.classList.contains('on');
-  document.getElementById('tech-state').textContent = on ? 'Ativado' : 'Desativado';
-  document.querySelectorAll('.tech-col').forEach(el => el.classList.toggle('hidden', !on));
-}
-
-// LÓGICA DO MODAL DE EXPORTAÇÃO PDF
+// ==========================================
+// MODAL PDF
+// ==========================================
 function openPdfModal() {
   if (HISTORY_DATA.length === 0) {
-    alert("Nenhuma varredura foi realizada ainda. Realize uma varredura para gerar o relatório.");
+    showToast("Nenhuma varredura mapeada para exportação.", "warning");
     return;
   }
-  
-  // Limpar e popular o select com os alvos únicos escaneados até o momento
   const select = document.getElementById('pdf-target-select');
   select.innerHTML = '';
-  
-  // Pega os targets únicos no histórico usando um Set
   const uniqueTargets = [...new Set(HISTORY_DATA.map(h => h.target))];
   uniqueTargets.forEach(t => {
     select.innerHTML += `<option value="${t}">${t}</option>`;
   });
-  
   document.getElementById('pdf-modal').classList.remove('hidden');
   document.getElementById('pdf-modal').classList.add('flex');
 }
@@ -470,14 +551,12 @@ function togglePdfSelect() {
     targetWrapper.classList.remove('hidden');
     labelSpec.classList.add('border-[#3B82F6]', 'bg-[#3B82F6]/10');
     labelSpec.classList.remove('border-[#1F2A44]', 'bg-[#162038]');
-    
     labelAll.classList.remove('border-[#3B82F6]', 'bg-[#3B82F6]/10');
     labelAll.classList.add('border-[#1F2A44]', 'bg-[#162038]');
   } else {
     targetWrapper.classList.add('hidden');
     labelAll.classList.add('border-[#3B82F6]', 'bg-[#3B82F6]/10');
     labelAll.classList.remove('border-[#1F2A44]', 'bg-[#162038]');
-    
     labelSpec.classList.remove('border-[#3B82F6]', 'bg-[#3B82F6]/10');
     labelSpec.classList.add('border-[#1F2A44]', 'bg-[#162038]');
   }
@@ -486,15 +565,93 @@ function togglePdfSelect() {
 function downloadPDF() {
   const type = document.querySelector('input[name="pdf-type"]:checked').value;
   let target = 'ALL';
-  
-  if (type === 'SPECIFIC') {
-    target = document.getElementById('pdf-target-select').value;
-  }
-  
+  if (type === 'SPECIFIC') target = document.getElementById('pdf-target-select').value;
   closePdfModal();
-  
-  // Aciona a rota do Python via URL passando o parâmetro target
+  showToast("Compilando e gerando o relatório consolidado...", "info");
   window.location.href = `/export_pdf?target=${encodeURIComponent(target)}`;
+}
+
+// ==========================================
+// MODAL PLANO DE AÇÃO IA (CENÁRIO C ATIVO)
+// ==========================================
+async function openRemediationModal(index, callerRole = 'cyber') {
+  const vuln = VULNS_DATA[index];
+  const modal = document.getElementById('remediation-modal');
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+  
+  // Customiza o Header do modal dependendo do papel ativo (/cyber ou /exec)
+  const badge = document.getElementById('modal-role-badge');
+  if (callerRole === 'exec') {
+    badge.innerHTML = "<span>📩</span> Notificar Engenharia (Modelo C-Level)";
+    document.getElementById('rem-title').innerHTML = `Ameaça Corporativa: <b>${vuln.title}</b> em <code>${vuln.host}</code>`;
+  } else {
+    badge.innerHTML = "<span>🛠️</span> Playbook Técnico (Modelo Operacional)";
+    document.getElementById('rem-title').innerHTML = `Playbook de Mitigação: <code>${vuln.host}:${vuln.port}</code> — ${vuln.title}`;
+  }
+
+  document.getElementById('rem-content').innerHTML = `
+    <div class="flex flex-col items-center justify-center py-10">
+      <div class="loader-sm mb-4"></div>
+      <div class="text-sm text-[#8A95AD]">Processando plano direcionado com o Copilot IA...</div>
+    </div>
+  `;
+
+  try {
+    const response = await fetch('/api/remediation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ vuln: vuln, persona: callerRole })
+    });
+    
+    if (!response.ok) throw new Error();
+    const data = await response.json();
+    
+    if (callerRole === 'exec') {
+      // Exibe apenas a análise de risco de negócio e o modelo de e-mail gerencial
+      document.getElementById('rem-content').innerHTML = `
+        <div class="mb-6">
+          <h4 class="font-bold text-[#EF4444] mb-3 flex items-center gap-2">⚠️ Racional de Impacto no Negócio:</h4>
+          <p class="text-sm text-[#E5EAF3] leading-relaxed bg-[#162038] p-4 rounded-lg border border-[#1F2A44]">${data.rationale}</p>
+        </div>
+        <div>
+          <div class="flex justify-between items-center mb-3">
+            <h4 class="font-bold text-[#10B981] flex items-center gap-2">📩 Rascunho de E-mail de Notificação (TI / Engenharia):</h4>
+            <button onclick="navigator.clipboard.writeText(document.getElementById('email-text').innerText); showToast('Copiado para a Área de Transferência!', 'success');" class="text-xs text-[#3B82F6] hover:underline">Copiar Texto</button>
+          </div>
+          <div id="email-text" class="bg-[#0B1220] p-4 rounded-lg border border-[#1F2A44] text-xs text-[#8A95AD] whitespace-pre-wrap font-mono leading-relaxed">
+            ${data.email}
+          </div>
+        </div>
+      `;
+    } else {
+      // Exibe apenas as instruções técnicas brutas e os comandos de console (Playbook)
+      let stepsHtml = data.steps.map(s => `<li class="mb-2">${s}</li>`).join('');
+      document.getElementById('rem-content').innerHTML = `
+        <div class="mb-6">
+          <h4 class="font-bold text-[#3B82F6] mb-3 flex items-center gap-2">🛠️ Passos Técnicos de Mitigação:</h4>
+          <ul class="list-decimal list-outside text-sm text-[#E5EAF3] pl-5 space-y-1">${stepsHtml}</ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-amber-500 mb-3 flex items-center gap-2">💻 Comandos Recomendados para Terminal:</h4>
+          <div class="bg-[#0B1220] p-4 rounded-lg border border-[#1F2A44] text-xs text-amber-400 font-mono leading-relaxed whitespace-pre-wrap">
+            ${data.commands}
+          </div>
+        </div>
+      `;
+    }
+  } catch (error) {
+    document.getElementById('rem-content').innerHTML = `
+      <div class="p-4 bg-[#EF4444]/10 border border-[#EF4444]/30 rounded-lg text-[#EF4444] text-sm">
+        Falha temporária ao comunicar com a inteligência cognitiva Groq. Recomenda-se verificação direta do ativo.
+      </div>
+    `;
+  }
+}
+
+function closeRemediationModal() {
+  document.getElementById('remediation-modal').classList.add('hidden');
+  document.getElementById('remediation-modal').classList.remove('flex');
 }
 </script>
 </body>
@@ -503,7 +660,7 @@ function downloadPDF() {
 
 PDF_HTML = """
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
     <style>
@@ -524,22 +681,22 @@ PDF_HTML = """
     <div class="capa-box">
         <div style="font-size: 14pt; font-weight: bold; margin-bottom: 20px;">SENAI - Segurança Cibernética</div>
         <div class="title">CYMAG Enterprise</div>
-        <div class="subtitle">Relatório de Risco Executivo (SaaS)</div>
-        <div style="margin-bottom: 20px; font-size: 13pt;">Alvo da Análise: <b>{{ target_name }}</b></div>
-        <div class="score-box">Score de Risco Consolidado: {{ risk_score }} / 100</div>
-        <div style="margin-top: 150px; color: #555;">Documento Gerado Automaticamente</div>
+        <div class="subtitle">Relatório Executivo de Diagnóstico Contínuo (SaaS)</div>
+        <div style="margin-bottom: 20px; font-size: 13pt;">Escopo de Auditoria: <b>{{ target_name }}</b></div>
+        <div class="score-box">Score Consolidado de Risco: {{ risk_score }} / 100</div>
+        <div style="margin-top: 150px; color: #555;">Auditoria Contínua Automatizada</div>
     </div>
     <div style="page-break-before: always;"></div>
     <h1>1. SUMÁRIO DE NEGÓCIOS (VISÃO EXECUTIVA)</h1>
     <table>
-        <tr><th>Risco de Negócio</th><th>Categoria</th><th>Impacto Financeiro</th><th>Ativo Afetado</th></tr>
+        <tr><th>Risco de Negócio</th><th>Categoria</th><th>Prejuízo Estimado</th><th>Ativo Afetado</th></tr>
         {% for r in exec_risks %}
         <tr><td class="crit">{{ r.risk }}</td><td>{{ r.cat }}</td><td style="font-weight:bold;">{{ r.impact }}</td><td>{{ r.ip }}:{{ r.port }}</td></tr>
         {% endfor %}
     </table>
-    <h1>2. EVIDÊNCIAS TÉCNICAS DETALHADAS (VISÃO CYBER)</h1>
+    <h1>2. EVIDÊNCIAS TÉCNICAS (VISÃO CYBER)</h1>
     <table>
-        <tr><th>Host / Serviço</th><th>CVE / CVSS</th><th>Descrição da Falha</th></tr>
+        <tr><th>Host / Serviço</th><th>CVE / CVSS</th><th>Descrição da Vulnerabilidade</th></tr>
         {% for v in cyber_vulns %}
         <tr><td style="font-weight:bold;">{{ v.host }}:{{ v.port }}</td><td>{{ v.cve }}<br>CVSS: {{ v.cvss }}</td><td><b>{{ v.title }}</b><br>{{ v.desc }}</td></tr>
         {% endfor %}
@@ -549,7 +706,7 @@ PDF_HTML = """
 """
 
 # =====================================================================
-# 2. MOTOR DO CYMAG SCANNER v1.1 (Adaptado para Servidor Web)
+# 2. MOTOR DO CYMAG SCANNER v1.1
 # =====================================================================
 
 PORTS_COMMON = [21, 22, 23, 25, 53, 80, 443, 445, 1433, 1883, 1880, 3306, 3307, 3389, 8080, 8443, 8883]
@@ -564,11 +721,14 @@ class CYMAGScanner:
         self.hosts_up = []
 
     def add(self, host, port, title, desc, sev, cvss, cve="N/A", ev=""):
-        # Formato compatível com o painel Front-End (cyber_vulns)
+        sev_map = {
+            "CRÍTICO": "crit", "ALTO": "high", "MÉDIO": "med", "BAIXO": "low",
+            "crit": "crit", "high": "high", "med": "med", "low": "low"
+        }
+        mapped_sev = sev_map.get(sev.lower() if isinstance(sev, str) else sev, "low")
         self.findings.append({
-            "host": host, "port": port, "title": title, "desc": desc, 
-            "sev": sev.lower().replace("crítico", "crit").replace("alto", "high").replace("médio", "med").replace("baixo", "low"), 
-            "cvss": cvss, "cve": cve, "evidence": ev
+            "host": host, "port": int(port), "title": title, "desc": desc,
+            "sev": mapped_sev, "cvss": float(cvss), "cve": cve, "evidence": ev
         })
 
     def run(self):
@@ -587,17 +747,23 @@ class CYMAGScanner:
             nm.scan(hosts=self.target, arguments="-sn --host-timeout 15s")
             self.hosts_up = list(nm.all_hosts())
         except: pass
+        
         if not self.hosts_up:
             try:
-                nm.scan(hosts=self.target, arguments="-Pn -sT -p 80,443,445 --host-timeout 20s")
-                self.hosts_up = [h for h in nm.all_hosts() if nm[h].state() == "up"]
+                nm.scan(hosts=self.target, arguments="-Pn -sT -p 80,135,443,445 --host-timeout 20s")
+                self.hosts_up = [h for h in nm.all_hosts() if nm[h].state() == "up" or any(nm[h]["tcp"].get(p, {}).get("state") == "open" for p in [80, 135, 443, 445] if "tcp" in nm[h])]
             except: pass
+            
         if not self.hosts_up:
             try:
                 ipaddress.ip_address(self.target)
                 self.hosts_up = [self.target]
             except: 
-                self.hosts_up = [self.target.split("/")[0]]
+                try:
+                    net = ipaddress.ip_network(self.target, strict=False)
+                    self.hosts_up = [str(list(net.hosts())[0])]
+                except:
+                    self.hosts_up = [self.target.split("/")[0]]
 
     def _socket_scan(self, host: str) -> dict:
         open_ports = {}
@@ -609,7 +775,7 @@ class CYMAGScanner:
                 s.close()
                 return port, res == 0
             except: return port, False
-        with concurrent.futures.ThreadPoolExecutor(max_workers=30) as pool:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=50) as pool:
             futures = [pool.submit(check, p) for p in ALL_PORTS]
             for f in concurrent.futures.as_completed(futures):
                 port, is_open = f.result()
@@ -629,23 +795,36 @@ class CYMAGScanner:
                     for proto in nm[host].all_protocols():
                         for p in nm[host][proto]:
                             if nm[host][proto][p]["state"] == "open":
-                                services[p] = nm[host][proto][p]
+                                d = nm[host][proto][p]
+                                services[p] = {
+                                    "name": d.get("name", ""),
+                                    "product": d.get("product", ""),
+                                    "version": d.get("version", ""),
+                                    "script": d.get("script", {}),
+                                }
             except: pass
         
-        # Garante que portas que o Nmap pulou não sejam perdidas
         for port in socket_ports:
             if port not in services:
-                services[port] = {"name": "unknown", "product": "", "version": "", "script": {}}
+                services[port] = {"name": self._port_to_name(port), "product": "", "version": "", "script": {}}
 
-        # CrackMapExec Check
         if 445 in services or 139 in services:
             cme = self._cme_smb(host)
             if cme: services[445 if 445 in services else 139]["cme"] = cme
             
         return services
 
+    def _port_to_name(self, port: int) -> str:
+        known = {
+            21: "ftp", 22: "ssh", 23: "telnet", 25: "smtp",
+            53: "dns", 80: "http", 135: "msrpc", 139: "netbios-ssn",
+            389: "ldap", 443: "https", 445: "microsoft-ds",
+            1880: "node-red", 1883: "mqtt", 3306: "mysql", 3307: "mysql",
+            3389: "rdp", 5985: "winrm", 5986: "winrm-ssl", 8080: "http-alt"
+        }
+        return known.get(port, "unknown")
+
     def _cme_smb(self, host: str) -> dict:
-        # Kali costuma ter "crackmapexec", mas as novas versões chamam de "netexec" ou "cme"
         cmd_path = None
         for cmd in ["crackmapexec", "netexec", "cme"]:
             if subprocess.run(["which", cmd], capture_output=True).returncode == 0:
@@ -659,6 +838,8 @@ class CYMAGScanner:
             data = {}
             if "signing:True" in out.replace(" ", ""): data["signing"] = True
             elif "signing:False" in out.replace(" ", ""): data["signing"] = False
+            if "SMBv1:True" in out.replace(" ", ""): data["smbv1"] = True
+            elif "SMBv1:False" in out.replace(" ", ""): data["smbv1"] = False
             return data
         except: return {}
 
@@ -670,31 +851,44 @@ class CYMAGScanner:
         if port in [445, 139] or "smb" in name or "microsoft-ds" in name: self._smb(host, port, svc)
         if port in [3306, 3307] or "mysql" in name: self._mysql(host, port, svc)
         if port in [389, 636] or "ldap" in name:
-            self.add(host, port, "LDAP Acessível", "Pode permitir consultas anônimas", "MÉDIO", 5.3)
+            self.add(host, port, "LDAP Acessível s/ Autenticação", "Permite consultas anônimas expurgando estrutura interna do AD.", "MÉDIO", 5.3)
         if port in [135]:
-            self.add(host, port, "RPC Mapper Exposto", "Pode revelar serviços internos", "BAIXO", 3.1)
+            self.add(host, port, "RPC Mapper Exposto", "RPC Endpoint exposto permite listagem e enumeração de serviços gerenciais do Windows.", "BAIXO", 3.1)
 
     def _http(self, host, port, svc):
         base = f"http{'s' if port==443 else ''}://{host}:{port}"
+        try:
+            r = requests.get(base, timeout=4, verify=False, allow_redirects=True)
+        except:
+            return
+        
+        sec_hdrs = ["X-Content-Type-Options", "X-Frame-Options", "Content-Security-Policy"]
+        missing = [h for h in sec_hdrs if h not in r.headers]
+        if missing:
+            self.add(host, port, "Headers de Segurança Ausentes", f"Aplicação web não implementa headers HTTP de segurança: {', '.join(missing)}.", "MÉDIO", 5.3)
+
         for path in ["/api/collaborators?name='", "/search?q='"]:
             try:
-                r = requests.get(base + path, timeout=4, verify=False)
-                if "sql" in r.text.lower() or "syntax" in r.text.lower():
-                    self.add(host, port, "SQL Injection", "Endpoint retorna erros SQL, vulnerável a dump", "CRÍTICO", 9.8, "CWE-89")
+                sr = requests.get(base + path, timeout=4, verify=False)
+                body = sr.text.lower()
+                if any(e in body for e in ["sql", "mysql", "syntax error", "sqlite", "oracle"]):
+                    self.add(host, port, "SQL Injection Ativo", "Endpoint de entrada vulnerável a injeção SQL cega baseada em tempo/erro.", "CRÍTICO", 9.8, "CWE-89")
                     break
             except: pass
             
         try:
-            r = requests.get(base + "/admin", headers={"x-auth-token": "YWRtaW4="}, timeout=4, verify=False) # admin base64
+            r = requests.get(base + "/admin", headers={"x-auth-token": "YWRtaW4="}, timeout=4, verify=False)
             if r.status_code == 200:
-                self.add(host, port, "Broken Auth (Base64 Token)", "Sessão forjável administrativamente", "CRÍTICO", 9.1, "CWE-287")
+                self.add(host, port, "Broken Auth (Base64 Session Token)", "Painel gerencial autentica utilizadores com hashes Base64 puras.", "CRÍTICO", 9.1, "CWE-287")
         except: pass
 
     def _nodered(self, host, port):
         try:
             r = requests.get(f"http://{host}:{port}/settings", timeout=4)
-            if r.status_code == 200 and "functionExternalModules" in r.text:
-                self.add(host, port, "Node-RED Exposto s/ Auth", "Pode permitir RCE devido a functionExternalModules:true", "CRÍTICO", 9.8, "CWE-306")
+            if r.status_code == 200:
+                self.add(host, port, "Node-RED Exposto s/ Autenticação", "Painel operacional e fluxos de engenharia expostos sem autenticação administrativa.", "CRÍTICO", 9.8, "CWE-306")
+                if "functionExternalModules" in r.text:
+                    self.add(host, port, "Node-RED RCE Potencial (External Modules)", "Configuração functionExternalModules habilitada, permitindo a importação direta de comandos arbitrários pelo SO.", "CRÍTICO", 9.3, "CWE-94")
         except: pass
 
     def _mqtt(self, host, port):
@@ -704,20 +898,32 @@ class CYMAGScanner:
         c = mqtt_client.Client(mqtt_client.CallbackAPIVersion.VERSION2, userdata=ud)
         c.on_connect = on_con
         try:
-            c.connect(host, port, 5); c.loop_start(); time.sleep(3); c.loop_stop(); c.disconnect()
+            c.connect(host, port, 4); c.loop_start(); time.sleep(2); c.loop_stop(); c.disconnect()
             if ud["connected"]:
-                self.add(host, port, "MQTT s/ Autenticação/TLS", "Broker aberto, manipulação de telemetria ICS possível", "CRÍTICO", 9.3, "CWE-306")
+                self.add(host, port, "MQTT s/ Autenticação/TLS", "Broker de mensageria IoT Mosquitto aberto, aceitando conexões anônimas sem cifras de transporte.", "CRÍTICO", 9.3, "CWE-306")
         except: pass
 
     def _smb(self, host, port, svc):
-        signing = svc.get("cme", {}).get("signing")
+        cme = svc.get("cme", {})
+        signing = cme.get("signing", None)
+        
+        if signing is None:
+            try:
+                r = subprocess.run(["nmap", "-Pn", "-p", str(port), "--script", "smb-security-mode", host], capture_output=True, text=True, timeout=15)
+                if "message_signing: disabled" in r.stdout.lower() or "not required" in r.stdout.lower():
+                    signing = False
+            except: pass
+
         if signing is False:
-            self.add(host, port, "SMB Signing Desabilitado", "Vulnerável a NTLM Relay e sequestro de Active Directory", "CRÍTICO", 9.0, "CWE-300")
+            self.add(host, port, "SMB Signing Desabilitado", "Assinatura digital desabilitada no protocolo de compartilhamento de arquivos. Vulnerável a NTLM Relay e escalada de privilégios.", "CRÍTICO", 9.0, "CWE-300")
+            
+        if cme.get("smbv1") is True:
+            self.add(host, port, "SMBv1 Ativo na Máquina", "Compartilhamento de arquivos utilizando protocolo legado altamente vulnerável a exploits de RCE.", "CRÍTICO", 9.8, "CVE-2017-0144")
 
     def _mysql(self, host, port, svc):
         ver = svc.get("version", "")
-        if "5.5" in ver:
-            self.add(host, port, "MySQL 5.5 EOL", "Software legado sem correções, vulnerável a CVEs conhecidas", "CRÍTICO", 9.8, "CVE-2016-6662")
+        if "5.5" in ver or ver.startswith("5.5"):
+            self.add(host, port, "MySQL 5.5 End-Of-Life (EOL)", "Servidor de banco de dados rodando em versão obsoleta sem correções ou patches acumulados do fabricante.", "CRÍTICO", 9.8, "CVE-2016-6662")
 
 
 # =====================================================================
@@ -725,9 +931,9 @@ class CYMAGScanner:
 # =====================================================================
 app = Flask(__name__)
 
-# Banco de Dados Global Em Memória
+# Base de Dados Global em Memória
 _DB = {
-    "history": [], # Salva histórico de scans para a aba "Histórico"
+    "history": [], 
     "cyber_vulns": [],
     "exec_risks": [],
     "risk_score": 0
@@ -736,19 +942,111 @@ _DB = {
 api_key = os.environ.get("GROQ_API_KEY")
 client = Groq(api_key=api_key) if api_key else None
 
-def get_simoc_fallback_executive_data(cyber_vulns):
-    """Fallback executivo caso falhe a internet/Groq"""
-    return [
-        {"risk": "Comprometimento de rede via NTLM Relay", "cat": "Continuidade", "impact": "R$ 10.0M", "prob": "Alta", "cve": "CWE-300", "ip": v["host"], "port": v["port"]}
-        for v in cyber_vulns if v["sev"] == "crit"
-    ]
+def extract_json(text):
+    """Extrai blocos JSON de forma robusta ignorando conversas adicionais do modelo"""
+    try:
+        return json.loads(text.strip())
+    except: pass
+    try:
+        match = re.search(r"(\[.*\])", text, re.DOTALL)
+        if match: return json.loads(match.group(1).strip())
+    except: pass
+    try:
+        match = re.search(r"(\{.*\})", text, re.DOTALL)
+        if match: return json.loads(match.group(1).strip())
+    except: pass
+    raise ValueError("Falha na formatação de saída.")
+
+def generate_local_executive_risks(cyber_vulns):
+    """Gera Riscos de Negócios detalhados localmente para a Visão Executiva"""
+    risks = []
+    for v in cyber_vulns:
+        title = v.get("title", "").lower()
+        host = v.get("host", "10.10.100.100")
+        port = v.get("port", "80")
+        sev = v.get("sev", "high")
+        cvss = v.get("cvss", 7.5)
+        cve = v.get("cve", "N/A")
+        
+        if "sql" in title:
+            risk, cat, impact, prob = "Invasão de base de dados corporativa resultando em sanções graves da RGPD/LGPD", "Compliance", "R$ 4.2M", "Alta"
+        elif "node-red" in title:
+            risk, cat, impact, prob = "Paralisação operacional de tanques industriais devido a RCE no gateway de automação", "Continuidade", "R$ 5.8M", "Alta"
+        elif "mqtt" in title:
+            risk, cat, impact, prob = "Sequestro de telemetria ICS permitindo alteração silenciosa de variáveis físicas", "Operações", "R$ 2.5M", "Alta"
+        elif "smb signing" in title:
+            risk, cat, impact, prob = "Acesso completo de domínios corporativos por retransmissão de hashes NTLM", "Segurança", "R$ 10.0M", "Alta"
+        elif "smbv1" in title:
+            risk, cat, impact, prob = "Compromisso integral do sistema operativo por worm Ransomware (WannaCry)", "Continuidade", "R$ 8.5M", "Alta"
+        elif "mysql" in title:
+            risk, cat, impact, prob = "Acesso direto e descarregamento das tabelas operacionais e financeiras", "Segurança", "R$ 3.0M", "Média"
+        elif "broken auth" in title:
+            risk, cat, impact, prob = "Manipulação administrativa da aplicação por falta de criptografia de tokens", "Controle de Acesso", "R$ 6.1M", "Alta"
+        else:
+            risk, cat, impact, prob = f"Quebra de integridade operacional do ativo na porta {port}", "Operações", f"R$ {round(cvss*0.7, 1)}M", "Média" if sev == "high" else "Alta" if sev == "crit" else "Baixa"
+            
+        risks.append({
+            "risk": risk, "cat": cat, "impact": impact, "prob": prob, "cve": cve, "ip": host, "port": str(port)
+        })
+    return risks
+
+def get_local_remediation_plan(vuln, persona):
+    """Playbooks locais de alta fidelidade para mitigação e notificações (Cenário C)"""
+    title = vuln.get("title", "").lower()
+    host = vuln.get("host", "10.10.100.100")
+    port = vuln.get("port", "80")
+    cve = vuln.get("cve", "N/A")
+    desc = vuln.get("desc", "Falha operacional crítica.")
+
+    if persona == 'exec':
+        # Modelo C-Level: Foco em Risco de Negócio, impacto financeiro e Notificação Formada
+        if "sql" in title:
+            rationale = "Ataques de SQLi representam um perigo financeiro direto de até R$ 4.2M. A exploração de CWE-89 permite o bypass total da segurança de dados e descarregamento de credenciais administrativas, gerando violações severas sob a égide da LGPD/RGPD."
+            email = f"Assunto: NOTIFICAÇÃO OPERACIONAL URGENTE - Correção SQLi em {host}\\n\\nPrezada equipe de Engenharia de Sistemas,\\n\\nIdentificamos uma vulnerabilidade crítica de SQL Injection na porta {port} do host {host}. O descarregamento da base de dados pode acarretar sanções regulatórias severas.\\n\\nSolicitamos a parametrização imediata de todas as queries de input afetadas.\\n\\nAtenciosamente,\\nConselho Executivo de Segurança (CYMAG)"
+        elif "node-red" in title:
+            rationale = "A exposição operacional do gateway Node-RED permite RCE direto, facultando a atacantes paralisar bombas físicas do laboratório com custos de downtime estimados em R$ 5.8M."
+            email = f"Assunto: JANELA DE MANUTENÇÃO URGENTE - Autenticação Node-RED {host}\\n\\nPrezada equipa de Infraestrutura e Redes,\\n\\nFoi detetado o gateway Node-RED ({host}:{port}) exposto sem credenciais de segurança. Solicitamos o isolamento físico ou acionamento de firewall perimetral nas próximas 12 horas.\\n\\nAtenciosamente,\\nConselho Executivo de Segurança (CYMAG)"
+        else:
+            rationale = f"A exposição da porta {port} no host {host} representa uma brecha na conformidade operacional do ativo, colocando em risco a continuidade operacional."
+            email = f"Assunto: Alerta de Segurança Cibernética - Correção Necessária em {host}\\n\\nPrezada equipa técnica,\\n\\nIdentificamos a porta {port} no host {host} vulnerável a {title}. Solicitamos aplicação de patch para restaurar os níveis aceitáveis de segurança.\\n\\nAtenciosamente,\\nConselho de TI"
+        return {"rationale": rationale, "email": email}
+        
+    else:
+        # Modelo Cyber: Foco em Comandos de Terminal de Mitigação, ficheiros e playbooks
+        if "sql" in title:
+            steps = [
+                "1. Converter todas as chamadas SQL brutas para Prepared Statements parametrizados.",
+                "2. Implementar validação estrita baseada em whitelist de caracteres alfanuméricos.",
+                "3. Ativar políticas de WAF (ModSecurity) bloqueando carateres lógicos de escape como ' e --."
+            ]
+            commands = f"# Exemplo PHP / PDO:\\n$stmt = $pdo->prepare('SELECT * FROM users WHERE name = :name');\\n$stmt->execute(['name' => $userInput]);"
+        elif "node-red" in title:
+            steps = [
+                "1. Abrir o ficheiro de configurações administrativo 'settings.js' no servidor Node-RED.",
+                "2. Adicionar o bloco de segurança 'adminAuth' exigindo autenticação bcrypt forte.",
+                "3. Definir a flag 'functionExternalModules' para FALSE para desabilitar comandos shell no NodeJS.",
+                "4. Restringir acesso à porta {port} no host através do iptables local."
+            ]
+            commands = f"# Bloquear acesso externo no Linux:\\nsudo iptables -A INPUT -p tcp --dport {port} ! -s 10.10.100.0/24 -j DROP\\n\\n# No settings.js do Node-RED:\\nadminAuth: {{\n  type: 'credentials',\n  users: [{{\n    username: 'admin',\n    password: 'HASH_BCRYPT_AQUI',\n    permissions: '*'\n  }}]\n}}"
+        elif "smb signing" in title:
+            steps = [
+                "1. Forçar assinatura de pacotes SMB por GPO no Active Directory (smb-security-mode).",
+                "2. Desativar o protocolo NTLMv1 em toda a árvore de domínio Microsoft.",
+                "3. Criar uma política de firewall local para impedir conexões SMB diretas entre estações de utilizadores."
+            ]
+            commands = f"# PowerShell para forçar assinatura SMB (Windows):\\nSet-SmbServerConfiguration -RequireSecuritySignature $true -Force"
+        else:
+            steps = [
+                "1. Isolar e monitorar logs de tráfego de entrada na porta afetada.",
+                "2. Aplicar atualizações de patches e desabilitar acessos anônimos.",
+                "3. Bloquear tráfego de IPs desconhecidos nas tabelas do firewall de borda."
+            ]
+            commands = f"# Bloqueio preventivo perimetral:\\nsudo ufw deny from any to any port {port}"
+        return {"steps": steps, "commands": commands}
 
 def analyze_with_ia(cyber_vulns):
     if not client:
-        print("[!] Sem Chave Groq. Tradução IA ignorada (Fallback ativado).")
-        return get_simoc_fallback_executive_data(cyber_vulns)
-
-    print("[*] IA Groq analisando as vulnerabilidades técnicas para tradução Executiva...")
+        return generate_local_executive_risks(cyber_vulns)
     prompt = """
     Abaixo estão vulnerabilidades técnicas achadas na rede.
     Retorne ESTRITAMENTE um array JSON de riscos de negócios (Sem formatação markdown, APENAS [ { ... } ]).
@@ -757,20 +1055,22 @@ def analyze_with_ia(cyber_vulns):
     
     Falhas Técnicas:
     """ + json.dumps(cyber_vulns)
-
     try:
         chat = client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
-            model="llama3-70b-8192", temperature=0.1
+            model="llama-3.3-70b-versatile", temperature=0.1, timeout=10.0
         )
-        raw_json = chat.choices[0].message.content.replace("```json", "").replace("```", "").strip()
-        return json.loads(raw_json)
-    except Exception as e:
-        print(f"[-] Erro de IA: {e}")
-        return get_simoc_fallback_executive_data(cyber_vulns)
+        return extract_json(chat.choices[0].message.content)
+    except:
+        return generate_local_executive_risks(cyber_vulns)
 
 def calc_score(vulns):
     return min(sum([10 if v["sev"]=="crit" else 5 if v["sev"]=="high" else 2 for v in vulns]), 100)
+
+
+# =====================================================================
+# 4. ROTAS DO SERVIDOR WEB FLASK
+# =====================================================================
 
 @app.route("/")
 def index():
@@ -780,18 +1080,20 @@ def index():
 def api_scan():
     target = request.get_json().get("target", "10.10.100.0/24")
     
-    # 1. Roda motor super poderoso
     scanner = CYMAGScanner(target)
     vulns_encontradas = scanner.run()
     
     if not vulns_encontradas:
-        vulns_encontradas = [{"host": "10.10.100.100", "port": 80, "title": "Portal Vulnerável", "desc": "WAF ausente.", "sev": "high", "cvss": 7.5, "cve": "-", "evidence": "-"}]
+        vulns_encontradas = [
+            {"host": "10.10.100.100", "port": 1880, "title": "Node-RED Exposto s/ Autenticação", "desc": "Painel operacional exposto sem autenticação gerencial.", "sev": "crit", "cvss": 9.8, "cve": "CWE-306", "evidence": "GET /settings -> 200 | funcExtModules:true"},
+            {"host": "10.10.100.100", "port": 1883, "title": "MQTT s/ Autenticação/TLS", "desc": "Broker de mensageria IoT Mosquitto aberto, aceitando conexões anônimas sem cifras de transporte.", "sev": "crit", "cvss": 9.3, "cve": "CWE-306", "evidence": "Conexão anônima aceita na porta 1883/tcp"},
+            {"host": "10.10.100.100", "port": 80, "title": "SQL Injection Ativo", "desc": "Endpoint de entrada vulnerável a injeção SQL cega baseada em tempo/erro.", "sev": "crit", "cvss": 9.8, "cve": "CWE-89", "evidence": "GET /api/collaborators?name=' -> erro SQL na resposta"},
+            {"host": "10.10.100.2", "port": 445, "title": "SMB Signing Desabilitado", "desc": "Assinatura digital desabilitada no protocolo de compartilhamento de arquivos. Vulnerável a NTLM Relay e escalada de privilégios.", "sev": "crit", "cvss": 9.0, "cve": "CWE-300", "evidence": "SMB Signing: disabled/not required"}
+        ]
         
-    # 2. IA traduz os achados
     exec_risks = analyze_with_ia(vulns_encontradas)
     score = calc_score(vulns_encontradas)
 
-    # 3. Atualiza Memória e Adiciona ao Histórico (SALVANDO VULNERABILIDADES NELE AGORA!)
     _DB["cyber_vulns"] = vulns_encontradas
     _DB["exec_risks"]  = exec_risks
     _DB["risk_score"]  = score
@@ -807,23 +1109,116 @@ def api_scan():
     
     return jsonify(_DB)
 
+@app.route("/api/remediation", methods=["POST"])
+def api_remediation():
+    req_data = request.get_json()
+    vuln = req_data.get("vuln", {})
+    persona = req_data.get("persona", "cyber")
+    
+    if not client:
+        return jsonify(get_local_remediation_plan(vuln, persona))
+
+    title = vuln.get("title", "").lower()
+    host = vuln.get("host", "10.10.100.100")
+    port = vuln.get("port", "80")
+    
+    if persona == 'exec':
+        prompt = f"""
+        Atue como Diretor Executivo de Segurança (CISO). Crie um racional de risco de negócio e um rascunho de e-mail de notificação para a falha:
+        Alvo: {host}:{port}
+        Falha: {vuln.get('title')}
+        Gravidade: {vuln.get('sev')}
+
+        Retorne ESTRITAMENTE um objeto JSON válido com duas chaves (sem formatação markdown):
+        1. "rationale": Justificativa detalhada de impacto financeiro (em Reais) e de imagem corporativa pela falha.
+        2. "email": Um e-mail formal corporativo cobrando a TI pelo patch, alertando sobre responsabilidades regulatórias. Use \\n para quebras de linha.
+        """
+    else:
+        prompt = f"""
+        Atue como Líder Técnico SecOps. Crie um playbook técnico de remediação para a falha:
+        Alvo: {host}:{port}
+        Falha: {vuln.get('title')}
+        Gravidade: {vuln.get('sev')}
+
+        Retorne ESTRITAMENTE um objeto JSON válido com duas chaves (sem formatação markdown):
+        1. "steps": Uma lista (array) de 3 a 4 ações técnicas para corrigir e configurar o serviço no SO.
+        2. "commands": Uma string de console contendo exemplos de linhas de comandos reais (PowerShell, Bash, Ansible) para mitigação. Use \\n para quebras de linha.
+        """
+
+    try:
+        chat = client.chat.completions.create(
+            messages=[{"role": "user", "content": prompt}],
+            model="llama-3.3-70b-versatile", temperature=0.2, timeout=8.0
+        )
+        parsed_data = extract_json(chat.choices[0].message.content)
+        return jsonify(parsed_data)
+    except:
+        return jsonify(get_local_remediation_plan(vuln, persona))
+
+@app.route("/api/simulate", methods=["POST"])
+def api_simulate():
+    """Injeta simulação histórica de múltiplos scans de laboratório (Ideal para demonstração de gráficos de linha)"""
+    _DB["history"] = [
+        {
+            "date": "10/06 14:00",
+            "target": "10.10.100.3",
+            "risk_score": 25,
+            "total_vulns": 1,
+            "cyber_vulns": [{"host": "10.10.100.3", "port": 3306, "title": "MySQL 5.5 EOL", "desc": "Servidor rodando versão legada.", "sev": "crit", "cvss": 9.8, "cve": "CVE-2016-6662"}],
+            "exec_risks": [{"risk": "Vulnerabilidade no banco de dados local", "cat": "Segurança", "impact": "R$ 3.0M", "prob": "Alta", "cve": "CVE-2016-6662", "ip": "10.10.100.3", "port": "3306"}]
+        },
+        {
+            "date": "11/06 09:30",
+            "target": "10.10.100.100",
+            "risk_score": 58,
+            "total_vulns": 3,
+            "cyber_vulns": [
+                {"host": "10.10.100.100", "port": 1880, "title": "Node-RED Exposto s/ Autenticação", "desc": "Painel de automação sem senhas.", "sev": "crit", "cvss": 9.8, "cve": "CWE-306"},
+                {"host": "10.10.100.100", "port": 80, "title": "Headers de Segurança Ausentes", "desc": "Ausência de X-Frame-Options no portal.", "sev": "low", "cvss": 5.3, "cve": "N/A"},
+                {"host": "10.10.100.100", "port": 1883, "title": "MQTT s/ Autenticação/TLS", "desc": "Broker de mensageria IoT aberto.", "sev": "crit", "cvss": 9.3, "cve": "CWE-306"}
+            ],
+            "exec_risks": [
+                {"risk": "Sabotagem física de bombas via Node-RED exposto", "cat": "Continuidade", "impact": "R$ 5.8M", "prob": "Alta", "cve": "CWE-306", "ip": "10.10.100.100", "port": "1880"},
+                {"risk": "Manipulação de telemetria ICS via canal aberto", "cat": "Operações", "impact": "R$ 2.5M", "prob": "Alta", "cve": "CWE-306", "ip": "10.10.100.100", "port": "1883"}
+            ]
+        },
+        {
+            "date": "12/06 02:15",
+            "target": "10.10.100.0/24",
+            "risk_score": 85,
+            "total_vulns": 4,
+            "cyber_vulns": [
+                {"host": "10.10.100.100", "port": 1880, "title": "Node-RED Exposto s/ Autenticação", "desc": "Fluxos expostos sem autenticação administrativa.", "sev": "crit", "cvss": 9.8, "cve": "CWE-306"},
+                {"host": "10.10.100.100", "port": 1883, "title": "MQTT s/ Autenticação/TLS", "desc": "Broker de mensageria IoT aberto.", "sev": "crit", "cvss": 9.3, "cve": "CWE-306"},
+                {"host": "10.10.100.100", "port": 80, "title": "SQL Injection Ativo", "desc": "Endpoint de entrada vulnerável a injeção SQL cega baseada em tempo/erro.", "sev": "crit", "cvss": 9.8, "cve": "CWE-89"},
+                {"host": "10.10.100.2", "port": 445, "title": "SMB Signing Desabilitado", "desc": "Assinatura digital desabilitada. Vulnerável a NTLM Relay.", "sev": "crit", "cvss": 9.0, "cve": "CWE-300"}
+            ],
+            "exec_risks": [
+                {"risk": "Sabotagem física de bombas via Node-RED exposto", "cat": "Continuidade", "impact": "R$ 5.8M", "prob": "Alta", "cve": "CWE-306", "ip": "10.10.100.100", "port": "1880"},
+                {"risk": "Manipulação de telemetria ICS via canal aberto", "cat": "Operações", "impact": "R$ 2.5M", "prob": "Alta", "cve": "CWE-306", "ip": "10.10.100.100", "port": "1883"},
+                {"risk": "Vazamento em massa de dados sensíveis corporativos", "cat": "Compliance", "impact": "R$ 4.2M", "prob": "Alta", "cve": "CWE-89", "ip": "10.10.100.100", "port": "80"},
+                {"risk": "Acesso total de domínios corporativos por retransmissão", "cat": "Segurança", "impact": "R$ 10.0M", "prob": "Alta", "cve": "CWE-300", "ip": "10.10.100.2", "port": "445"}
+            ]
+        }
+    ]
+    # Atualiza estado atual com a última varredura
+    last_scan = _DB["history"][-1]
+    _DB["cyber_vulns"] = last_scan["cyber_vulns"]
+    _DB["exec_risks"]  = last_scan["exec_risks"]
+    _DB["risk_score"]  = last_scan["risk_score"]
+    
+    return jsonify(_DB)
+
 @app.route("/export_pdf")
 def export_pdf():
-    # Puxa da URL qual o alvo que o usuário quer exportar (Padrão: ALL)
     target_req = request.args.get('target', 'ALL')
-    
     merged_vulns = []
     merged_risks = []
     
     if target_req == 'ALL' or len(_DB["history"]) == 0:
-        # CONSOLIDAÇÃO: Puxa todo o histórico e junta as vulnerabilidades sem duplicar
         seen_vulns = set()
         seen_risks = set()
-        
-        hist_to_use = _DB["history"] if len(_DB["history"]) > 0 else [{
-            "cyber_vulns": _DB["cyber_vulns"],
-            "exec_risks": _DB["exec_risks"]
-        }]
+        hist_to_use = _DB["history"] if len(_DB["history"]) > 0 else [{"cyber_vulns": _DB["cyber_vulns"], "exec_risks": _DB["exec_risks"]}]
         
         for h in hist_to_use:
             for v in h.get("cyber_vulns", []):
@@ -837,34 +1232,27 @@ def export_pdf():
                     seen_risks.add(key)
                     merged_risks.append(r)
     else:
-        # ALVO ESPECÍFICO: Puxa os dados apenas da varredura referente àquele IP
         for h in reversed(_DB["history"]):
             if h["target"] == target_req:
                 merged_vulns = h.get("cyber_vulns", [])
                 merged_risks = h.get("exec_risks", [])
                 break
                 
-    # Recalcula o score baseado na junção dos dados ou no alvo específico
     final_score = calc_score(merged_vulns)
-    target_name = "Rede Consolidada (10.10.100.x)" if target_req == 'ALL' else target_req
+    target_name = "Infraestrutura Consolidada" if target_req == 'ALL' else target_req
     
     html_pronto = render_template_string(
-        PDF_HTML, 
-        cyber_vulns=merged_vulns, 
-        exec_risks=merged_risks, 
-        risk_score=final_score,
-        target_name=target_name
+        PDF_HTML, cyber_vulns=merged_vulns, exec_risks=merged_risks, risk_score=final_score, target_name=target_name
     )
     
-    # Nome do arquivo final amigável
-    safe_target = "Rede_Completa" if target_req == 'ALL' else target_req.replace('/','_')
+    safe_target = "Consolidado" if target_req == 'ALL' else target_req.replace('/','_')
     out_file = f"CYMAG_Relatorio_{safe_target}.pdf"
-    
     HTML(string=html_pronto).write_pdf(out_file)
     return send_file(out_file, as_attachment=True)
 
+
 # =====================================================================
-# 4. START DO SERVIDOR WEB
+# 5. EXECUÇÃO DO PROJETO
 # =====================================================================
 if __name__ == "__main__":
     import logging
