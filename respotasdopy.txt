@@ -1,0 +1,12 @@
+
+╔══════════════════════════════════════════════════════╗
+║  CYMAG AutoScanner v1.1.0                         ║
+║  Diagnóstico Automatizado de Segurança               ║
+╚══════════════════════════════════════════════════════╝
+
+Alvo (IP ou CIDR): Groq API Key (Enter para pular IA): 
+Formato do relatório:
+  0  TXT  — resumo rápido (sem IA)
+  1  PDF  — relatório completo com análise IA
+  2  HTML — dashboard interativo com IA
+Escolha (0/1/2): 

@@ -1,0 +1,77 @@
+[3/4] 18 achado(s).
+       Analisando com Groq/Llama...
+Traceback (most recent call last):
+  File "/home/kali/simoc-integrador/teste_python_v1.py", line 1208, in <module>
+    main()
+    ~~~~^^
+  File "/home/kali/simoc-integrador/teste_python_v1.py", line 1141, in main
+    ai_data  = ai_analyze(sorted_f, api_key)
+  File "/home/kali/simoc-integrador/teste_python_v1.py", line 844, in ai_analyze
+    chat_completion = client.chat.completions.create(
+        messages=[
+    ...<39 lines>...
+        max_tokens=4000,
+    )
+  File "/usr/local/lib/python3.13/dist-packages/groq/resources/chat/completions.py", line 461, in create
+    return self._post(
+           ~~~~~~~~~~^
+        "/openai/v1/chat/completions",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<45 lines>...
+        stream_cls=Stream[ChatCompletionChunk],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/dist-packages/groq/_base_client.py", line 1284, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/groq/_base_client.py", line 1071, in request
+    raise self._make_status_error_from_response(err.response) from None
+groq.InternalServerError: <html>
+<head>                                                                                                                                                      
+<title>Web Page Blocked/ Página Web Bloqueada</title>                                                                                                       
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">                                                                                         
+<META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">                                                                                                               
+<meta name="viewport" content="initial-scale=1.0">                                                                                                          
+<style>                                                                                                                                                     
+  #content {                                                                                                                                                
+    border:3px solid#aaa;                                                                                                                                   
+    background-color:#fff;                                                                                                                                  
+    margin:1.5em;                                                                                                                                           
+    padding:1.5em;                                                                                                                                          
+    font-family:Tahoma,Helvetica,Arial,sans-serif;                                                                                                          
+    font-size:1em;                                                                                                                                          
+  }                                                                                                                                                         
+  h1 {                                                                                                                                                      
+    font-size:1.3em;                                                                                                                                        
+    font-weight:bold;                                                                                                                                       
+    color:#196390;                                                                                                                                          
+  }                                                                                                                                                         
+  b {                                                                                                                                                       
+    font-weight:normal;                                                                                                                                     
+    color:#196390;                                                                                                                                          
+  }                                                                                                                                                         
+</style>                                                                                                                                                    
+    <link rel="stylesheet" href="css/ie10-viewport-bug-workaround.css">                                                                                     
+    <link rel="stylesheet" href="css/login.css">                                                                                                            
+    <link rel="stylesheet" href="https://www.indracompany.com/mail/PaloAlto/rebrand_login1.css">                                                            
+</head>                                                                                                                                                     
+<body class="rebrand">                                                                                                                                      
+    <div id="UrlFiltering_Block">                                                                                                                           
+        <h1>Web Page Blocked</h1>                                                                                                                           
+        <p>Access to the web page you were trying to visit has been blocked in accordance with Company policy. If you believe this is an error or need access for work you can take a petition by <b>Service Point (Information Security > Web Filtering Security > Web Filtering Review) </b></p>                      
+                <p> </p>                                                                                                                                    
+                <p>Anonymous access to the Internet through the use of generic users is not allowed (MAN-MNF-0860 section 5.4.2.2). If you are trying to access the Internet with a generic user, contact the CAU (tel. 205005) or create an incident through Service Point.</p>                                        
+        <p>--------------------------------------------------------------------------------------------------------</p>                                     
+        <h1>Página Web Bloqueada</h1>                                                                                                                       
+        <p>El acceso a la página web que intentas visitar ha sido bloqueado de acuerdo con la política de la compañía. Si crees que se trata de un error o necesitas acceso para trabajar, puedes cursar una petición a través de <b>Service Point (Información de seguridad > Seguridad Filtrado Web > Revisión Filtrado Web)</b> </p>                                                                                                                                             
+        <p> </p>                                                                                                                                            
+                <p>El acceso a Internet de manera anónima mediante el uso de usuarios genéricos no está permitido (MAN-MNF-0860 apartado 5.4.2.2). Si estás intentando acceder a Internet con un usuario genérico ponte en contacto con el CAU (tfno. 205005) o cursa una incidencia a través de Service Point.</p>     
+        <p> </p>                                                                                                                                            
+        <p><b>User:</b>172.20.180.10</p>                                                                                                                    
+        <p><b>URL:</b>api.groq.com/openai/v1/chat/completions</p>                                                                                           
+        <p><b>Category:</b>AI-platform-service</p>                                                                                                          
+    </div>                                                                                                                                                  
+    <img class="logo filterBlock__logo" src="https://www.indracompany.com/mail/PaloAlto/images/indra.svg" alt="">                                           
+</body>                                                                                                                                                     
+</html>
