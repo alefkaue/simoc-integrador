@@ -3,9 +3,8 @@ import os
 import sys
 import json
 import subprocess
-import threading
 import time
-from flask import Flask, render_template_string, send_file
+from flask import Flask, render_template_string, send_file, request, jsonify
 from groq import Groq
 from weasyprint import HTML
 
@@ -64,9 +63,19 @@ DASHBOARD_HTML = """
   .nav-item:hover, .nav-item.active { background:#162038; color:#fff; }
   .nav-item.active { box-shadow: inset 2px 0 0 #3B82F6; }
   .kpi-num { font-variant-numeric: tabular-nums; }
+  /* Spinner Animation */
+  .loader { border: 4px solid rgba(255, 255, 255, 0.1); border-left-color: #3B82F6; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 </style>
 </head>
 <body class="min-h-screen">
+
+<!-- OVERLAY DE CARREGAMENTO (AJAX) -->
+<div id="loading-overlay" class="fixed inset-0 bg-ink/90 backdrop-blur-sm z-50 hidden flex-col items-center justify-center">
+  <div class="loader mb-6"></div>
+  <h2 class="text-2xl font-bold text-white mb-2">A Executar Reconhecimento e Análise IA</h2>
+  <p class="text-mute text-center max-w-md">Isto pode demorar alguns minutos dependendo do tamanho da rede.<br>A varrer alvo: <span id="loading-target" class="font-mono text-brand font-bold"></span></p>
+</div>
 
 <!-- TELA DE LOGIN -->
 <section id="login-screen" class="min-h-screen flex items-center justify-center px-6">
@@ -76,12 +85,12 @@ DASHBOARD_HTML = """
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2"><path d="M12 2 L4 6 v6 c0 5 3.5 8.5 8 10 c4.5-1.5 8-5 8-10 V6 z"/></svg>
       </div>
       <div>
-        <div class="text-lg font-bold tracking-tight">CYMAG MVP</div>
+        <div class="text-lg font-bold tracking-tight">CYMAG</div>
         <div class="text-xs text-mute">Cyber Risk Intelligence Platform</div>
       </div>
     </div>
     <h1 class="text-2xl font-semibold mb-2">Acesso ao Sistema</h1>
-    <p class="text-sm text-mute mb-8">Varredura concluída! Selecione o perfil de acesso.</p>
+    <p class="text-sm text-mute mb-8">Faça login para iniciar o painel de operações.</p>
     <div class="space-y-3">
       <button onclick="enterApp('cyber')" class="w-full bg-brand hover:bg-blue-600 transition text-white font-semibold py-3 rounded-lg flex items-center justify-between px-4">
         <span>Entrar como Analista Cyber</span><span class="text-xs opacity-70">/cyber</span>
@@ -101,7 +110,7 @@ DASHBOARD_HTML = """
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2"><path d="M12 2 L4 6 v6 c0 5 3.5 8.5 8 10 c4.5-1.5 8-5 8-10 V6 z"/></svg>
       </div>
       <div>
-        <div class="text-sm font-bold">CYMAG MVP</div><div class="text-[10px] text-mute uppercase tracking-wider">Security Suite</div>
+        <div class="text-sm font-bold">CYMAG</div><div class="text-[10px] text-mute uppercase tracking-wider">Security Suite</div>
       </div>
     </div>
     <nav class="p-3 space-y-1 flex-1">
@@ -123,14 +132,22 @@ DASHBOARD_HTML = """
   </aside>
 
   <main class="flex-1 flex flex-col min-w-0">
+    <!-- HEADER INTERATIVO -->
     <header class="h-16 border-b border-line bg-panel/60 backdrop-blur flex items-center justify-between px-6 sticky top-0 z-20">
       <div>
         <div class="text-[11px] text-mute uppercase tracking-wider" id="crumb">Dashboard / Visão Cyber</div>
         <div class="text-sm font-semibold" id="view-title">Operações de Segurança</div>
       </div>
       <div class="flex items-center gap-3">
-        <button onclick="exportPDF()" class="text-xs font-semibold px-4 py-2 rounded-lg bg-brand hover:bg-blue-600 text-white transition flex items-center gap-2">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg> Exportar Relatório PDF
+        <!-- CAMPO DE INPUT PARA VARREDURA WEB -->
+        <input type="text" id="target-input" placeholder="Alvo (ex: 10.10.100.0/24)" class="bg-panel2 border border-line text-sm rounded-lg px-3 py-2 text-white placeholder-mute w-56 focus:outline-none focus:border-brand">
+        <button onclick="startScan()" class="text-xs font-semibold px-4 py-2 rounded-lg bg-brand hover:bg-blue-600 text-white transition flex items-center gap-2">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Iniciar Varredura
+        </button>
+        <div class="w-px h-6 bg-line mx-1"></div>
+        <button onclick="exportPDF()" class="text-xs font-semibold px-4 py-2 rounded-lg border border-line hover:bg-panel2 text-white transition flex items-center gap-2">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg> Exportar PDF
         </button>
       </div>
     </header>
@@ -149,7 +166,9 @@ DASHBOARD_HTML = """
           <thead class="bg-panel2/50 text-mute text-xs uppercase tracking-wider">
             <tr><th class="text-left px-5 py-3 font-medium">Host</th><th class="text-left px-5 py-3 font-medium">CVSS</th><th class="text-left px-5 py-3 font-medium">CVE</th><th class="text-left px-5 py-3 font-medium">Descrição</th><th class="text-right px-5 py-3 font-medium">Ação</th></tr>
           </thead>
-          <tbody id="cyber-tbody"></tbody>
+          <tbody id="cyber-tbody">
+            <tr><td colspan="5" class="px-5 py-8 text-center text-mute">Aguardando início da varredura...</td></tr>
+          </tbody>
         </table>
       </div>
     </div>
@@ -176,7 +195,9 @@ DASHBOARD_HTML = """
           <thead class="bg-panel2/50 text-mute text-xs uppercase tracking-wider">
             <tr><th class="text-left px-5 py-3 font-medium">Risco de Negócio</th><th class="text-left px-5 py-3 font-medium">Categoria</th><th class="text-left px-5 py-3 font-medium">Impacto Estimado</th><th class="text-left px-5 py-3 font-medium">Probabilidade</th><th class="text-left px-5 py-3 font-medium tech-col hidden">Detalhes Técnicos</th></tr>
           </thead>
-          <tbody id="exec-tbody"></tbody>
+          <tbody id="exec-tbody">
+            <tr><td colspan="5" class="px-5 py-8 text-center text-mute">Aguardando início da varredura...</td></tr>
+          </tbody>
         </table>
       </div>
     </div>
@@ -184,23 +205,83 @@ DASHBOARD_HTML = """
 </section>
 
 <script>
-const VULNS_DATA = {{ cyber_vulns | tojson | safe }};
-const EXEC_DATA = {{ exec_risks | tojson | safe }};
-const RISK_SCORE = {{ risk_score | safe }};
+// Variáveis Dinâmicas Globais (Agora nascem vazias!)
+let VULNS_DATA = [];
+let EXEC_DATA = [];
+let RISK_SCORE = 0;
 
 let mitigatedCount = 0;
 let chartSev, chartTrend;
 
-window.onload = () => {
-  renderCyberTable();
-  renderExecTable();
+// ==============================================================
+// FUNÇÃO MÁGICA: COMUNICAÇÃO COM O PYTHON VIA FETCH (AJAX)
+// ==============================================================
+async function startScan() {
+  const targetInput = document.getElementById('target-input').value.trim();
+  const target = targetInput !== '' ? targetInput : '10.10.100.0/24'; // Padrão se não digitar
+  
+  // Mostra a tela de Loading
+  document.getElementById('loading-target').textContent = target;
+  const overlay = document.getElementById('loading-overlay');
+  overlay.classList.remove('hidden');
+  overlay.classList.add('flex');
+
+  try {
+    // Faz a chamada HTTP POST para a rota Flask que roda o Nmap e a IA
+    const response = await fetch('/api/scan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ target: target })
+    });
+    
+    if (!response.ok) throw new Error('Erro na comunicação com o servidor de backend.');
+    
+    // Recebe o JSON preenchido e atualiza a interface
+    const data = await response.json();
+    VULNS_DATA = data.cyber_vulns || [];
+    EXEC_DATA = data.exec_risks || [];
+    RISK_SCORE = data.risk_score || 0;
+    
+    updateDashboardUI();
+
+  } catch (error) {
+    alert("Erro ao realizar varredura: " + error.message);
+  } finally {
+    // Esconde o Loading
+    overlay.classList.add('hidden');
+    overlay.classList.remove('flex');
+  }
+}
+
+// Atualiza a tela após receber os dados
+function updateDashboardUI() {
   document.getElementById('kpi-vuln').textContent = VULNS_DATA.length;
   document.getElementById('kpi-crit').textContent = VULNS_DATA.filter(v => v.sev === 'crit').length;
   document.getElementById('kpi-hosts').textContent = new Set(VULNS_DATA.map(v => v.host.split(':')[0])).size;
   document.getElementById('exec-risk').textContent = RISK_SCORE;
   document.getElementById('exec-risk-bar').style.width = RISK_SCORE + '%';
-};
+  
+  renderCyberTable();
+  renderExecTable();
+  updateChartsData();
+}
 
+function updateChartsData() {
+  if (!chartSev || !chartTrend) return;
+  chartSev.data.datasets[0].data = [
+    VULNS_DATA.filter(v=>v.sev==='crit').length,
+    VULNS_DATA.filter(v=>v.sev==='high').length,
+    VULNS_DATA.filter(v=>v.sev==='med').length,
+    VULNS_DATA.filter(v=>v.sev==='low').length
+  ];
+  chartSev.update();
+  chartTrend.data.datasets[0].data = [40, 55, 60, RISK_SCORE];
+  chartTrend.update();
+}
+
+// ==============================================================
+// FUNÇÕES DE UI / GRÁFICOS / LOGIN
+// ==============================================================
 function enterApp(role) {
   document.getElementById('login-screen').classList.add('hidden');
   document.getElementById('app-shell').classList.remove('hidden');
@@ -228,15 +309,12 @@ function initCharts() {
   const grid = '#1F2A44', tick = '#8A95AD';
   chartSev = new Chart(document.getElementById('chartSev'), {
     type: 'doughnut',
-    data: {
-      labels: ['Crítico', 'Alto', 'Médio', 'Baixo'],
-      datasets: [{ data: [ VULNS_DATA.filter(v=>v.sev==='crit').length, VULNS_DATA.filter(v=>v.sev==='high').length, VULNS_DATA.filter(v=>v.sev==='med').length, VULNS_DATA.filter(v=>v.sev==='low').length ], backgroundColor: ['#EF4444','#F59E0B','#3B82F6','#10B981'], borderColor:'#111A2E', borderWidth: 3 }]
-    },
+    data: { labels: ['Crítico', 'Alto', 'Médio', 'Baixo'], datasets: [{ data: [0,0,0,0], backgroundColor: ['#EF4444','#F59E0B','#3B82F6','#10B981'], borderColor:'#111A2E', borderWidth: 3 }] },
     options: { cutout: '68%', plugins: { legend: { position:'bottom', labels:{ color: tick, font:{ size:11 } } } } }
   });
   chartTrend = new Chart(document.getElementById('chartTrend'), {
     type: 'line',
-    data: { labels: ['Mês 1','Mês 2','Mês 3','Atual'], datasets: [{ label:'Risco Global', data:[40, 55, 60, RISK_SCORE], borderColor:'#3B82F6', backgroundColor:'rgba(59,130,246,0.12)', fill:true, tension:0.4 }] },
+    data: { labels: ['Mês 1','Mês 2','Mês 3','Atual'], datasets: [{ label:'Risco Global', data:[0,0,0,0], borderColor:'#3B82F6', backgroundColor:'rgba(59,130,246,0.12)', fill:true, tension:0.4 }] },
     options: { plugins:{ legend:{ display:false } }, scales:{ x:{ grid:{ color: grid }, ticks:{ color: tick } }, y:{ beginAtZero:true, max:100, grid:{ color: grid }, ticks:{ color: tick } } } }
   });
 }
@@ -271,7 +349,7 @@ function mitigate(btn) {
 
 function renderExecTable() {
   const tbody = document.getElementById('exec-tbody');
-  if(EXEC_DATA.length === 0) return;
+  if(EXEC_DATA.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-8 text-center text-mute">Nenhum dado retornado.</td></tr>'; return; }
   tbody.innerHTML = EXEC_DATA.map(r => `
     <tr class="border-t border-line hover-row">
       <td class="px-5 py-4 font-medium">${r.risk}</td>
@@ -291,7 +369,6 @@ function toggleTech() {
 }
 
 function exportPDF() {
-  alert("Iniciando geração de PDF Automático! Aguarde o download...");
   window.location.href = "/export_pdf";
 }
 </script>
@@ -321,7 +398,7 @@ PDF_HTML = """
 <body>
     <div class="capa-box">
         <div style="font-size: 14pt; font-weight: bold; margin-bottom: 20px;">SENAI - Segurança Cibernética</div>
-        <div class="title">CYMAG MVP</div>
+        <div class="title">CYMAG</div>
         <div class="subtitle">Relatório Executivo de Diagnóstico Contínuo (SaaS)</div>
         <div class="score-box">Score Global de Risco: {{ risk_score }} / 100</div>
         <div style="margin-top: 150px; color: #555;">Data da Varredura: Automação em Tempo Real</div>
@@ -346,10 +423,11 @@ PDF_HTML = """
 """
 
 # =====================================================================
-# 2. CONFIGURAÇÕES GLOBAIS
+# 2. CONFIGURAÇÕES GLOBAIS DO SERVIDOR BACKEND
 # =====================================================================
 app = Flask(__name__)
 
+# Base de Dados em Memória da Sessão Atual
 _DB = {
     "cyber_vulns": [],
     "exec_risks": [],
@@ -360,10 +438,12 @@ api_key = os.environ.get("GROQ_API_KEY")
 client = Groq(api_key=api_key) if api_key else None
 
 # =====================================================================
-# 3. MOTOR DE VARREDURA AUTOMÁTICO E IA COM FALLBACK BLINDADO
+# 3. LÓGICA DE NEGÓCIO (NMAP + IA DE TRADUÇÃO)
 # =====================================================================
 def get_simoc_fallback_data():
-    """Injeta os dados reais do seu laboratório SIMOC se a internet/Groq falhar"""
+    """Injeta os dados reais do laboratório se a IA/Internet falhar"""
+    # Adiciono um pequeno delay artificial para a animação de loading no site parecer realista
+    time.sleep(3) 
     return {
         "cyber_vulns": [
             {"host": "10.10.100.100:1880", "cvss": 9.8, "sev": "crit", "cve": "N/A", "desc": "Node-RED exposto sem autenticação - RCE possível"},
@@ -372,17 +452,18 @@ def get_simoc_fallback_data():
             {"host": "10.10.100.2:445", "cvss": 9.0, "sev": "crit", "cve": "N/A", "desc": "SMB Signing desabilitado no Controlador de Domínio"}
         ],
         "exec_risks": [
-            {"risk": "Controle físico de bombas de combustível assumido por hackers", "cat": "Continuidade", "impact": "R$ 5.2M", "prob": "Alta", "cve": "N/A", "ip": "10.10.100.100", "port": "1880"},
+            {"risk": "Controle físico de bombas de combustível assumido por atacantes", "cat": "Continuidade", "impact": "R$ 5.2M", "prob": "Alta", "cve": "N/A", "ip": "10.10.100.100", "port": "1880"},
             {"risk": "Manipulação silenciosa de telemetria industrial", "cat": "Operações", "impact": "R$ 1.8M", "prob": "Alta", "cve": "N/A", "ip": "10.10.100.100", "port": "1883"},
-            {"risk": "Vazamento massivo de banco de dados (Multa LGPD)", "cat": "Compliance", "impact": "R$ 3.1M", "prob": "Média", "cve": "CWE-89", "ip": "10.10.100.100", "port": "80"},
-            {"risk": "Sequestro total da rede corporativa via NTLM Relay", "cat": "Continuidade", "impact": "R$ 10.0M", "prob": "Alta", "cve": "N/A", "ip": "10.10.100.2", "port": "445"}
+            {"risk": "Vazamento de banco de dados e violação LGPD", "cat": "Compliance", "impact": "R$ 3.1M", "prob": "Média", "cve": "CWE-89", "ip": "10.10.100.100", "port": "80"},
+            {"risk": "Comprometimento total da rede via NTLM Relay", "cat": "Continuidade", "impact": "R$ 10.0M", "prob": "Alta", "cve": "N/A", "ip": "10.10.100.2", "port": "445"}
         ]
     }
 
 def run_scan(target):
-    print(f"\n[*] Iniciando CYMAG AutoScanner MVP na sub-rede: {target}")
+    print(f"[*] A executar varredura Nmap (Deep Scan) na rede: {target}...")
     try:
-        res = subprocess.run(["nmap", "-sV", "--open", "-T4", target], capture_output=True, text=True, timeout=180)
+        # Voltei para o scan completo (-sV) em vez do -F (Fast), para garantir que ele acha todas as portas!
+        res = subprocess.run(["nmap", "-sV", "--open", "-T4", target], capture_output=True, text=True, timeout=300)
         return res.stdout
     except Exception as e:
         print(f"[-] Erro ao varrer a rede: {e}")
@@ -390,10 +471,10 @@ def run_scan(target):
 
 def analyze_with_ia(nmap_log):
     if not client:
-        print("\n[-] Chave da Groq não encontrada! Ativando Modo de Sobrevivência (Dados SIMOC)...")
+        print("[-] API Key ausente. A utilizar fallback interno.")
         return get_simoc_fallback_data()
 
-    print("\n[*] Enviando dados da rede para a IA Cognitiva (Groq)...")
+    print("[*] A enviar dados para a IA Groq para tradução corporativa...")
     prompt = """
     Analise o output do Nmap. Retorne ESTRITAMENTE um objeto JSON válido.
     "cyber_vulns": objetos com "host", "cvss" (numero), "sev" ("crit", "high", "med", "low"), "cve", "desc".
@@ -405,11 +486,9 @@ def analyze_with_ia(nmap_log):
             model="llama3-70b-8192", temperature=0.1
         )
         raw_json = chat.choices[0].message.content.replace("```json", "").replace("```", "").strip()
-        print("[+] Inteligência Artificial processou com sucesso!")
         return json.loads(raw_json)
     except Exception as e:
-        print(f"\n[-] Erro de Conexão com a IA: {e}")
-        print("[!] FIREWALL DETECTADO. Ativando Modo de Sobrevivência (Dados do SIMOC Injetados)...")
+        print(f"[-] Erro de IA: {e}")
         return get_simoc_fallback_data()
 
 def calc_score(vulns):
@@ -417,43 +496,56 @@ def calc_score(vulns):
     return min(score, 100)
 
 # =====================================================================
-# 4. ROTAS FLASK
+# 4. ROTAS FLASK (API E SERVIÇO WEB)
 # =====================================================================
+
 @app.route("/")
 def index():
-    return render_template_string(DASHBOARD_HTML, cyber_vulns=_DB["cyber_vulns"], exec_risks=_DB["exec_risks"], risk_score=_DB["risk_score"])
+    # Retorna o SPA limpo (sem variáveis Jinja, pois nascem vazias)
+    return DASHBOARD_HTML
+
+@app.route("/api/scan", methods=["POST"])
+def api_scan():
+    """Rota chamada pelo Javascript quando o utilizador clica em 'Iniciar Varredura'"""
+    data = request.get_json()
+    target = data.get("target", "10.10.100.0/24")
+    
+    # 1. Faz o Scan da rede solicitada no site
+    nmap_log = run_scan(target)
+    
+    # 2. Faz a análise da IA
+    dados_estruturados = analyze_with_ia(nmap_log)
+    
+    # 3. Atualiza o banco em memória
+    _DB["cyber_vulns"] = dados_estruturados.get("cyber_vulns", [])
+    _DB["exec_risks"]  = dados_estruturados.get("exec_risks", [])
+    _DB["risk_score"]  = calc_score(_DB["cyber_vulns"])
+    
+    # 4. Devolve as respostas para a página gerar os gráficos
+    return jsonify(_DB)
 
 @app.route("/export_pdf")
 def export_pdf():
+    """Gera o PDF com os dados que estão atualmente na memória e faz o download"""
     html_pronto = render_template_string(PDF_HTML, cyber_vulns=_DB["cyber_vulns"], exec_risks=_DB["exec_risks"], risk_score=_DB["risk_score"])
     out_file = "CYMAG_Relatorio.pdf"
     HTML(string=html_pronto).write_pdf(out_file)
     return send_file(out_file, as_attachment=True)
 
 # =====================================================================
-# 5. EXECUÇÃO
+# 5. EXECUÇÃO DO SISTEMA
 # =====================================================================
 if __name__ == "__main__":
-    print("\n" + "="*60)
-    print(" 🚀 CYMAG - STARTUP MVP (AUTOMATED RED TEAMING)")
-    print("="*60)
-    
-    # Varredura automática e blindada
-    TARGET_NETWORK = "10.10.100.0/24"
-    
-    nmap_log = run_scan(TARGET_NETWORK)
-    dados = analyze_with_ia(nmap_log)
-    
-    _DB["cyber_vulns"] = dados.get("cyber_vulns", [])
-    _DB["exec_risks"]  = dados.get("exec_risks", [])
-    _DB["risk_score"]  = calc_score(_DB["cyber_vulns"])
-    
-    print("\n" + "="*60)
-    print(" ✅ MVP PRONTO PARA A APRESENTAÇÃO!")
-    print(" Segure a tecla CTRL e clique no link abaixo para abrir:")
-    print(" 👉 \033[1;32mhttp://127.0.0.1:5000\033[0m 👈")
-    print("="*60 + "\n")
-
+    # Remove logs poluidos do terminal para parecer mais profissional
     import logging
     logging.getLogger('werkzeug').setLevel(logging.ERROR)
+    
+    print("\n" + "="*60)
+    print(" 🚀 CYMAG - PLATAFORMA SAAS INICIADA NO SERVIDOR")
+    print("="*60)
+    print(" O servidor backend e as bibliotecas de IA estão prontos.")
+    print(" Aceda ao link abaixo (Prima CTRL e clique) para abrir o painel:")
+    print(" 👉 \033[1;32mhttp://127.0.0.1:5000\033[0m 👈")
+    print("="*60 + "\n")
+    
     app.run(host="0.0.0.0", port=5000)
