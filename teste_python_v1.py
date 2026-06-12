@@ -72,6 +72,54 @@ DASHBOARD_HTML = """
   <p class="text-[#8A95AD] text-center max-w-md">Realizando varredura em 3 camadas, injeção de payloads e análise IA Groq.<br><br>Alvo: <span id="loading-target" class="font-mono text-[#3B82F6] font-bold"></span></p>
 </div>
 
+<!-- MODAL DE EXPORTAÇÃO PDF -->
+<div id="pdf-modal" class="fixed inset-0 bg-[#0B1220]/90 backdrop-blur-sm z-50 hidden flex-col items-center justify-center">
+  <div class="card w-full max-w-md p-6 border border-[#3B82F6]/30 shadow-[0_0_40px_rgba(59,130,246,0.15)]">
+    <div class="flex justify-between items-center mb-6 border-b border-[#1F2A44] pb-4">
+      <h3 class="text-lg font-bold text-white flex items-center gap-2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        Gerador de Relatório PDF
+      </h3>
+      <button onclick="closePdfModal()" class="text-[#8A95AD] hover:text-white transition">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    
+    <p class="text-sm text-[#8A95AD] mb-4">Selecione a abrangência dos dados para consolidação do relatório:</p>
+    
+    <div class="space-y-3 mb-8">
+      <!-- Opção 1: Rede Completa -->
+      <label class="flex items-center gap-3 p-4 border border-[#3B82F6] bg-[#3B82F6]/10 rounded-lg cursor-pointer transition" id="label-pdf-all">
+        <input type="radio" name="pdf-type" value="ALL" checked onchange="togglePdfSelect()" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300">
+        <div>
+          <div class="font-semibold text-white text-sm">Rede Completa (Consolidado)</div>
+          <div class="text-xs text-[#8A95AD] mt-1">Funde automaticamente todas as vulnerabilidades já mapeadas no histórico (10.10.100.x) num único relatório gerencial.</div>
+        </div>
+      </label>
+      
+      <!-- Opção 2: IP Específico -->
+      <label class="flex flex-col gap-2 p-4 border border-[#1F2A44] bg-[#162038] rounded-lg cursor-pointer transition" id="label-pdf-spec">
+        <div class="flex items-center gap-3">
+          <input type="radio" name="pdf-type" value="SPECIFIC" onchange="togglePdfSelect()" class="w-4 h-4">
+          <div>
+            <div class="font-semibold text-white text-sm">Alvo / Scan Específico</div>
+            <div class="text-xs text-[#8A95AD] mt-1">Gera o relatório exclusivo de uma varredura individual do histórico.</div>
+          </div>
+        </div>
+        <!-- Select escondido inicialmente -->
+        <div id="pdf-target-wrapper" class="hidden mt-3 ml-7">
+          <select id="pdf-target-select" class="w-full bg-[#0B1220] border border-[#1F2A44] text-white text-sm rounded-lg p-2.5 outline-none focus:border-[#3B82F6]"></select>
+        </div>
+      </label>
+    </div>
+    
+    <button onclick="downloadPDF()" class="w-full py-3 bg-[#3B82F6] hover:bg-blue-600 text-white rounded-lg font-bold tracking-wide transition shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      Construir e Baixar Relatório
+    </button>
+  </div>
+</div>
+
 <!-- TELA DE LOGIN -->
 <section id="login-screen" class="min-h-screen flex items-center justify-center px-6">
   <div class="w-full max-w-md card p-10">
@@ -143,8 +191,8 @@ DASHBOARD_HTML = """
           Iniciar Varredura
         </button>
         <div class="w-px h-6 bg-[#1F2A44] mx-1"></div>
-        <button onclick="exportPDF()" class="text-xs font-semibold px-4 py-2 rounded-lg border border-[#1F2A44] hover:bg-[#162038] text-white transition flex items-center gap-2">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg> Exportar PDF
+        <button onclick="openPdfModal()" class="text-xs font-semibold px-4 py-2 rounded-lg border border-[#1F2A44] hover:bg-[#162038] text-white transition flex items-center gap-2">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg> Gerar Relatório PDF
         </button>
       </div>
     </header>
@@ -372,7 +420,7 @@ function renderHistoryTable() {
   tbody.innerHTML = [...HISTORY_DATA].reverse().map(h => `
     <tr class="border-t border-[#1F2A44] hover-row">
       <td class="px-5 py-4 font-medium text-white">${h.date}</td>
-      <td class="px-5 py-4 text-white">${h.target}</td>
+      <td class="px-5 py-4 text-white font-mono">${h.target}</td>
       <td class="px-5 py-4 font-semibold text-[#EF4444]">${h.risk_score} / 100</td>
       <td class="px-5 py-4 text-[#8A95AD]">${h.total_vulns} Ameaças encontradas</td>
     </tr>`).join('');
@@ -386,8 +434,67 @@ function toggleTech() {
   document.querySelectorAll('.tech-col').forEach(el => el.classList.toggle('hidden', !on));
 }
 
-function exportPDF() {
-  window.location.href = "/export_pdf";
+// LÓGICA DO MODAL DE EXPORTAÇÃO PDF
+function openPdfModal() {
+  if (HISTORY_DATA.length === 0) {
+    alert("Nenhuma varredura foi realizada ainda. Realize uma varredura para gerar o relatório.");
+    return;
+  }
+  
+  // Limpar e popular o select com os alvos únicos escaneados até o momento
+  const select = document.getElementById('pdf-target-select');
+  select.innerHTML = '';
+  
+  // Pega os targets únicos no histórico usando um Set
+  const uniqueTargets = [...new Set(HISTORY_DATA.map(h => h.target))];
+  uniqueTargets.forEach(t => {
+    select.innerHTML += `<option value="${t}">${t}</option>`;
+  });
+  
+  document.getElementById('pdf-modal').classList.remove('hidden');
+  document.getElementById('pdf-modal').classList.add('flex');
+}
+
+function closePdfModal() {
+  document.getElementById('pdf-modal').classList.add('hidden');
+  document.getElementById('pdf-modal').classList.remove('flex');
+}
+
+function togglePdfSelect() {
+  const isSpecific = document.querySelector('input[name="pdf-type"]:checked').value === 'SPECIFIC';
+  const labelAll = document.getElementById('label-pdf-all');
+  const labelSpec = document.getElementById('label-pdf-spec');
+  const targetWrapper = document.getElementById('pdf-target-wrapper');
+
+  if (isSpecific) {
+    targetWrapper.classList.remove('hidden');
+    labelSpec.classList.add('border-[#3B82F6]', 'bg-[#3B82F6]/10');
+    labelSpec.classList.remove('border-[#1F2A44]', 'bg-[#162038]');
+    
+    labelAll.classList.remove('border-[#3B82F6]', 'bg-[#3B82F6]/10');
+    labelAll.classList.add('border-[#1F2A44]', 'bg-[#162038]');
+  } else {
+    targetWrapper.classList.add('hidden');
+    labelAll.classList.add('border-[#3B82F6]', 'bg-[#3B82F6]/10');
+    labelAll.classList.remove('border-[#1F2A44]', 'bg-[#162038]');
+    
+    labelSpec.classList.remove('border-[#3B82F6]', 'bg-[#3B82F6]/10');
+    labelSpec.classList.add('border-[#1F2A44]', 'bg-[#162038]');
+  }
+}
+
+function downloadPDF() {
+  const type = document.querySelector('input[name="pdf-type"]:checked').value;
+  let target = 'ALL';
+  
+  if (type === 'SPECIFIC') {
+    target = document.getElementById('pdf-target-select').value;
+  }
+  
+  closePdfModal();
+  
+  // Aciona a rota do Python via URL passando o parâmetro target
+  window.location.href = `/export_pdf?target=${encodeURIComponent(target)}`;
 }
 </script>
 </body>
@@ -418,8 +525,9 @@ PDF_HTML = """
         <div style="font-size: 14pt; font-weight: bold; margin-bottom: 20px;">SENAI - Segurança Cibernética</div>
         <div class="title">CYMAG Enterprise</div>
         <div class="subtitle">Relatório de Risco Executivo (SaaS)</div>
-        <div class="score-box">Score Global de Risco: {{ risk_score }} / 100</div>
-        <div style="margin-top: 150px; color: #555;">Data da Varredura: Automática</div>
+        <div style="margin-bottom: 20px; font-size: 13pt;">Alvo da Análise: <b>{{ target_name }}</b></div>
+        <div class="score-box">Score de Risco Consolidado: {{ risk_score }} / 100</div>
+        <div style="margin-top: 150px; color: #555;">Documento Gerado Automaticamente</div>
     </div>
     <div style="page-break-before: always;"></div>
     <h1>1. SUMÁRIO DE NEGÓCIOS (VISÃO EXECUTIVA)</h1>
@@ -672,19 +780,18 @@ def index():
 def api_scan():
     target = request.get_json().get("target", "10.10.100.0/24")
     
-    # 1. Roda o motor super poderoso de varredura!
+    # 1. Roda motor super poderoso
     scanner = CYMAGScanner(target)
     vulns_encontradas = scanner.run()
     
-    # Se não achou nada, força pelo menos 1 (Para teste de interface)
     if not vulns_encontradas:
         vulns_encontradas = [{"host": "10.10.100.100", "port": 80, "title": "Portal Vulnerável", "desc": "WAF ausente.", "sev": "high", "cvss": 7.5, "cve": "-", "evidence": "-"}]
         
-    # 2. IA traduz os achados técnicos
+    # 2. IA traduz os achados
     exec_risks = analyze_with_ia(vulns_encontradas)
     score = calc_score(vulns_encontradas)
 
-    # 3. Atualiza Memória e Adiciona ao Histórico
+    # 3. Atualiza Memória e Adiciona ao Histórico (SALVANDO VULNERABILIDADES NELE AGORA!)
     _DB["cyber_vulns"] = vulns_encontradas
     _DB["exec_risks"]  = exec_risks
     _DB["risk_score"]  = score
@@ -693,15 +800,66 @@ def api_scan():
         "date": datetime.datetime.now().strftime("%d/%m %H:%M"),
         "target": target,
         "risk_score": score,
-        "total_vulns": len(vulns_encontradas)
+        "total_vulns": len(vulns_encontradas),
+        "cyber_vulns": vulns_encontradas, 
+        "exec_risks": exec_risks
     })
     
     return jsonify(_DB)
 
 @app.route("/export_pdf")
 def export_pdf():
-    html_pronto = render_template_string(PDF_HTML, cyber_vulns=_DB["cyber_vulns"], exec_risks=_DB["exec_risks"], risk_score=_DB["risk_score"])
-    out_file = "CYMAG_Relatorio.pdf"
+    # Puxa da URL qual o alvo que o usuário quer exportar (Padrão: ALL)
+    target_req = request.args.get('target', 'ALL')
+    
+    merged_vulns = []
+    merged_risks = []
+    
+    if target_req == 'ALL' or len(_DB["history"]) == 0:
+        # CONSOLIDAÇÃO: Puxa todo o histórico e junta as vulnerabilidades sem duplicar
+        seen_vulns = set()
+        seen_risks = set()
+        
+        hist_to_use = _DB["history"] if len(_DB["history"]) > 0 else [{
+            "cyber_vulns": _DB["cyber_vulns"],
+            "exec_risks": _DB["exec_risks"]
+        }]
+        
+        for h in hist_to_use:
+            for v in h.get("cyber_vulns", []):
+                key = (v["host"], v["port"], v["title"])
+                if key not in seen_vulns:
+                    seen_vulns.add(key)
+                    merged_vulns.append(v)
+            for r in h.get("exec_risks", []):
+                key = (r["risk"], r["ip"], r["port"])
+                if key not in seen_risks:
+                    seen_risks.add(key)
+                    merged_risks.append(r)
+    else:
+        # ALVO ESPECÍFICO: Puxa os dados apenas da varredura referente àquele IP
+        for h in reversed(_DB["history"]):
+            if h["target"] == target_req:
+                merged_vulns = h.get("cyber_vulns", [])
+                merged_risks = h.get("exec_risks", [])
+                break
+                
+    # Recalcula o score baseado na junção dos dados ou no alvo específico
+    final_score = calc_score(merged_vulns)
+    target_name = "Rede Consolidada (10.10.100.x)" if target_req == 'ALL' else target_req
+    
+    html_pronto = render_template_string(
+        PDF_HTML, 
+        cyber_vulns=merged_vulns, 
+        exec_risks=merged_risks, 
+        risk_score=final_score,
+        target_name=target_name
+    )
+    
+    # Nome do arquivo final amigável
+    safe_target = "Rede_Completa" if target_req == 'ALL' else target_req.replace('/','_')
+    out_file = f"CYMAG_Relatorio_{safe_target}.pdf"
+    
     HTML(string=html_pronto).write_pdf(out_file)
     return send_file(out_file, as_attachment=True)
 
