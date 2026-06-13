@@ -567,4 +567,33 @@ def main():
 if __name__ == "__main__":
     main()
 
-#
+# CYMAG - PROJETO PRIVADO
+
+# Copyright (c) 2026 Equipe CYMAG
+
+ # Autores:
+
+# * Alef Santos
+# * Carla Santos
+# * Gustavo Lopreto
+# * Matheus Avelino
+# * Yuri Siqueira
+
+# Este software e todo o seu código-fonte são propriedade da equipe CYMAG.
+
+# Nenhuma parte deste projeto pode ser copiada, modificada, redistribuída,
+# publicada, vendida ou utilizada em outros projetos sem autorização prévia e
+# expressa dos autores ou da equipe CYMAG.
+
+# Este projeto foi desenvolvido para fins de estudo, pesquisa e testes em um
+# ambiente específico. Durante o desenvolvimento, os testes foram realizados em
+# sistemas e configurações particulares, portanto não há garantia de
+# compatibilidade, estabilidade ou funcionamento em outros ambientes,
+# sistemas operacionais, distribuições Linux, versões de bibliotecas ou
+# configurações de hardware.
+
+# O uso deste software é de inteira responsabilidade do usuário.
+
+# Todos os direitos reservados. 
+
+# Equipe CYMAG - 2026
