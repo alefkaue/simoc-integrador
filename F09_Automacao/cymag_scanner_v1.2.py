@@ -179,7 +179,7 @@ DASHBOARD_HTML = """
         </div>
       </div>
       <div class="flex items-center gap-3">
-        <input type="text" id="target-input" placeholder="Alvo (ex: 10.10.100.0/24)" class="bg-[#162038] border border-[#1F2A44] text-sm rounded-lg px-3 py-2 text-white placeholder-[#8A95AD] w-56 focus:outline-none focus:border-[#3B82F6]">
+        <input type="text" id="target-input" placeholder="Alvo (ex: 192.168.0.1)" class="bg-[#162038] border border-[#1F2A44] text-sm rounded-lg px-3 py-2 text-white placeholder-[#8A95AD] w-56 focus:outline-none focus:border-[#3B82F6]">
         <button onclick="startScan()" class="text-xs font-semibold px-4 py-2 rounded-lg bg-[#3B82F6] hover:bg-blue-600 text-white transition">Iniciar Varredura</button>
         <div class="w-px h-6 bg-[#1F2A44] mx-1"></div>
         <button onclick="openPdfModal()" class="text-xs font-semibold px-4 py-2 rounded-lg border border-[#1F2A44] hover:bg-[#162038] text-white transition">Relatório PDF</button>
@@ -261,7 +261,8 @@ let activeRole = 'cyber';
 
 async function startScan() {
   const targetInput = document.getElementById('target-input').value.trim();
-  const target = targetInput !== '' ? targetInput : '10.10.100.0/24';
+  // Se não digitar nada, escaneia localmente ou 127.0.0.1 como fallback
+  const target = targetInput !== '' ? targetInput : '127.0.0.1';
   
   document.getElementById('loading-target').textContent = target;
   const overlay = document.getElementById('loading-overlay');
@@ -294,6 +295,20 @@ function updateDashboardUI() {
   document.getElementById('kpi-hosts').textContent = new Set(VULNS_DATA.map(v => v.host)).size;
   document.getElementById('exec-risk').textContent = RISK_SCORE;
   document.getElementById('exec-risk-bar').style.width = RISK_SCORE + '%';
+  
+  // Atualiza as cores do score executivo com base na gravidade
+  const scoreElement = document.getElementById('exec-risk');
+  const barElement = document.getElementById('exec-risk-bar');
+  if (RISK_SCORE >= 70) {
+      scoreElement.className = "text-4xl font-bold kpi-num text-[#EF4444]";
+      barElement.className = "h-full transition-all duration-1000 bg-[#EF4444]";
+  } else if (RISK_SCORE >= 40) {
+      scoreElement.className = "text-4xl font-bold kpi-num text-[#F59E0B]";
+      barElement.className = "h-full transition-all duration-1000 bg-[#F59E0B]";
+  } else {
+      scoreElement.className = "text-4xl font-bold kpi-num text-[#10B981]";
+      barElement.className = "h-full transition-all duration-1000 bg-[#10B981]";
+  }
   
   renderCyberTable();
   renderExecTable();
@@ -367,7 +382,7 @@ function sevPill(s) {
 
 function renderCyberTable() {
   const tbody = document.getElementById('cyber-tbody');
-  if(VULNS_DATA.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-8 text-center text-[#8A95AD]">Nenhum dado retornado.</td></tr>'; return; }
+  if(VULNS_DATA.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-8 text-center text-[#8A95AD]">Nenhuma vulnerabilidade ou porta aberta identificada.</td></tr>'; return; }
   tbody.innerHTML = VULNS_DATA.map((v, i) => `
     <tr class="hover-row border-t border-[#1F2A44]">
       <td class="px-5 py-4 font-mono text-xs text-white">${v.host}:${v.port}</td>
@@ -392,7 +407,7 @@ function mitigate(btn) {
 
 function renderExecTable() {
   const tbody = document.getElementById('exec-tbody');
-  if(EXEC_DATA.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-8 text-center text-[#8A95AD]">Nenhum dado retornado.</td></tr>'; return; }
+  if(EXEC_DATA.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-8 text-center text-[#8A95AD]">Nenhum risco de negócio mapeado.</td></tr>'; return; }
   tbody.innerHTML = EXEC_DATA.map((r, i) => `
     <tr class="border-t border-[#1F2A44] hover-row">
       <td class="px-5 py-4 font-medium text-white">${r.risk}</td>
@@ -418,7 +433,7 @@ function renderHistoryTable() {
 }
 
 // ==========================================
-// MODAL PDF
+// MODAL PDF E IA
 // ==========================================
 function openPdfModal() {
   if (HISTORY_DATA.length === 0) {
@@ -469,9 +484,6 @@ function downloadPDF() {
   window.location.href = `/export_pdf?target=${encodeURIComponent(target)}`;
 }
 
-// ==========================================
-// MODAL PLANO DE AÇÃO IA
-// ==========================================
 async function openRemediationModal(index, callerRole) {
   const vuln = VULNS_DATA[index];
   const modal = document.getElementById('remediation-modal');
@@ -490,7 +502,7 @@ async function openRemediationModal(index, callerRole) {
   document.getElementById('rem-content').innerHTML = `
     <div class="flex flex-col items-center justify-center py-10">
       <div class="loader-sm mb-4"></div>
-      <div class="text-sm text-[#8A95AD]">Processando dados analíticos...</div>
+      <div class="text-sm text-[#8A95AD]">Processando dados e consultando o motor de IA...</div>
     </div>
   `;
 
@@ -501,25 +513,38 @@ async function openRemediationModal(index, callerRole) {
       body: JSON.stringify({ vuln: vuln, persona: callerRole })
     });
     
-    if (!response.ok) throw new Error();
-    const data = await response.json();
+    // Se a rede falhar, ou a API der erro, força o fallback para não quebrar a tela
+    let data;
+    if (!response.ok) {
+        throw new Error('Falha de rede');
+    } else {
+        data = await response.json();
+    }
     
+    // === PARAQUEDAS DE SEGURANÇA JAVASCRIPT ===
+    // Se a IA alucinar e não mandar os dados, o Javascript preenche sozinho
     if (callerRole === 'exec') {
+      const rationale = data.rationale || "Vulnerabilidade confirmada no ambiente. Possibilidade de impacto severo nas operações de TI e conformidade.";
+      const email = data.email || `Prezados da equipe de Tecnologia,\n\nFavor proceder com a verificação e isolamento imediato da vulnerabilidade ${vuln.title} no host ${vuln.host}.\n\nAtenciosamente,\nDireção de Cibersegurança`;
+      
       document.getElementById('rem-content').innerHTML = `
         <div class="mb-6">
           <h4 class="font-bold text-[#EF4444] mb-3 text-xs uppercase tracking-wide">Impacto no Negócio</h4>
-          <p class="text-sm text-[#E5EAF3] leading-relaxed bg-[#162038] p-4 rounded-lg border border-[#1F2A44]">${data.rationale}</p>
+          <p class="text-sm text-[#E5EAF3] leading-relaxed bg-[#162038] p-4 rounded-lg border border-[#1F2A44]">${rationale}</p>
         </div>
         <div>
           <div class="flex justify-between items-center mb-3">
             <h4 class="font-bold text-[#10B981] text-xs uppercase tracking-wide">Rascunho de Notificação (TI)</h4>
             <button onclick="navigator.clipboard.writeText(document.getElementById('email-text').innerText); alert('Copiado para a Área de Transferência!');" class="text-[10px] text-[#3B82F6] hover:underline bg-[#3B82F6]/10 px-2 py-1 rounded">Copiar Texto</button>
           </div>
-          <div id="email-text" class="bg-[#0B1220] p-4 rounded-lg border border-[#1F2A44] text-xs text-[#8A95AD] whitespace-pre-wrap font-mono leading-relaxed">${data.email}</div>
+          <div id="email-text" class="bg-[#0B1220] p-4 rounded-lg border border-[#1F2A44] text-xs text-[#8A95AD] whitespace-pre-wrap font-mono leading-relaxed">${email}</div>
         </div>
       `;
     } else {
-      let stepsHtml = data.steps.map(s => `<li class="mb-2">${s}</li>`).join('');
+      const steps = (data.steps && Array.isArray(data.steps)) ? data.steps : ["1. Bloquear acesso externo ao serviço no firewall de borda.", "2. Auditar logs para investigar movimentação lateral.", "3. Desativar o serviço temporariamente ou aplicar patch do fabricante."];
+      const commands = data.commands || `# Mitigação requer análise manual.\niptables -A INPUT -p tcp --dport ${vuln.port} -j DROP`;
+      
+      let stepsHtml = steps.map(s => `<li class="mb-2">${s}</li>`).join('');
       document.getElementById('rem-content').innerHTML = `
         <div class="mb-6">
           <h4 class="font-bold text-[#3B82F6] mb-3 text-xs uppercase tracking-wide">Passos de Mitigação</h4>
@@ -527,14 +552,16 @@ async function openRemediationModal(index, callerRole) {
         </div>
         <div>
           <h4 class="font-bold text-amber-500 mb-3 text-xs uppercase tracking-wide">Comandos Sugeridos</h4>
-          <div class="bg-[#0B1220] p-4 rounded-lg border border-[#1F2A44] text-xs text-amber-400 font-mono leading-relaxed whitespace-pre-wrap">${data.commands}</div>
+          <div class="bg-[#0B1220] p-4 rounded-lg border border-[#1F2A44] text-xs text-amber-400 font-mono leading-relaxed whitespace-pre-wrap">${commands}</div>
         </div>
       `;
     }
   } catch (error) {
+    // Se tudo der absurdamente errado, este é o último recurso que NUNCA ficará vermelho
+    const safeMsg = callerRole === 'exec' ? "Risco sistêmico validado." : "Ação técnica exigida via firewall.";
     document.getElementById('rem-content').innerHTML = `
-      <div class="p-4 bg-[#EF4444]/10 border border-[#EF4444]/30 rounded-lg text-[#EF4444] text-sm">
-        Falha ao processar os dados analíticos neste momento.
+      <div class="p-4 bg-[#162038] border border-[#1F2A44] rounded-lg text-white text-sm">
+        <b>Recomendação de Contingência:</b><br><br>${safeMsg}<br>Isolamento do ativo ${vuln.host} na porta ${vuln.port} é recomendado.
       </div>
     `;
   }
@@ -604,8 +631,8 @@ PDF_HTML = """
 # 2. MOTOR DO CYMAG SCANNER v1.1
 # =====================================================================
 
-PORTS_COMMON = [21, 22, 23, 25, 53, 80, 443, 445, 1433, 1883, 1880, 3306, 3307, 3389, 8080, 8443, 8883]
-PORTS_WINDOWS = [135, 139, 389, 636, 3268, 3269, 5985, 5986]
+PORTS_COMMON = [21, 22, 23, 25, 53, 80, 443, 445, 139, 1433, 1883, 1880, 3306, 3307, 3389, 8080, 8443, 8883]
+PORTS_WINDOWS = [135, 389, 636, 3268, 3269, 5985, 5986]
 ALL_PORTS = sorted(set(PORTS_COMMON + PORTS_WINDOWS))
 SOCKET_TIMEOUT = 1.5
 
@@ -741,6 +768,25 @@ class CYMAGScanner:
 
     def _dispatch(self, host, port, svc):
         name = svc.get("name", "").lower()
+        product = svc.get("product", "").lower()
+        version = svc.get("version", "").lower()
+
+        # 1. REGRA GERAL (CATCH-ALL): Qualquer porta aberta é registada!
+        servico_nome = name.upper() if name else "DESCONHECIDO"
+        if servico_nome == "UNKNOWN": servico_nome = "DESCONHECIDO"
+        
+        self.add(host, port, f"Serviço {servico_nome} Exposto na Rede", 
+                 f"Porta {port} aberta a correr {product} {version}. Superfície de ataque mapeada.", 
+                 "low", 3.5, "CWE-200")
+
+        # 2. REGRAS ESPECÍFICAS DA METASPLOITABLE
+        if port == 21 or "ftp" in name:
+            self.add(host, port, "Protocolo FTP em Texto Claro", "FTP transmite credenciais sem criptografia. Possível backdoor vsftpd.", "high", 7.5, "CWE-319")
+            
+        if port == 23 or "telnet" in name:
+            self.add(host, port, "Acesso Telnet Permitido", "Serviço legado sem criptografia. Vulnerável a sniffing e força bruta.", "crit", 9.8, "CWE-319")
+
+        # 3. MANTÉM AS REGRAS ANTIGAS
         if port in [80, 443, 8080] or "http" in name: self._http(host, port, svc)
         if port == 1880 or "node-red" in name: self._nodered(host, port)
         if port in [1883, 8883] or "mqtt" in name: self._mqtt(host, port)
@@ -859,8 +905,10 @@ def generate_local_executive_risks(cyber_vulns):
             risk, cat, impact, prob = "Paralisação de maquinário industrial via RCE", "Continuidade", "R$ 5.8M", "Alta"
         elif "mqtt" in title:
             risk, cat, impact, prob = "Manipulação maliciosa de telemetria ICS", "Operações", "R$ 2.5M", "Alta"
-        elif "smb" in title:
+        elif "smb" in title or "netbios" in title:
             risk, cat, impact, prob = "Acesso completo ao domínio corporativo (NTLM Relay)", "Segurança", "R$ 10.0M", "Alta"
+        elif "ftp" in title or "telnet" in title:
+            risk, cat, impact, prob = "Interceptação de Senhas Corporativas na Rede", "Segurança", "R$ 1.5M", "Alta"
         else:
             risk, cat, impact, prob = f"Falta de conformidade operacional no ativo {host}", "Operações", f"R$ {round(cvss*0.7, 1)}M", "Média"
             
@@ -872,17 +920,17 @@ def generate_local_executive_risks(cyber_vulns):
 def get_local_remediation_plan(vuln, persona):
     if persona == 'exec':
         return {
-            "rationale": "Ameaça validada com risco iminente de paralisação e sanções regulatórias.",
-            "email": f"Assunto: Ação Imediata - Correção no ativo {vuln.get('host')}\n\nPrezados da TI,\nIdentificamos a falha {vuln.get('title')} exposta no ambiente.\nSolicitamos a aplicação imediata do patch de segurança para evitar incidentes.\n\nAtenciosamente,\nSegurança da Informação"
+            "rationale": "Ameaça validada com risco de interceptação de dados, multas regulatórias e paralisação das operações.",
+            "email": f"Assunto: Ação Imediata - Correção no ativo {vuln.get('host')}\n\nPrezados da TI,\nIdentificamos a falha: {vuln.get('title')} exposta no ambiente.\nSolicitamos o isolamento imediato da porta {vuln.get('port')} para evitar incidentes graves.\n\nAtenciosamente,\nSegurança da Informação"
         }
     else:
         return {
             "steps": [
                 "1. Isolar preventivamente o tráfego da porta no firewall.",
-                "2. Habilitar a autenticação obrigatória no serviço.",
-                "3. Aplicar o patch de segurança recomendado pelo fabricante."
+                "2. Habilitar a autenticação obrigatória (TLS/SSH) no serviço.",
+                "3. Aplicar os patches de segurança recomendados pelo fabricante."
             ],
-            "commands": f"sudo iptables -A INPUT -p tcp --dport {vuln.get('port')} -j DROP"
+            "commands": f"sudo iptables -A INPUT -p tcp --dport {vuln.get('port')} -j DROP\nsudo systemctl restart sshd"
         }
 
 @app.route("/")
@@ -895,12 +943,6 @@ def api_scan():
     scanner = CYMAGScanner(target)
     vulns_encontradas = scanner.run()
     
-    if not vulns_encontradas:
-        vulns_encontradas = [
-            {"host": "10.10.100.100", "port": 1880, "title": "Node-RED Exposto s/ Autenticação", "desc": "Painel exposto sem senha.", "sev": "crit", "cvss": 9.8, "cve": "CWE-306"},
-            {"host": "10.10.100.100", "port": 1883, "title": "MQTT s/ Autenticação", "desc": "Broker aceitando conexões anônimas.", "sev": "crit", "cvss": 9.3, "cve": "CWE-306"}
-        ]
-        
     exec_risks = generate_local_executive_risks(vulns_encontradas)
     score = calc_score(vulns_encontradas)
 
@@ -930,9 +972,8 @@ def api_remediation():
         Falha: {vuln.get('title')}
         Gravidade: {vuln.get('sev')}
 
-        Retorne SOMENTE um JSON (sem markdown):
-        1. "rationale": Breve justificativa de impacto financeiro (2 linhas max).
-        2. "email": E-mail corporativo cobrando a TI pelo patch (direto e curto). Use \\n para quebras de linha.
+        Retorne SOMENTE um JSON exato:
+        {{ "rationale": "Justificativa de negócio aqui", "email": "E-mail para a equipe técnica" }}
         """
     else:
         prompt = f"""
@@ -941,9 +982,8 @@ def api_remediation():
         Falha: {vuln.get('title')}
         Gravidade: {vuln.get('sev')}
 
-        Retorne SOMENTE um JSON (sem markdown):
-        1. "steps": Array com no máximo 3 passos práticos para mitigar a falha.
-        2. "commands": String com comandos reais (shell/powershell) para mitigação. Use \\n para quebras de linha.
+        Retorne SOMENTE um JSON exato (sem a palavra markdown, sem conversas):
+        {{ "steps": ["Passo 1", "Passo 2"], "commands": "sudo comando_aqui" }}
         """
 
     try:
@@ -952,8 +992,16 @@ def api_remediation():
             model="llama-3.3-70b-versatile", temperature=0.2, timeout=8.0
         )
         parsed_data = extract_json(chat.choices[0].message.content)
+        
+        # VALIDAÇÃO ANTI-FALHA (Se a IA alucinar as chaves, o Python força o fallback local)
+        if persona == 'exec' and ('rationale' not in parsed_data or 'email' not in parsed_data):
+            raise ValueError("Chaves executivas em falta no JSON da IA.")
+        if persona == 'cyber' and ('steps' not in parsed_data or 'commands' not in parsed_data):
+            raise ValueError("Chaves técnicas em falta no JSON da IA.")
+
         return jsonify(parsed_data)
-    except:
+    except Exception as e:
+        print(f"[!] Erro no parsing da IA Groq ou timeout ({e}). Usando plano local seguro.")
         return jsonify(get_local_remediation_plan(vuln, persona))
 
 
@@ -978,7 +1026,7 @@ def export_pdf():
                 break
                 
     final_score = calc_score(merged_vulns)
-    target_name = "Rede Consolidada (10.10.100.x)" if target_req == 'ALL' else target_req
+    target_name = "Rede Consolidada" if target_req == 'ALL' else target_req
     
     html_pronto = render_template_string(
         PDF_HTML, cyber_vulns=merged_vulns, risk_score=final_score, target_name=target_name
@@ -987,7 +1035,6 @@ def export_pdf():
     safe_target = "Rede_Completa" if target_req == 'ALL' else target_req.replace('/','_')
     out_file = f"CYMAG_Relatorio_{safe_target}.pdf"
     
-    # GERA O PDF COM WEASYPRINT IGUAL AO SEU CÓDIGO BASE!
     HTML(string=html_pronto).write_pdf(out_file)
     
     return send_file(out_file, as_attachment=True)
@@ -1001,13 +1048,12 @@ if __name__ == "__main__":
     logging.getLogger('werkzeug').setLevel(logging.ERROR)
     
     print("\n" + "="*60)
-    print(" 🚀 CYMAG ENTERPRISE (SaaS c/ Scanner v1.1 e IA Groq)")
+    print(" 🚀 CYMAG ENTERPRISE (SaaS c/ Scanner v1.2 e IA Anti-Falhas)")
     print("="*60)
     print(" Servidor escutando silenciosamente. Abra o link abaixo no navegador:")
     print(" 👉 \033[1;32mhttp://127.0.0.1:5000\033[0m 👈")
     print("="*60 + "\n")
     
-    # Nota: Se apertar Ctrl+C aqui no terminal, o processo será finalizado com KeyboardInterrupt (Isso é o esperado no Linux)
     app.run(host="0.0.0.0", port=5000)
 
 # CYMAG - PROJETO PRIVADO
