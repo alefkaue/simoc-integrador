@@ -1,0 +1,1 @@
+pip install Flask groq weasyprint python-nmap requests paho-mqtt
