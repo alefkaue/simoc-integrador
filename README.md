@@ -1,10 +1,16 @@
-# CYMAG – Continuous Automated Red Teaming (SIMOC Cyber Range)
+# SIMOC Integrador / CYMAG
+
+**Área do portfólio:** [Cybersecurity](https://github.com/alefkaue#cybersecurity) · **Contexto:** Projeto acadêmico em equipe
 
 Projeto académico desenvolvido no curso de Tecnologia em Segurança Cibernética – SENAI / Faculdade de Tecnologia Paulo Antonio Skaf.
 
+## Participação e estado
+
+Trabalho em equipe, sem uso comercial declarado. Minha participação confirmada inclui concepção da solução, integração Groq/Llama e comunicação dos achados; o repositório não atribui a mim a autoria integral das ferramentas ou a execução individual de todas as atividades. Os diretórios por integrante e os créditos da equipe foram preservados.
+
 ## Sobre o Projeto
 
-Este repositório contém o código-fonte, resultados e documentações do **CYMAG**, um protótipo de SaaS focado em testes contínuos de segurança (CART). O projeto foi desenvolvido com base na análise de um ambiente corporativo simulado na plataforma SIMOC Cyber Range (Indra Brasil).
+Este repositório contém o código-fonte, resultados e documentações do **CYMAG**, um protótipo acadêmico de automação e triagem de testes de segurança. O projeto foi desenvolvido com base na análise de um ambiente corporativo simulado na plataforma SIMOC Cyber Range (Indra Brasil).
 
 A nossa solução evoluiu de testes manuais para um fluxo automatizado que utiliza Inteligência Artificial para não apenas encontrar vulnerabilidades, mas também traduzir riscos técnicos (como SQL Injection e falhas OT) em impacto financeiro e operacional para executivos.
 
@@ -51,7 +57,7 @@ A infraestrutura alvo consistia numa rede `/24` contendo sistemas Windows (Activ
 * Enumeração de portas e serviços críticos (SMB, RPC, HTTP, Node-RED, MQTT).
 * Identificação de Cadeias de Ataque (Attack Paths), incluindo a transição da rede Web para a planta industrial (OT).
 * Desenvolvimento de um **Agente Python Local** que envia logs estruturados (JSON).
-* Criação de um **Painel de Triagem Web (SaaS)** com Role-Based Access Control (RBAC), separando a visão técnica (SOC) da visão de negócios (C-Level).
+* Criação de um **Painel de Triagem Web (protótipo)** com Role-Based Access Control (RBAC), separando a visão técnica (SOC) da visão de negócios (C-Level).
 
 ---
 
